@@ -14,9 +14,22 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
   4. **Admin lock → Cloudflare Access on `/admin` ENABLED.**
 - Approved plan saved at `/root/.claude/plans/session-1-phase-vivid-falcon.md` (machine-local; the authoritative copy of the chunked A–G plan).
 
-**In progress / next**
-- **Blocked on Hateem's dashboard actions before Cloudflare/deploy chunks can run:** A1 (confirm Workers Paid Active), **A2 (create scoped API token + add `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` to this environment — the critical unblocker)**, A3 (domain DNS onto Cloudflare, preserving Hostinger mail records), plus the 5-item readiness yes/no checklist (Workers Paid, card on file, DNS access ×2, Hostinger access) which Hateem has not yet confirmed.
-- **Claude-executable without the token:** B1 scaffold + B2 secret-hygiene — starting now.
+**Scaffold DONE (chunks B1 + B2) — commit "feat: scaffold Payload CMS on Cloudflare (D1 + R2)…"**
+- Brought in the official Payload `with-cloudflare-d1` template as the foundation; verified **`pnpm install` clean and `pnpm build` green** (compile + full TypeScript type-check + static generation) on this Node 22 container.
+- **Version decisions applied (spec §0.4 = latest-stable-within-locked-major; recorded here as internal engineering, CLAUDE.md §6):**
+  - `next` **16.2.10** — spec §2 locks Next 16.2.x; the official template unexpectedly shipped **15.4.11** (its own `eslint-config-next` was already 16.2.7). Aligned up to the locked major and verified the build. `@opennextjs/cloudflare` → **1.20.1** for Next 16 support.
+  - Payload stack (`payload`, `@payloadcms/db-d1-sqlite`, `/next`, `/richtext-lexical`, `/storage-r2`, `/ui`) → **3.86.0** (latest 3.x; template shipped 3.82.1). Spec §2 also mandates pinning the latest D1 adapter → 3.86.0.
+  - `typescript` **6.0.3** kept (the template's tested version; stable, pre-TS-7). **This supersedes my earlier Session-1 suggestion to pin 5.9.3** — the template's tested toolchain is the better-informed choice; TS 7.0.2 remains a new-major ask.
+  - `react`/`react-dom` 19.2.1, `wrangler` ~4.61.1 left at template versions (within spec majors).
+- **Template rough edges fixed** (the "not working out of the box" issue #14041 territory), all internal engineering:
+  - `build` script used a non-existent `payload build` subcommand → changed to `next build` (canonical Payload 3).
+  - Added `src/types/payload-css.d.ts` declaring the untyped `@payloadcms/next/css` side-effect import so `tsc` passes.
+  - Moved the R2 storage adapter from an invalid top-level `storage:` key into `plugins:` (Payload 3 API).
+  - Named resources: worker `run-apparel`, D1 `run-apparel-db`, R2 `run-assets`; `database_id` left as placeholder until chunk C1 creates the DB.
+  - Set D1 `remote: false` so local/CI builds need no Cloudflare credentials; the deployed Worker binds real D1 natively at runtime (revisit at Stage D deploy).
+- **Node note:** container runs Node 22.22.2; the template's `engines` want ≥24.15 (pnpm warns, build works). Cloudflare Workers Builds uses its own Node at deploy time, so this is local-only.
+
+**Next — blocked on Hateem's dashboard actions before the Cloudflare/deploy chunks (C–G) can run:** A1 (confirm Workers Paid Active), **A2 (create scoped API token + add `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` to this environment — the critical unblocker)**, A3 (domain DNS onto Cloudflare, preserving Hostinger mail records), plus the 5-item readiness yes/no checklist (Workers Paid, card on file, DNS access ×2, Hostinger access). Once the token lands: chunks C (create D1/R2) → D (Workers Builds + first deploy) → G (backup + §15 smoke test) run as a clean pass.
 
 **Email-architecture note (spec §11 deviation, logged):** wear-run.com now *receives* inbound mail via Hostinger catch-all (→ hateem@), beyond the spec's "robots-only .com" design. Compatible with Resend sending once SPF is merged; flagged for Hateem to confirm as intentional.
 
