@@ -4,6 +4,24 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-12 — Session 1 (cont.) · Phase 0 plan APPROVED; execution begun
+
+**What was done**
+- Hateem approved the Phase 0 execution plan and answered the four plan-shaping decisions (all recorded in `DECISIONS.md`):
+  1. **CF1 / Email Routing → NOT used.** Hostinger already runs catch-all on **both** wear-run.com and wear-run.help, forwarding everything (incl. `partner@`) to `hateem@wear-run.com`. Cloudflare Email Routing would seize MX and break this → **plan chunk E5 dropped.** The SPF-merge safeguard now applies between Hostinger's and Resend's SPF on wear-run.com (chunk E2).
+  2. **Cloudflare access → scoped API token** (Claude runs D1/R2/DNS automation).
+  3. **Deploy → Cloudflare Workers Builds** (GitHub Actions reserved for backups).
+  4. **Admin lock → Cloudflare Access on `/admin` ENABLED.**
+- Approved plan saved at `/root/.claude/plans/session-1-phase-vivid-falcon.md` (machine-local; the authoritative copy of the chunked A–G plan).
+
+**In progress / next**
+- **Blocked on Hateem's dashboard actions before Cloudflare/deploy chunks can run:** A1 (confirm Workers Paid Active), **A2 (create scoped API token + add `CLOUDFLARE_API_TOKEN`/`CLOUDFLARE_ACCOUNT_ID` to this environment — the critical unblocker)**, A3 (domain DNS onto Cloudflare, preserving Hostinger mail records), plus the 5-item readiness yes/no checklist (Workers Paid, card on file, DNS access ×2, Hostinger access) which Hateem has not yet confirmed.
+- **Claude-executable without the token:** B1 scaffold + B2 secret-hygiene — starting now.
+
+**Email-architecture note (spec §11 deviation, logged):** wear-run.com now *receives* inbound mail via Hostinger catch-all (→ hateem@), beyond the spec's "robots-only .com" design. Compatible with Resend sending once SPF is merged; flagged for Hateem to confirm as intentional.
+
+---
+
 ## 2026-07-12 — Session 1 · Phase 0 kickoff: filing, orientation, readiness check, plan
 
 **What was done**
