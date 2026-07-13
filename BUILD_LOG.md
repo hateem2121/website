@@ -4,6 +4,29 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-13 — Session 1 (cont.) · Readiness confirmed; access approach being revised for security
+
+**Confirmed by Hateem (facts):**
+- Workers Paid = **ACTIVE** ✅ · card on file ✅ · Hostinger hPanel admin ✅.
+- **DNS locations (important — reverse of the spec's §3.5 assumption):** `wear-run.com` DNS is on **Hostinger**; `wear-run.help` DNS is on **Cloudflare**.
+
+**Security course-correction (supersedes how decision #2 gets executed):**
+- The Claude Code web environment exposes only a **plaintext, visible "Environment variables" box** ("visible to anyone… don't add secrets or credentials") + a setup script. There is **no secure secret store** shown there → a Cloudflare API token must **not** go in it (CLAUDE.md §11, spec §3.7). Awaiting Hateem: does a separate encrypted "Secrets" section exist?
+- **I have no Hostinger or Cloudflare MCP connector** (available connectors: GitHub, Apollo, Google Drive/Calendar, Twilio, Claude_Code_Remote). Hateem believed I was "connected via MCP" to both domains — I am not. So I cannot reach either domain's DNS or his Cloudflare account directly.
+- **Revised access model (pending Hateem's OK, contradicts recorded decision #2):** Hateem performs Cloudflare/Hostinger dashboard steps via exact click-paths; the one API token needed (nightly backup) lives in **GitHub Actions encrypted secrets**, not the Claude env. Deploy is Workers Builds (no token in our env). If a real Secrets store exists, a token there could let Claude automate more.
+
+**Parked (non-blocking):** `assets.wear-run.com` (R2 public custom domain, spec §3.4) needs the domain on Cloudflare, but wear-run.com is on Hostinger → either move it to Cloudflare later, or use `assets.wear-run.help` (already on Cloudflare). Not a Phase-0 gate item (site runs on workers.dev until Phase 8).
+
+**RESOLVED same day — Cloudflare connector + chunks C1/C2 done:**
+- Hateem connected the **Cloudflare Developer Platform connector** (OAuth) → secure access, no token in the visible box. The env-secret question is now moot for Cloudflare resource work. (Backups will still need a CF API token in **GitHub Actions** encrypted secrets — chunk G2.)
+- **C1 done:** D1 `run-apparel-db` created — id `39ac4f94-0ee3-437b-849f-20b00c34b7c3`, region ENAM, read-replication disabled (per spec §2, enable only when traffic warrants). `database_id` wired into `wrangler.jsonc`.
+- **C2 done:** R2 buckets `run-assets` (public assets) + `run-private` (never public) created, region ENAM. `run-assets` bound as `R2` for Payload media; `run-private` binding added in Phase 5 (uploads).
+- **D1-layer smoke pre-check PASSED** via connector query on run-apparel-db: create → read (`{id:1,val:'created'}`) → update (`val:'updated'`) → delete → re-query (`remaining:0`, delete persisted) → dropped temp table. Guards the Dec-2025 D1 silent-DELETE bug (payload#15070) at the SQL layer. **Full §15 smoke test (Payload collections + media + auth) still to run after first deploy.**
+- **Connector limits (still need Hateem's dashboard):** Worker **deploy** (via Workers Builds — chunk D1), **DNS/email** records (Hostinger for wear-run.com; Cloudflare for wear-run.help), the `PAYLOAD_SECRET` secret, and protections (Bot Fight/rate-limit/Access/billing). The connector exposes D1, R2, Workers list/get, and D1 query only.
+- **Next:** first deploy via Cloudflare Workers Builds (Hateem imports the repo; I supply exact build settings) → gate item 1.
+
+---
+
 ## 2026-07-12 — Session 1 (cont.) · Phase 0 plan APPROVED; execution begun
 
 **What was done**

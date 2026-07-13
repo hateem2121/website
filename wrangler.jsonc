@@ -18,7 +18,7 @@
   "d1_databases": [
     {
       "binding": "D1",
-      "database_id": "DATABASE_ID",
+      "database_id": "39ac4f94-0ee3-437b-849f-20b00c34b7c3",
       "database_name": "run-apparel-db",
       // remote:false so local dev/build use a local SQLite mock and don't need
       // Cloudflare credentials; the deployed Worker binds the real D1 natively
