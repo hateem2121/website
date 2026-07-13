@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@payloadcms/drizzle@3.86.0':
+    hash: 0c8f458cdd6dc454206a3ab5aa039fcc057f3d9b755506d2f77b658964a1ec6f
+    path: patches/@payloadcms__drizzle@3.86.0.patch
+
 importers:
 
   .:
@@ -66,6 +71,9 @@ importers:
       '@vitejs/plugin-react':
         specifier: 4.5.2
         version: 4.5.2(vite@7.3.6(@types/node@24.12.3)(sass@1.77.4)(terser@5.16.9)(tsx@4.22.4)(yaml@2.9.0))
+      drizzle-kit:
+        specifier: 0.31.7
+        version: 0.31.7
       eslint:
         specifier: ^9.16.0
         version: 9.39.5
@@ -7335,7 +7343,7 @@ snapshots:
 
   '@payloadcms/db-d1-sqlite@3.86.0(payload@3.86.0(graphql@16.14.2)(typescript@6.0.3))':
     dependencies:
-      '@payloadcms/drizzle': 3.86.0(payload@3.86.0(graphql@16.14.2)(typescript@6.0.3))
+      '@payloadcms/drizzle': 3.86.0(patch_hash=0c8f458cdd6dc454206a3ab5aa039fcc057f3d9b755506d2f77b658964a1ec6f)(payload@3.86.0(graphql@16.14.2)(typescript@6.0.3))
       console-table-printer: 2.12.1
       drizzle-kit: 0.31.7
       drizzle-orm: 0.45.2
@@ -7375,7 +7383,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@payloadcms/drizzle@3.86.0(payload@3.86.0(graphql@16.14.2)(typescript@6.0.3))':
+  '@payloadcms/drizzle@3.86.0(patch_hash=0c8f458cdd6dc454206a3ab5aa039fcc057f3d9b755506d2f77b658964a1ec6f)(payload@3.86.0(graphql@16.14.2)(typescript@6.0.3))':
     dependencies:
       console-table-printer: 2.12.1
       dequal: 2.0.3

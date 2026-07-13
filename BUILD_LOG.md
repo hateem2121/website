@@ -4,6 +4,18 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-13 — Session 1 (cont.) · First-deploy build fixes (Workers Builds)
+
+**What was done (all verified by reproducing the CI build locally before pushing):**
+- **Workers Builds first attempt** failed at `npx opennextjs-cloudflare build` ("could not determine executable") — CI hadn't installed deps / detect the package manager. Fixed: added `packageManager: pnpm@10.33.0`, `.node-version` (22), lowered `engines.node` floor, and set the CI build command to `corepack enable && pnpm install && pnpm exec opennextjs-cloudflare build`.
+- **Second attempt** got all the way through `next build` (compile + typecheck + static gen ✓) and failed in OpenNext bundling: `Could not resolve "drizzle-kit-8c53b399dac79e94/api"` (payloadcms/payload#16470). Root cause: `@payloadcms/drizzle`'s `requireDrizzleKit()` does a static `require('drizzle-kit/api')` (migration tooling, never called at runtime); Turbopack externalizes it to a hashed name the OpenNext esbuild pass can't resolve.
+  - Tried `serverExternalPackages: ['drizzle-kit']` and installing drizzle-kit as a direct dep — **neither fixed it** (the hashed reference still failed).
+  - **Fix (committed):** a `pnpm patch` on `@payloadcms/drizzle@3.86.0` rewrites the static `require('drizzle-kit/api')` to a computed specifier `require(['drizzle-kit','api'].join('/'))` in both the sqlite and postgres `requireDrizzleKit.js`, so the bundler can't statically trace it. Patch file: `patches/@payloadcms__drizzle@3.86.0.patch`, wired via `pnpm.patchedDependencies`. Kept `drizzle-kit` as a direct devDep so `payload migrate:create` still works for generating future schema.
+  - **Verified:** clean `pnpm exec opennextjs-cloudflare build` → `Worker saved in .open-next/worker.js`, exit 0.
+- All on `main`. Next: Hateem re-runs the Workers Builds deployment (build will now pass → `wrangler deploy` publishes) → then first admin + §15 smoke test.
+
+---
+
 ## 2026-07-13 — Session 1 (cont.) · Readiness confirmed; access approach being revised for security
 
 **Confirmed by Hateem (facts):**

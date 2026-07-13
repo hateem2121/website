@@ -11,6 +11,10 @@ const nextConfig = {
   },
   // Packages with Cloudflare Workers (workerd) specific code
   // Read more: https://opennext.js.org/cloudflare/howtos/workerd
+  // Note: the D1 SQLite adapter's static `require('drizzle-kit/api')` (migration
+  // tooling, never used at runtime) is neutralized via a pnpm patch on
+  // @payloadcms/drizzle so the OpenNext bundle doesn't try to resolve it
+  // (payloadcms/payload#16470).
   serverExternalPackages: ['jose', 'pg-cloudflare'],
 
   // Your Next.js config here
