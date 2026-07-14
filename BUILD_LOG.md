@@ -4,6 +4,26 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-13 — Session 1 (cont.) · 🟢 LIVE on workers.dev + first admin created (Phase-0 gate item 1 ✅)
+
+**Milestone:** the app is **deployed and reachable** at `https://run-apparel.hateemjamshaid.workers.dev` and Hateem **created the first admin** at `/admin` successfully. That confirms the whole path works end-to-end: Cloudflare Workers Build → deployed Worker → native D1 binding (schema I pre-applied) → Payload wrote the admin account. **Phase-0 §17 gate item 1 (deployed starter reachable) is met.**
+- Deploy mechanism: Cloudflare Workers Builds on `main`; build command `corepack enable && pnpm install && pnpm exec opennextjs-cloudflare build`; deploy `npx wrangler deploy`. `PAYLOAD_SECRET` set by Hateem as an encrypted Worker secret.
+- Automated WebFetch to the URL returns 403 (Cloudflare bot-block on non-browser requests) — expected; the site works in a browser.
+- **Single branch:** only `main` exists (local + remote); the old session branch is gone. Future work commits directly to `main` (Hateem's standing instruction + CLAUDE.md §8).
+
+**Still open for Phase-0 gate (spec §17 row 0):**
+- **§15 smoke test (gate item 2)** — NOT yet run against production. Needs the Cloudflare connector (D1 query) to verify. Scope now: for `users` + `media`, create→read→update→**delete→re-query to confirm the delete persisted**; media upload → object in R2 `run-assets` → delete → confirm gone; admin login already ✓. (Buyer-signup emails + full RFQ round-trip = §15 items 3–4, deferred to Phases 5–6.)
+- **Nightly backup Action (gate item 3, chunk G1–G3)** — `backup.yml` (`wrangler d1 export` → `run-private/backups/`, 30-day retention). Needs a scoped `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` in **GitHub Actions encrypted secrets** (the one secure home for a token; the Claude env has no secret store).
+- **Runbook** `docs/RUNBOOK.md` (chunk G4): Time Travel, billing thresholds, DMARC ramp, smoke-test log.
+- **Observability** (D3): confirm Workers Logs observability is on (default).
+- **Billing/usage notifications** (F4) + **Bot Fight Mode / rate-limit / Cloudflare Access on /admin** (F1–F3) — Hateem dashboard actions.
+- **Email (Stage E)** — Resend + DNS; only needed for Phase 5 really, but the Phase-0 plan lists it. Hostinger already runs catch-all → hateem@; wear-run.com DNS is at Hostinger, wear-run.help at Cloudflare. Cloudflare Email Routing NOT used (would break Hostinger catch-all).
+- **Deferred / parked:** `assets.wear-run.com` R2 custom domain (needs the domain on Cloudflare; it's on Hostinger — decide move-to-CF vs use `assets.wear-run.help`); CLAUDE.md §2 `docs/spec/` path amendment (awaiting Hateem); RFQ Plan §16 regenerated-content review (before Phase 2/5).
+
+**Note for the next session:** the Cloudflare Developer Platform connector kept toggling to `enabledInChat: false` in this chat, blocking verification — hence continuing in a fresh chat. **First thing next session: confirm the Cloudflare connector is enabled for the chat, then run the §15 smoke test.**
+
+---
+
 ## 2026-07-13 — Session 1 (cont.) · First-deploy build fixes (Workers Builds)
 
 **What was done (all verified by reproducing the CI build locally before pushing):**
