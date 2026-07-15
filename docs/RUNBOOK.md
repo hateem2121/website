@@ -62,7 +62,9 @@ DMARC is a DNS policy that tells receiving mail servers what to do with mail tha
 | 2026-07-13 | 3.86.0 · 3.86.0 · 16.2.10 · 1.20.1 · ~4.61.1 | **PASS (SQL layer):** temp-table create→read→update→delete→re-query on production D1 via connector; delete persisted (guards payload#15070). |
 | 2026-07-13 | same | **PASS:** first deploy reachable; Hateem created first admin via `/admin` (Payload auth + D1 write through the live app). |
 | 2026-07-15 | same | **PASS (read layer):** schema intact (8 Payload tables), migration recorded, both R2 buckets present; public page + `/admin` login page render in a real browser. |
-| 2026-07-15 | same | **PENDING:** Payload-path CRUD on `users` + `media` incl. delete-persistence re-query, and media upload → R2 → delete → verify-gone. Blocked on Hateem authorizing production test-writes / admin-UI session. Items 3–4 of §15 (buyer emails, RFQ round-trip) defer to Phases 5–6. |
+| 2026-07-15 | same | **PASS (SQL layer, real production tables):** create → read → update → delete → re-query on `users` and `media`; deletes persisted, zero ghost rows; DB returned to exact prior state (1 user, 0 media). Authorized by Hateem same day. |
+| 2026-07-15 | same | **PASS (full Payload path):** with Hateem's admin session — file upload via `/api/media` (201) → object served back from R2 byte-identical (200) → update (200) → delete (200) → record 404 + file 404 + DB row count 0. Admin login ✓. **§15 scope for Phase 0 complete;** items 3–4 (buyer signup emails, RFQ round-trip) become testable in Phases 5–6. |
+| 2026-07-15 | same | **PASS (backup gate):** first backup run green end-to-end; `backups/run-apparel-db-2026-07-15.sql` (7,081 bytes) uploaded to `run-private` and byte-verified by re-download. Nightly schedule active (02:17 UTC). |
 
 ## 8. Incident quick cards
 

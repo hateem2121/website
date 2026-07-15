@@ -4,6 +4,21 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-15 — Session 2 (cont.) · 🟢 ALL THREE §17 ROW-0 GATE ITEMS MET — Phase 0 awaiting Hateem's sign-off
+
+**Gate item 2 — §15 smoke test GREEN (Phase-0 scope; full log in runbook §7):**
+- SQL layer, real production tables (Hateem explicitly authorized the writes): `users` + `media` create→read→update→delete→re-query — deletes persisted, zero ghost rows, DB returned to exact prior state (1 user, 0 media).
+- Full Payload path (Hateem logged into `/admin` himself; Claude drove his session): file upload via `/api/media` → object served back from R2 byte-identical → update → delete → record 404 + file 404 + row count 0. This exercises the exact adapter code path of the Dec-2025 delete bug (payload#15070) — it persisted correctly.
+- §15 items 3–4 (buyer signup emails, RFQ round-trip) become testable in Phases 5–6.
+
+**Gate item 3 — backup file visible in R2:** first `backup.yml` run green after Hateem fixed the repo secrets (first attempt failed: secrets were created with the account-id as the *name*; diagnosed via `gh secret list`, he re-created `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` correctly). Run exported the DB and uploaded `backups/run-apparel-db-2026-07-15.sql` (7,081 bytes), byte-verified by re-download. Nightly 02:17 UTC.
+
+**Still open (not gate items — from the Phase-0 plan's protection/billing chunks):** R2 lifecycle rule (30-day, prefix `backups/`) · billing alerts ($6/$10) · Cloudflare Access on the preview · Bot Fight Mode on wear-run.help. Click-paths in runbook §5. Stage E (Resend email DNS) recommended to defer to Phase 5.
+
+**Next step:** Hateem's formal Phase-0 sign-off against spec §17 row 0 → record in DECISIONS.md → Phase 1 (design directions).
+
+---
+
 ## 2026-07-15 — Session 2 (cont.) · Phase-0 close-out push: backup Action + runbook + Workers Logs; smoke test part-done
 
 **What was done (all command syntax verified against Cloudflare docs before commit):**
