@@ -4,6 +4,14 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-15 — Session 2 (cont.) · ✅ PHASE 0 CLOSED (Hateem sign-off recorded in DECISIONS.md) → Phase 1 opens
+
+Hateem signed off Phase 0 against spec §17 row 0 (option A: gate items met; the four dashboard items — R2 lifecycle rule, billing alerts, Access, Bot Fight — stay on the open list, click-paths in runbook §5; raise at natural checkpoints). Recorded in DECISIONS.md.
+
+**Next step:** Phase 1 — design directions (spec §6): 2–3 visual directions for Hateem to choose from; gate = direction picked + design tokens locked. Known Phase-1 input needed from Hateem per spec §19: logo vector files.
+
+---
+
 ## 2026-07-15 — Session 2 (cont.) · 🟢 ALL THREE §17 ROW-0 GATE ITEMS MET — Phase 0 awaiting Hateem's sign-off
 
 **Gate item 2 — §15 smoke test GREEN (Phase-0 scope; full log in runbook §7):**
