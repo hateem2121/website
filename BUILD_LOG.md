@@ -4,6 +4,18 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-15 — Session 2 · Mac working copy connected to GitHub; workflow is now local-first
+
+**What was done:** Hateem's Mac folder `~/Sites/website-main` was a GitHub ZIP download (ZIPs carry no `.git`, so it had no link to the repo). Re-attached it in place — `git init`, added `origin`, fetched history, pointed `main` at `origin/main` — and verified the folder is **byte-identical** to GitHub `main` (tip `ed7904c`, 2026-07-14). No files were modified. `gh` CLI on the Mac is authenticated as `hateem2121`. The stale remote branch `claude/phase-0-kickoff-ou58xh` no longer exists on GitHub (only `main`) — the 2026-07-13 cleanup item is done.
+
+**New working model (Hateem's stated preference):** work happens on the Mac; commit small to `main` and push to GitHub, which auto-triggers Cloudflare Workers Builds → deploy to the workers.dev preview. Anti-drift rule: **pull before starting any session; push at the end of every work block.** If a remote (cloud) Claude session ever touches the repo again, pull here first.
+
+**Machine note (non-blocking):** a stray git repository wraps Hateem's entire home folder (`/Users/hateemjamshaid/.git`, tracking an unrelated `RUN-PROD` project). It can't interfere with this repo anymore (the nested repo here takes precedence), but it invites confusion elsewhere — cleanup proposed, awaiting Hateem's approval.
+
+**Next step:** unchanged from 2026-07-13 — run the spec §15 smoke test against production (Cloudflare connector needed), then the nightly-backup Action (chunks G1–G3) and runbook (G4).
+
+---
+
 ## 2026-07-13 — Session 1 (cont.) · 🟢 LIVE on workers.dev + first admin created (Phase-0 gate item 1 ✅)
 
 **Milestone:** the app is **deployed and reachable** at `https://run-apparel.hateemjamshaid.workers.dev` and Hateem **created the first admin** at `/admin` successfully. That confirms the whole path works end-to-end: Cloudflare Workers Build → deployed Worker → native D1 binding (schema I pre-applied) → Payload wrote the admin account. **Phase-0 §17 gate item 1 (deployed starter reachable) is met.**
