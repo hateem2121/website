@@ -1,0 +1,55 @@
+name: Nightly D1 backup
+
+# Exports the production D1 database (run-apparel-db) every night and stores
+# the SQL dump in the private R2 bucket under run-private/backups/  (spec §3.10).
+#
+# Retention: a 30-day object-lifecycle rule on the "backups/" prefix of the
+# run-private bucket deletes old dumps automatically. That rule is set once in
+# the Cloudflare dashboard — see docs/RUNBOOK.md § Backups.
+#
+# Required GitHub Actions secrets (repo → Settings → Secrets and variables →
+# Actions → "New repository secret"):
+#   CLOUDFLARE_API_TOKEN   scoped token, permissions: Account · D1 · Edit
+#                          and Account · Workers R2 Storage · Edit
+#   CLOUDFLARE_ACCOUNT_ID  the Cloudflare account id (dashboard right sidebar)
+
+on:
+  schedule:
+    - cron: "17 2 * * *" # nightly at 02:17 UTC
+  workflow_dispatch: # allows a manual run from the Actions tab
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      DB_NAME: run-apparel-db
+      BUCKET: run-private
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Export D1 database to a SQL dump
+        run: |
+          STAMP="$(date -u +%F)"
+          echo "STAMP=${STAMP}" >> "$GITHUB_ENV"
+          npx wrangler@4 d1 export "$DB_NAME" --remote --output="backup-${STAMP}.sql"
+          ls -l "backup-${STAMP}.sql"
+
+      - name: Upload dump to R2 (run-private/backups/)
+        run: |
+          npx wrangler@4 r2 object put "${BUCKET}/backups/run-apparel-db-${STAMP}.sql" \
+            --file="backup-${STAMP}.sql" --remote
+
+      - name: Verify the object really landed in R2
+        run: |
+          npx wrangler@4 r2 object get "${BUCKET}/backups/run-apparel-db-${STAMP}.sql" \
+            --file="verify-${STAMP}.sql" --remote
+          cmp "backup-${STAMP}.sql" "verify-${STAMP}.sql"
+          echo "Backup verified: backups/run-apparel-db-${STAMP}.sql ($(wc -c < "verify-${STAMP}.sql") bytes)"

@@ -4,6 +4,20 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-15 — Session 2 (cont.) · Phase-0 close-out push: backup Action + runbook + Workers Logs; smoke test part-done
+
+**What was done (all command syntax verified against Cloudflare docs before commit):**
+- **Backup Action (chunks G1–G3):** `.github/workflows/backup.yml` — nightly 02:17 UTC, `wrangler d1 export run-apparel-db --remote` → upload to `run-private/backups/run-apparel-db-YYYY-MM-DD.sql` → re-download + byte-compare to verify. Manual trigger enabled (`workflow_dispatch`). **Inert until Hateem adds `CLOUDFLARE_API_TOKEN` (scoped: Account·D1·Edit + Account·Workers R2 Storage·Edit) and `CLOUDFLARE_ACCOUNT_ID` to GitHub Actions secrets.** Retention = 30-day R2 lifecycle rule on prefix `backups/` (one-time dashboard step, click-path in runbook).
+- **Runbook (chunk G4):** `docs/RUNBOOK.md` — deploy pipeline + rollback, 3-layer backups + quarterly restore drill, D1 Time Travel commands, monitoring, billing thresholds ($6 / $10 alerts documented per §3.9), DMARC ramp plan, §15 smoke-test log, incident quick cards.
+- **Observability (D3) — corrected a wrong assumption:** Workers Logs is NOT on by default; it needs `observability.enabled: true` in `wrangler.jsonc` (docs-confirmed). Added; activates on this push's deploy. Cost: $0 (20M events/mo included in Workers Paid; traffic is near-zero).
+- **§15 smoke test — done so far (logged in runbook §7):** schema intact (8 Payload tables, migration recorded), both R2 buckets present, public page + `/admin` login page render in a real browser, no stale session. **Blocked pieces:** production *writes* (D1 CRUD rows, media upload→R2→delete) — the permission layer requires Hateem to explicitly authorize production test-writes; also the Payload-path test wants Hateem logged into `/admin` (Claude never handles credentials). Verification-agent panel hit the session usage limit mid-run; load-bearing facts were re-verified directly against Cloudflare docs instead.
+
+**Open (non-blocking):** stray git repo wrapping the home folder (cleanup awaiting approval) · `assets.` domain decision · CLAUDE.md §2 path amendment · RFQ Plan §16 review.
+
+**Next step:** Hateem: GitHub secrets + R2 lifecycle rule + billing alerts + Access on `/admin` + authorize smoke-test writes → then first backup run (gate item 3) + finish §15 → Phase-0 sign-off against §17 row 0.
+
+---
+
 ## 2026-07-15 — Session 2 · Mac working copy connected to GitHub; workflow is now local-first
 
 **What was done:** Hateem's Mac folder `~/Sites/website-main` was a GitHub ZIP download (ZIPs carry no `.git`, so it had no link to the repo). Re-attached it in place — `git init`, added `origin`, fetched history, pointed `main` at `origin/main` — and verified the folder is **byte-identical** to GitHub `main` (tip `ed7904c`, 2026-07-14). No files were modified. `gh` CLI on the Mac is authenticated as `hateem2121`. The stale remote branch `claude/phase-0-kickoff-ou58xh` no longer exists on GitHub (only `main`) — the 2026-07-13 cleanup item is done.
