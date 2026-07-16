@@ -4,6 +4,18 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-16 — Session 3 (cont.) · ✅ PHASE 1 CLOSED — "PAPER & INK · Olive Ink" locked; DESIGN.md is now design law
+
+Hateem locked the direction (option A). Recorded in DECISIONS.md along with the deliberate spec-§6 volt override and the earlier session decisions (Balanced motion, 3D globe, Neue Stance pending licence).
+
+**Created `docs/design/DESIGN.md`** — the frozen design system for Phases 2–8: full color tokens (light+dark, hex+OKLCH, usage rules incl. "volt never text on light"), type system (Archivo variable + Instrument Serif accents + system mono), motifs (blueprint grid, contours, wireframe tech-packs, numbering, grain/glow), Balanced motion rules with hard accessibility gates, component notes (buttons/cards/footer/nav), imagery treatment. Contrast tooling committed beside it (`contrast-check.py` + `contrast-pairs.json`, 18/18 AA) so any token change can be re-verified with one command.
+
+**Open questions (non-blocking):** (1) Proposed spec §6 amendment wording awaits Hateem approval — Claude may not edit spec files. (2) Neue Stance web licence — confirm/decline; Archivo carries display until then. (3) The 4 dashboard items from Phase 0 (runbook §5). (4) Certification marquee final names/logos.
+
+**Next step:** Phase 2 — CMS schema (spec §4): all collections/globals/access rules/Live Preview/Approval Queue; seed 5 categories, exclusion list, dummy-WhatsApp settings. Gate: Hateem creates a test product unaided via a walkthrough doc.
+
+---
+
 ## 2026-07-16 — Session 3 · Phase 1: "PAPER & INK" combined direction built — awaiting Hateem's §6 gate pick
 
 **Process:** Hateem liked draft direction C, then pointed at 4 reference sites (landonorris.com, wembi.ai, hildenkaira.fi, sharebien.com) and asked for deep first-hand interaction before recommending. All four were browsed/scrolled/screenshotted in the browser pane. Key finding: they all live on one axis — warm paper ↔ warm ink, lime as the constant signal, technical-drawing garnish throughout (Lando's own site transitions light→dark in one scroll). Full observations + approved plan: `~/.claude/plans/i-like-the-direction-async-diffie.md`.
