@@ -63,12 +63,22 @@ export type SupportedTimezones =
 
 export interface Config {
   auth: {
-    users: UserAuthOperations;
+    buyers: BuyerAuthOperations;
+    admins: AdminAuthOperations;
   };
   blocks: {};
   collections: {
-    users: User;
+    pages: Page;
+    posts: Post;
+    'case-studies': CaseStudy;
     media: Media;
+    categories: Category;
+    products: Product;
+    'fabric-library': FabricLibrary;
+    buyers: Buyer;
+    rfqs: Rfq;
+    inquiries: Inquiry;
+    admins: Admin;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -76,8 +86,17 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    posts: PostsSelect<false> | PostsSelect<true>;
+    'case-studies': CaseStudiesSelect<false> | CaseStudiesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    products: ProductsSelect<false> | ProductsSelect<true>;
+    'fabric-library': FabricLibrarySelect<false> | FabricLibrarySelect<true>;
+    buyers: BuyersSelect<false> | BuyersSelect<true>;
+    rfqs: RfqsSelect<false> | RfqsSelect<true>;
+    inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
+    admins: AdminsSelect<false> | AdminsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -87,19 +106,47 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    'exclusion-list': ExclusionList;
+    navigation: Navigation;
+    footer: Footer;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'exclusion-list': ExclusionListSelect<false> | ExclusionListSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    footer: FooterSelect<false> | FooterSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: Buyer | Admin;
   jobs: {
     tasks: unknown;
     workflows: unknown;
   };
 }
-export interface UserAuthOperations {
+export interface BuyerAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
+export interface AdminAuthOperations {
   forgotPassword: {
     email: string;
     password: string;
@@ -118,11 +165,1356 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * The marketing pages, built by stacking blocks.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "pages".
  */
-export interface User {
+export interface Page {
   id: number;
+  title: string;
+  /**
+   * The address bar version of the name (e.g. "team-wear"). Filled in for you. Changing it after this page is live will break any existing links to it.
+   */
+  slug?: string | null;
+  /**
+   * Add, reorder and remove blocks to build the page.
+   */
+  layout?:
+    | (
+        | {
+            heading: string;
+            subheading?: string | null;
+            backgroundImage?: (number | null) | Media;
+            buttonLabel?: string | null;
+            /**
+             * A path like /contact, or a full https:// address.
+             */
+            buttonHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            content?: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            } | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'richText';
+          }
+        | {
+            image: number | Media;
+            caption?: string | null;
+            width?: ('normal' | 'wide' | 'full') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaBlock';
+          }
+        | {
+            heading?: string | null;
+            stats?:
+              | {
+                  /**
+                   * e.g. "40%" or "1889".
+                   */
+                  value: string;
+                  label: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'stats';
+          }
+        | {
+            heading?: string | null;
+            entries?:
+              | {
+                  year: string;
+                  title: string;
+                  description?: string | null;
+                  image?: (number | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'timeline';
+          }
+        | {
+            heading?: string | null;
+            /**
+             * Certification logos may only be used once permission is confirmed, and each needs its caption.
+             */
+            logos?:
+              | {
+                  logo: number | Media;
+                  /**
+                   * Required. Say who holds the certification — never imply RUN itself is certified.
+                   */
+                  caption: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'logoMarquee';
+          }
+        | {
+            heading?: string | null;
+            variants?:
+              | {
+                  /**
+                   * Who this card speaks to, e.g. "Sports clubs" or "Retail brands".
+                   */
+                  persona: string;
+                  body?: string | null;
+                  buttonLabel?: string | null;
+                  /**
+                   * A path like /contact, or a full https:// address.
+                   */
+                  buttonHref?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'ctaByPersona';
+          }
+        | {
+            heading?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+      )[]
+    | null;
+  /**
+   * Controls how this page looks in Google results and when shared on social media. Safe to leave blank — we fall back to the title and description above.
+   */
+  seo?: {
+    /**
+     * Aim for under 60 characters — Google cuts off longer titles.
+     */
+    metaTitle?: string | null;
+    /**
+     * The grey summary under the headline in search results. Aim for 150–160 characters.
+     */
+    metaDescription?: string | null;
+    /**
+     * Shown when someone pastes this page into LinkedIn or WhatsApp. Landscape works best (1200 × 630 pixels).
+     */
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Images used across the public site. Anything uploaded here is publicly readable.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  /**
+   * One plain sentence describing what is in the image — read aloud to blind visitors and used by Google. Example: "Cyclist in a custom RUN team jersey".
+   */
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+}
+/**
+ * Blog and insight articles.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts".
+ */
+export interface Post {
+  id: number;
+  title: string;
+  /**
+   * The address bar version of the name (e.g. "team-wear"). Filled in for you. Changing it after this page is live will break any existing links to it.
+   */
+  slug?: string | null;
+  /**
+   * One or two sentences, shown on the blog index and in search results.
+   */
+  excerpt?: string | null;
+  cover?: (number | null) | Media;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Shown publicly, e.g. "RUN APPAREL" or a person’s name.
+   */
+  authorLabel?: string | null;
+  publishedDate?: string | null;
+  /**
+   * Controls how this page looks in Google results and when shared on social media. Safe to leave blank — we fall back to the title and description above.
+   */
+  seo?: {
+    /**
+     * Aim for under 60 characters — Google cuts off longer titles.
+     */
+    metaTitle?: string | null;
+    /**
+     * The grey summary under the headline in search results. Aim for 150–160 characters.
+     */
+    metaDescription?: string | null;
+    /**
+     * Shown when someone pastes this page into LinkedIn or WhatsApp. Landscape works best (1200 × 630 pixels).
+     */
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * Anonymous customer stories. Never name a real client here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "case-studies".
+ */
+export interface CaseStudy {
+  id: number;
+  /**
+   * Describe them, do not name them — e.g. "A European cycling brand". Real client names must never appear here.
+   */
+  anonymizedClient: string;
+  /**
+   * The address bar version of the name (e.g. "team-wear"). Filled in for you. Changing it after this page is live will break any existing links to it.
+   */
+  slug?: string | null;
+  /**
+   * e.g. "Cycling", "Team sports".
+   */
+  sector?: string | null;
+  /**
+   * e.g. "Europe", "North America".
+   */
+  region?: string | null;
+  challenge?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  solution?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  results?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Make sure nothing visible identifies the client — logos, labels, tags.
+   */
+  images?: (number | Media)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * The five product families the whole site is organised around. These are fixed — please do not add new ones.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * The address bar version of the name (e.g. "team-wear"). Filled in for you. Changing it after this page is live will break any existing links to it.
+   */
+  slug?: string | null;
+  /**
+   * The locked running order used across the site. Set at build time.
+   */
+  order: number;
+  /**
+   * The wide image at the top of this category’s page.
+   */
+  heroImage?: (number | null) | Media;
+  /**
+   * A short introduction shown under the header. Left blank until the Phase 3 copy review.
+   */
+  intro?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Controls how this page looks in Google results and when shared on social media. Safe to leave blank — we fall back to the title and description above.
+   */
+  seo?: {
+    /**
+     * Aim for under 60 characters — Google cuts off longer titles.
+     */
+    metaTitle?: string | null;
+    /**
+     * The grey summary under the headline in search results. Aim for 150–160 characters.
+     */
+    metaDescription?: string | null;
+    /**
+     * Shown when someone pastes this page into LinkedIn or WhatsApp. Landscape works best (1200 × 630 pixels).
+     */
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The articles shown in the catalog, each with its 3D viewer and colourways.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products".
+ */
+export interface Product {
+  id: number;
+  title: string;
+  /**
+   * The address bar version of the name (e.g. "team-wear"). Filled in for you. Changing it after this page is live will break any existing links to it.
+   */
+  slug?: string | null;
+  /**
+   * Which of the five product families this belongs to.
+   */
+  category: number | Category;
+  /**
+   * One or two sentences, used on catalog cards and in search results.
+   */
+  shortDescription?: string | null;
+  longDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * e.g. "88% recycled polyester, 12% elastane".
+   */
+  fabricComposition?: string | null;
+  /**
+   * Grams per square metre. Leave blank if it varies.
+   */
+  gsm?: number | null;
+  availableSizes?:
+    | (
+        | 'xs'
+        | 's'
+        | 'm'
+        | 'l'
+        | 'xl'
+        | '2xl'
+        | '3xl'
+        | '4xl'
+        | '5xl'
+        | 'y4-5'
+        | 'y6-7'
+        | 'y8-9'
+        | 'y10-11'
+        | 'y12-13'
+        | 'y14-15'
+        | 'one-size'
+      )[]
+    | null;
+  keyFeatures?:
+    | {
+        feature: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Ecosystem framing is required: certifications sit with Durus Industries and our certified suppliers — never say "RUN is certified".
+   */
+  certificationsNote?: string | null;
+  /**
+   * Each colourway a buyer can switch to in the 3D viewer.
+   */
+  colorways?:
+    | {
+        name: string;
+        /**
+         * Hex code, e.g. #CDF345.
+         */
+        swatchHex: string;
+        /**
+         * Set by the 3D pipeline — the folder prefix in storage holding this colourway’s textures. Leave alone unless asked.
+         */
+        textureSetKey?: string | null;
+        /**
+         * The still image shown before the 3D viewer finishes loading.
+         */
+        posterImage?: (number | null) | Media;
+        gallery?: (number | Media)[] | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Managed by the 3D pipeline. A product without a model still publishes.
+   */
+  model3d: {
+    /**
+     * The compressed model’s location in storage, set by the pipeline in Phase 4.
+     */
+    glbFile?: string | null;
+    /**
+     * Filled in automatically.
+     */
+    fileSizeKB?: number | null;
+    pipelineVersion?: string | null;
+    fallbackMode: 'viewer' | 'coming-soon';
+  };
+  moqStartingAt?: number | null;
+  priceStartingAtUSD?: number | null;
+  /**
+   * Off by default. When on, the product page shows "MOQ from X pcs · from $Y" — only if both numbers above are filled in.
+   */
+  showTeasers?: boolean | null;
+  /**
+   * Optional. Overrides the site-wide default when warning a buyer that their quantity may be too low. Never shown publicly.
+   */
+  moqWarningOverride?: number | null;
+  /**
+   * Controls how this page looks in Google results and when shared on social media. Safe to leave blank — we fall back to the title and description above.
+   */
+  seo?: {
+    /**
+     * Aim for under 60 characters — Google cuts off longer titles.
+     */
+    metaTitle?: string | null;
+    /**
+     * The grey summary under the headline in search results. Aim for 150–160 characters.
+     */
+    metaDescription?: string | null;
+    /**
+     * Shown when someone pastes this page into LinkedIn or WhatsApp. Landscape works best (1200 × 630 pixels).
+     */
+    ogImage?: (number | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * The fabrics and fibres buyers can pick from in the quote form. Empty until the fabric list is approved.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fabric-library".
+ */
+export interface FabricLibrary {
+  id: number;
+  /**
+   * The reference from the RFQ plan, e.g. "TW-1".
+   */
+  code: string;
+  /**
+   * e.g. "Neoprene".
+   */
+  name: string;
+  /**
+   * Which of the five families this fabric is offered under.
+   */
+  category: number | Category;
+  /**
+   * Optional guidance shown to the buyer when they pick this fabric.
+   */
+  notes?: string | null;
+  allowedFibres?:
+    | {
+        fibre: string;
+        /**
+         * Untick if this fibre can only be ordered on its own, never in a mix.
+         */
+        blendable?: boolean | null;
+        notes?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * People who signed up for the buyer portal. New signups need approving.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "buyers".
+ */
+export interface Buyer {
+  id: number;
+  name: string;
+  company: string;
+  country:
+    | 'AF'
+    | 'AL'
+    | 'DZ'
+    | 'AD'
+    | 'AO'
+    | 'AG'
+    | 'AR'
+    | 'AM'
+    | 'AU'
+    | 'AT'
+    | 'AZ'
+    | 'BS'
+    | 'BH'
+    | 'BD'
+    | 'BB'
+    | 'BY'
+    | 'BE'
+    | 'BZ'
+    | 'BJ'
+    | 'BT'
+    | 'BO'
+    | 'BA'
+    | 'BW'
+    | 'BR'
+    | 'BN'
+    | 'BG'
+    | 'BF'
+    | 'BI'
+    | 'CV'
+    | 'KH'
+    | 'CM'
+    | 'CA'
+    | 'CF'
+    | 'TD'
+    | 'CL'
+    | 'CN'
+    | 'CO'
+    | 'KM'
+    | 'CG'
+    | 'CD'
+    | 'CR'
+    | 'CI'
+    | 'HR'
+    | 'CU'
+    | 'CY'
+    | 'CZ'
+    | 'DK'
+    | 'DJ'
+    | 'DM'
+    | 'DO'
+    | 'EC'
+    | 'EG'
+    | 'SV'
+    | 'GQ'
+    | 'ER'
+    | 'EE'
+    | 'SZ'
+    | 'ET'
+    | 'FJ'
+    | 'FI'
+    | 'FR'
+    | 'GA'
+    | 'GM'
+    | 'GE'
+    | 'DE'
+    | 'GH'
+    | 'GR'
+    | 'GD'
+    | 'GT'
+    | 'GN'
+    | 'GW'
+    | 'GY'
+    | 'HT'
+    | 'VA'
+    | 'HN'
+    | 'HK'
+    | 'HU'
+    | 'IS'
+    | 'IN'
+    | 'ID'
+    | 'IR'
+    | 'IQ'
+    | 'IE'
+    | 'IL'
+    | 'IT'
+    | 'JM'
+    | 'JP'
+    | 'JO'
+    | 'KZ'
+    | 'KE'
+    | 'KI'
+    | 'KP'
+    | 'KR'
+    | 'KW'
+    | 'KG'
+    | 'LA'
+    | 'LV'
+    | 'LB'
+    | 'LS'
+    | 'LR'
+    | 'LY'
+    | 'LI'
+    | 'LT'
+    | 'LU'
+    | 'MO'
+    | 'MG'
+    | 'MW'
+    | 'MY'
+    | 'MV'
+    | 'ML'
+    | 'MT'
+    | 'MH'
+    | 'MR'
+    | 'MU'
+    | 'MX'
+    | 'FM'
+    | 'MD'
+    | 'MC'
+    | 'MN'
+    | 'ME'
+    | 'MA'
+    | 'MZ'
+    | 'MM'
+    | 'NA'
+    | 'NR'
+    | 'NP'
+    | 'NL'
+    | 'NZ'
+    | 'NI'
+    | 'NE'
+    | 'NG'
+    | 'MK'
+    | 'NO'
+    | 'OM'
+    | 'PK'
+    | 'PW'
+    | 'PS'
+    | 'PA'
+    | 'PG'
+    | 'PY'
+    | 'PE'
+    | 'PH'
+    | 'PL'
+    | 'PT'
+    | 'QA'
+    | 'RO'
+    | 'RU'
+    | 'RW'
+    | 'KN'
+    | 'LC'
+    | 'VC'
+    | 'WS'
+    | 'SM'
+    | 'ST'
+    | 'SA'
+    | 'SN'
+    | 'RS'
+    | 'SC'
+    | 'SL'
+    | 'SG'
+    | 'SK'
+    | 'SI'
+    | 'SB'
+    | 'SO'
+    | 'ZA'
+    | 'SS'
+    | 'ES'
+    | 'LK'
+    | 'SD'
+    | 'SR'
+    | 'SE'
+    | 'CH'
+    | 'SY'
+    | 'TW'
+    | 'TJ'
+    | 'TZ'
+    | 'TH'
+    | 'TL'
+    | 'TG'
+    | 'TO'
+    | 'TT'
+    | 'TN'
+    | 'TR'
+    | 'TM'
+    | 'TV'
+    | 'UG'
+    | 'UA'
+    | 'AE'
+    | 'GB'
+    | 'US'
+    | 'UY'
+    | 'UZ'
+    | 'VU'
+    | 'VE'
+    | 'VN'
+    | 'YE'
+    | 'ZM'
+    | 'ZW';
+  phone?: string | null;
+  website?: string | null;
+  /**
+   * Only approved buyers with a verified email address can sign in to the portal.
+   */
+  status: 'pending' | 'approved' | 'rejected';
+  /**
+   * Included in the rejection email if you fill it in.
+   */
+  rejectionReason?: string | null;
+  /**
+   * Their "Add to list" selections, which they can turn into a quote request.
+   */
+  savedProducts?: (number | Product)[] | null;
+  /**
+   * Private. Never shown to the buyer.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  _verified?: boolean | null;
+  _verificationToken?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'buyers';
+}
+/**
+ * Every quote request, from guests and from portal accounts.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rfqs".
+ */
+export interface Rfq {
+  id: number;
+  /**
+   * Generated automatically. This is the number quoted to the buyer.
+   */
+  referenceNumber?: string | null;
+  source: 'guest' | 'portal';
+  /**
+   * Set when the request came from a logged-in buyer, or when a guest later creates an account.
+   */
+  buyer?: (number | null) | Buyer;
+  submittedAt?: string | null;
+  name: string;
+  company: string;
+  email: string;
+  phone?: string | null;
+  country:
+    | 'AF'
+    | 'AL'
+    | 'DZ'
+    | 'AD'
+    | 'AO'
+    | 'AG'
+    | 'AR'
+    | 'AM'
+    | 'AU'
+    | 'AT'
+    | 'AZ'
+    | 'BS'
+    | 'BH'
+    | 'BD'
+    | 'BB'
+    | 'BY'
+    | 'BE'
+    | 'BZ'
+    | 'BJ'
+    | 'BT'
+    | 'BO'
+    | 'BA'
+    | 'BW'
+    | 'BR'
+    | 'BN'
+    | 'BG'
+    | 'BF'
+    | 'BI'
+    | 'CV'
+    | 'KH'
+    | 'CM'
+    | 'CA'
+    | 'CF'
+    | 'TD'
+    | 'CL'
+    | 'CN'
+    | 'CO'
+    | 'KM'
+    | 'CG'
+    | 'CD'
+    | 'CR'
+    | 'CI'
+    | 'HR'
+    | 'CU'
+    | 'CY'
+    | 'CZ'
+    | 'DK'
+    | 'DJ'
+    | 'DM'
+    | 'DO'
+    | 'EC'
+    | 'EG'
+    | 'SV'
+    | 'GQ'
+    | 'ER'
+    | 'EE'
+    | 'SZ'
+    | 'ET'
+    | 'FJ'
+    | 'FI'
+    | 'FR'
+    | 'GA'
+    | 'GM'
+    | 'GE'
+    | 'DE'
+    | 'GH'
+    | 'GR'
+    | 'GD'
+    | 'GT'
+    | 'GN'
+    | 'GW'
+    | 'GY'
+    | 'HT'
+    | 'VA'
+    | 'HN'
+    | 'HK'
+    | 'HU'
+    | 'IS'
+    | 'IN'
+    | 'ID'
+    | 'IR'
+    | 'IQ'
+    | 'IE'
+    | 'IL'
+    | 'IT'
+    | 'JM'
+    | 'JP'
+    | 'JO'
+    | 'KZ'
+    | 'KE'
+    | 'KI'
+    | 'KP'
+    | 'KR'
+    | 'KW'
+    | 'KG'
+    | 'LA'
+    | 'LV'
+    | 'LB'
+    | 'LS'
+    | 'LR'
+    | 'LY'
+    | 'LI'
+    | 'LT'
+    | 'LU'
+    | 'MO'
+    | 'MG'
+    | 'MW'
+    | 'MY'
+    | 'MV'
+    | 'ML'
+    | 'MT'
+    | 'MH'
+    | 'MR'
+    | 'MU'
+    | 'MX'
+    | 'FM'
+    | 'MD'
+    | 'MC'
+    | 'MN'
+    | 'ME'
+    | 'MA'
+    | 'MZ'
+    | 'MM'
+    | 'NA'
+    | 'NR'
+    | 'NP'
+    | 'NL'
+    | 'NZ'
+    | 'NI'
+    | 'NE'
+    | 'NG'
+    | 'MK'
+    | 'NO'
+    | 'OM'
+    | 'PK'
+    | 'PW'
+    | 'PS'
+    | 'PA'
+    | 'PG'
+    | 'PY'
+    | 'PE'
+    | 'PH'
+    | 'PL'
+    | 'PT'
+    | 'QA'
+    | 'RO'
+    | 'RU'
+    | 'RW'
+    | 'KN'
+    | 'LC'
+    | 'VC'
+    | 'WS'
+    | 'SM'
+    | 'ST'
+    | 'SA'
+    | 'SN'
+    | 'RS'
+    | 'SC'
+    | 'SL'
+    | 'SG'
+    | 'SK'
+    | 'SI'
+    | 'SB'
+    | 'SO'
+    | 'ZA'
+    | 'SS'
+    | 'ES'
+    | 'LK'
+    | 'SD'
+    | 'SR'
+    | 'SE'
+    | 'CH'
+    | 'SY'
+    | 'TW'
+    | 'TJ'
+    | 'TZ'
+    | 'TH'
+    | 'TL'
+    | 'TG'
+    | 'TO'
+    | 'TT'
+    | 'TN'
+    | 'TR'
+    | 'TM'
+    | 'TV'
+    | 'UG'
+    | 'UA'
+    | 'AE'
+    | 'GB'
+    | 'US'
+    | 'UY'
+    | 'UZ'
+    | 'VU'
+    | 'VE'
+    | 'VN'
+    | 'YE'
+    | 'ZM'
+    | 'ZW';
+  requestType: 'bulk' | 'sample';
+  styles?:
+    | {
+        productRef?: (number | null) | Product;
+        category?: (number | null) | Category;
+        description?: string | null;
+        fabricFamily?: (number | null) | FabricLibrary;
+        fibres?:
+          | {
+              fibre: string;
+              percentage?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * These certifications sit with Durus Industries and our certified suppliers — not with RUN itself.
+         */
+        certificationsRequested?:
+          | (
+              | 'gots'
+              | 'oeko-tex-standard-100'
+              | 'oeko-tex-made-in-green'
+              | 'grs'
+              | 'rcs'
+              | 'organic-100'
+              | 'iso-9001'
+              | 'smeta-sedex'
+              | 'bsci'
+            )[]
+          | null;
+        brandingOptions?:
+          | (
+              | 'sublimation'
+              | 'screen-print'
+              | 'embroidery'
+              | 'heat-transfer'
+              | 'woven-label'
+              | 'tagless-neck-label'
+              | 'hang-tags'
+              | 'custom-packaging'
+              | 'plain'
+              | 'other'
+            )[]
+          | null;
+        brandingOther?: string | null;
+        colours?:
+          | {
+              colour: string;
+              quantity?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Enter quantities per size, or just list the sizes and we will size-curve with you.
+         */
+        sizes?:
+          | {
+              size:
+                | 'xs'
+                | 's'
+                | 'm'
+                | 'l'
+                | 'xl'
+                | '2xl'
+                | '3xl'
+                | '4xl'
+                | '5xl'
+                | 'y4-5'
+                | 'y6-7'
+                | 'y8-9'
+                | 'y10-11'
+                | 'y12-13'
+                | 'y14-15'
+                | 'one-size';
+              quantity?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * A low quantity never blocks the request — we just flag that it may not be feasible.
+         */
+        quantity?: number | null;
+        targetPrice?: number | null;
+        /**
+         * Pre-selected from the country above; the buyer can change it.
+         */
+        currency?:
+          | (
+              | 'AED'
+              | 'AFN'
+              | 'ALL'
+              | 'AMD'
+              | 'AOA'
+              | 'ARS'
+              | 'AUD'
+              | 'AZN'
+              | 'BAM'
+              | 'BBD'
+              | 'BDT'
+              | 'BHD'
+              | 'BIF'
+              | 'BND'
+              | 'BOB'
+              | 'BRL'
+              | 'BSD'
+              | 'BTN'
+              | 'BWP'
+              | 'BYN'
+              | 'BZD'
+              | 'CAD'
+              | 'CDF'
+              | 'CHF'
+              | 'CLP'
+              | 'CNY'
+              | 'COP'
+              | 'CRC'
+              | 'CUP'
+              | 'CVE'
+              | 'CZK'
+              | 'DJF'
+              | 'DKK'
+              | 'DOP'
+              | 'DZD'
+              | 'EGP'
+              | 'ERN'
+              | 'ETB'
+              | 'EUR'
+              | 'FJD'
+              | 'GBP'
+              | 'GEL'
+              | 'GHS'
+              | 'GMD'
+              | 'GNF'
+              | 'GTQ'
+              | 'GYD'
+              | 'HKD'
+              | 'HNL'
+              | 'HTG'
+              | 'HUF'
+              | 'IDR'
+              | 'ILS'
+              | 'INR'
+              | 'IQD'
+              | 'IRR'
+              | 'ISK'
+              | 'JMD'
+              | 'JOD'
+              | 'JPY'
+              | 'KES'
+              | 'KGS'
+              | 'KHR'
+              | 'KMF'
+              | 'KPW'
+              | 'KRW'
+              | 'KWD'
+              | 'KZT'
+              | 'LAK'
+              | 'LBP'
+              | 'LKR'
+              | 'LRD'
+              | 'LSL'
+              | 'LYD'
+              | 'MAD'
+              | 'MDL'
+              | 'MGA'
+              | 'MKD'
+              | 'MMK'
+              | 'MNT'
+              | 'MOP'
+              | 'MRU'
+              | 'MUR'
+              | 'MVR'
+              | 'MWK'
+              | 'MXN'
+              | 'MYR'
+              | 'MZN'
+              | 'NAD'
+              | 'NGN'
+              | 'NIO'
+              | 'NOK'
+              | 'NPR'
+              | 'NZD'
+              | 'OMR'
+              | 'PAB'
+              | 'PEN'
+              | 'PGK'
+              | 'PHP'
+              | 'PKR'
+              | 'PLN'
+              | 'PYG'
+              | 'QAR'
+              | 'RON'
+              | 'RSD'
+              | 'RUB'
+              | 'RWF'
+              | 'SAR'
+              | 'SBD'
+              | 'SCR'
+              | 'SDG'
+              | 'SEK'
+              | 'SGD'
+              | 'SLE'
+              | 'SOS'
+              | 'SRD'
+              | 'SSP'
+              | 'STN'
+              | 'SYP'
+              | 'SZL'
+              | 'THB'
+              | 'TJS'
+              | 'TMT'
+              | 'TND'
+              | 'TOP'
+              | 'TRY'
+              | 'TTD'
+              | 'TWD'
+              | 'TZS'
+              | 'UAH'
+              | 'UGX'
+              | 'USD'
+              | 'UYU'
+              | 'UZS'
+              | 'VES'
+              | 'VND'
+              | 'VUV'
+              | 'WST'
+              | 'XAF'
+              | 'XCD'
+              | 'XOF'
+              | 'YER'
+              | 'ZAR'
+              | 'ZMW'
+              | 'ZWG'
+            )
+          | null;
+        /**
+         * Uploaded by the sender. Download to your machine and virus-scan before opening.
+         */
+        files?:
+          | {
+              key: string;
+              filename?: string | null;
+              sizeBytes?: number | null;
+              mimeType?: string | null;
+              scanStatus?: ('unscanned' | 'scanned-clean' | 'quarantined') | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Captured automatically when the form was submitted. Read-only on purpose — this is the record of what the sender actually agreed to.
+   */
+  consents: {
+    processingConsent: boolean;
+    processingConsentAt?: string | null;
+    /**
+     * Which version of the policy text was on screen at the time.
+     */
+    consentPolicyVersion?: string | null;
+    marketingOptIn?: boolean | null;
+    /**
+     * Set automatically for EU senders. Marketing mail must not go out until they confirm a second time.
+     */
+    marketingDoubleOptInRequired?: boolean | null;
+    marketingDoubleOptInConfirmedAt?: string | null;
+    /**
+     * Which form and page the consent was given on.
+     */
+    consentSource?: string | null;
+  };
+  /**
+   * Captured only when the visitor accepted analytics cookies.
+   */
+  attribution?: {
+    utmSource?: string | null;
+    utmMedium?: string | null;
+    utmCampaign?: string | null;
+    utmTerm?: string | null;
+    utmContent?: string | null;
+    landingPage?: string | null;
+    referrer?: string | null;
+  };
+  status?: ('new' | 'in-review' | 'quoted' | 'won' | 'lost' | 'archived') | null;
+  assignee?: (number | null) | Admin;
+  followUpDate?: string | null;
+  internalNotes?: string | null;
+  outcome?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The people who can sign in to this admin panel.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admins".
+ */
+export interface Admin {
+  id: number;
+  name: string;
+  /**
+   * Admins can do everything. Editors can only manage pages, products and posts.
+   */
+  role: 'admin' | 'editor';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -140,24 +1532,269 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
+  collection: 'admins';
 }
 /**
+ * Messages sent through the contact form.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
+ * via the `definition` "inquiries".
  */
-export interface Media {
+export interface Inquiry {
   id: number;
-  alt: string;
+  name: string;
+  email: string;
+  company?: string | null;
+  country:
+    | 'AF'
+    | 'AL'
+    | 'DZ'
+    | 'AD'
+    | 'AO'
+    | 'AG'
+    | 'AR'
+    | 'AM'
+    | 'AU'
+    | 'AT'
+    | 'AZ'
+    | 'BS'
+    | 'BH'
+    | 'BD'
+    | 'BB'
+    | 'BY'
+    | 'BE'
+    | 'BZ'
+    | 'BJ'
+    | 'BT'
+    | 'BO'
+    | 'BA'
+    | 'BW'
+    | 'BR'
+    | 'BN'
+    | 'BG'
+    | 'BF'
+    | 'BI'
+    | 'CV'
+    | 'KH'
+    | 'CM'
+    | 'CA'
+    | 'CF'
+    | 'TD'
+    | 'CL'
+    | 'CN'
+    | 'CO'
+    | 'KM'
+    | 'CG'
+    | 'CD'
+    | 'CR'
+    | 'CI'
+    | 'HR'
+    | 'CU'
+    | 'CY'
+    | 'CZ'
+    | 'DK'
+    | 'DJ'
+    | 'DM'
+    | 'DO'
+    | 'EC'
+    | 'EG'
+    | 'SV'
+    | 'GQ'
+    | 'ER'
+    | 'EE'
+    | 'SZ'
+    | 'ET'
+    | 'FJ'
+    | 'FI'
+    | 'FR'
+    | 'GA'
+    | 'GM'
+    | 'GE'
+    | 'DE'
+    | 'GH'
+    | 'GR'
+    | 'GD'
+    | 'GT'
+    | 'GN'
+    | 'GW'
+    | 'GY'
+    | 'HT'
+    | 'VA'
+    | 'HN'
+    | 'HK'
+    | 'HU'
+    | 'IS'
+    | 'IN'
+    | 'ID'
+    | 'IR'
+    | 'IQ'
+    | 'IE'
+    | 'IL'
+    | 'IT'
+    | 'JM'
+    | 'JP'
+    | 'JO'
+    | 'KZ'
+    | 'KE'
+    | 'KI'
+    | 'KP'
+    | 'KR'
+    | 'KW'
+    | 'KG'
+    | 'LA'
+    | 'LV'
+    | 'LB'
+    | 'LS'
+    | 'LR'
+    | 'LY'
+    | 'LI'
+    | 'LT'
+    | 'LU'
+    | 'MO'
+    | 'MG'
+    | 'MW'
+    | 'MY'
+    | 'MV'
+    | 'ML'
+    | 'MT'
+    | 'MH'
+    | 'MR'
+    | 'MU'
+    | 'MX'
+    | 'FM'
+    | 'MD'
+    | 'MC'
+    | 'MN'
+    | 'ME'
+    | 'MA'
+    | 'MZ'
+    | 'MM'
+    | 'NA'
+    | 'NR'
+    | 'NP'
+    | 'NL'
+    | 'NZ'
+    | 'NI'
+    | 'NE'
+    | 'NG'
+    | 'MK'
+    | 'NO'
+    | 'OM'
+    | 'PK'
+    | 'PW'
+    | 'PS'
+    | 'PA'
+    | 'PG'
+    | 'PY'
+    | 'PE'
+    | 'PH'
+    | 'PL'
+    | 'PT'
+    | 'QA'
+    | 'RO'
+    | 'RU'
+    | 'RW'
+    | 'KN'
+    | 'LC'
+    | 'VC'
+    | 'WS'
+    | 'SM'
+    | 'ST'
+    | 'SA'
+    | 'SN'
+    | 'RS'
+    | 'SC'
+    | 'SL'
+    | 'SG'
+    | 'SK'
+    | 'SI'
+    | 'SB'
+    | 'SO'
+    | 'ZA'
+    | 'SS'
+    | 'ES'
+    | 'LK'
+    | 'SD'
+    | 'SR'
+    | 'SE'
+    | 'CH'
+    | 'SY'
+    | 'TW'
+    | 'TJ'
+    | 'TZ'
+    | 'TH'
+    | 'TL'
+    | 'TG'
+    | 'TO'
+    | 'TT'
+    | 'TN'
+    | 'TR'
+    | 'TM'
+    | 'TV'
+    | 'UG'
+    | 'UA'
+    | 'AE'
+    | 'GB'
+    | 'US'
+    | 'UY'
+    | 'UZ'
+    | 'VU'
+    | 'VE'
+    | 'VN'
+    | 'YE'
+    | 'ZM'
+    | 'ZW';
+  message: string;
+  /**
+   * Uploaded by the sender. Download to your machine and virus-scan before opening.
+   */
+  files?:
+    | {
+        key: string;
+        filename?: string | null;
+        sizeBytes?: number | null;
+        mimeType?: string | null;
+        scanStatus?: ('unscanned' | 'scanned-clean' | 'quarantined') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Captured automatically when the form was submitted. Read-only on purpose — this is the record of what the sender actually agreed to.
+   */
+  consents: {
+    processingConsent: boolean;
+    processingConsentAt?: string | null;
+    /**
+     * Which version of the policy text was on screen at the time.
+     */
+    consentPolicyVersion?: string | null;
+    marketingOptIn?: boolean | null;
+    /**
+     * Set automatically for EU senders. Marketing mail must not go out until they confirm a second time.
+     */
+    marketingDoubleOptInRequired?: boolean | null;
+    marketingDoubleOptInConfirmedAt?: string | null;
+    /**
+     * Which form and page the consent was given on.
+     */
+    consentSource?: string | null;
+  };
+  /**
+   * Captured only when the visitor accepted analytics cookies.
+   */
+  attribution?: {
+    utmSource?: string | null;
+    utmMedium?: string | null;
+    utmCampaign?: string | null;
+    utmTerm?: string | null;
+    utmContent?: string | null;
+    landingPage?: string | null;
+    referrer?: string | null;
+  };
+  status?: ('new' | 'in-review' | 'replied' | 'closed') | null;
+  internalNotes?: string | null;
   updatedAt: string;
   createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -184,18 +1821,59 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
+        relationTo: 'posts';
+        value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'case-studies';
+        value: number | CaseStudy;
       } | null)
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
+      } | null)
+    | ({
+        relationTo: 'products';
+        value: number | Product;
+      } | null)
+    | ({
+        relationTo: 'fabric-library';
+        value: number | FabricLibrary;
+      } | null)
+    | ({
+        relationTo: 'buyers';
+        value: number | Buyer;
+      } | null)
+    | ({
+        relationTo: 'rfqs';
+        value: number | Rfq;
+      } | null)
+    | ({
+        relationTo: 'inquiries';
+        value: number | Inquiry;
+      } | null)
+    | ({
+        relationTo: 'admins';
+        value: number | Admin;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'buyers';
+        value: number | Buyer;
+      }
+    | {
+        relationTo: 'admins';
+        value: number | Admin;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -205,10 +1883,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'buyers';
+        value: number | Buyer;
+      }
+    | {
+        relationTo: 'admins';
+        value: number | Admin;
+      };
   key?: string | null;
   value?:
     | {
@@ -235,25 +1918,166 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "pages_select".
  */
-export interface UsersSelect<T extends boolean = true> {
-  updatedAt?: T;
-  createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
-  loginAttempts?: T;
-  lockUntil?: T;
-  sessions?:
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  layout?:
     | T
     | {
-        id?: T;
-        createdAt?: T;
-        expiresAt?: T;
+        hero?:
+          | T
+          | {
+              heading?: T;
+              subheading?: T;
+              backgroundImage?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        richText?:
+          | T
+          | {
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaBlock?:
+          | T
+          | {
+              image?: T;
+              caption?: T;
+              width?: T;
+              id?: T;
+              blockName?: T;
+            };
+        stats?:
+          | T
+          | {
+              heading?: T;
+              stats?:
+                | T
+                | {
+                    value?: T;
+                    label?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        timeline?:
+          | T
+          | {
+              heading?: T;
+              entries?:
+                | T
+                | {
+                    year?: T;
+                    title?: T;
+                    description?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        logoMarquee?:
+          | T
+          | {
+              heading?: T;
+              logos?:
+                | T
+                | {
+                    logo?: T;
+                    caption?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        ctaByPersona?:
+          | T
+          | {
+              heading?: T;
+              variants?:
+                | T
+                | {
+                    persona?: T;
+                    body?: T;
+                    buttonLabel?: T;
+                    buttonHref?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
       };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "posts_select".
+ */
+export interface PostsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  cover?: T;
+  body?: T;
+  authorLabel?: T;
+  publishedDate?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "case-studies_select".
+ */
+export interface CaseStudiesSelect<T extends boolean = true> {
+  anonymizedClient?: T;
+  slug?: T;
+  sector?: T;
+  region?: T;
+  challenge?: T;
+  solution?: T;
+  results?: T;
+  images?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -270,6 +2094,294 @@ export interface MediaSelect<T extends boolean = true> {
   filesize?: T;
   width?: T;
   height?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  heroImage?: T;
+  intro?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "products_select".
+ */
+export interface ProductsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  category?: T;
+  shortDescription?: T;
+  longDescription?: T;
+  fabricComposition?: T;
+  gsm?: T;
+  availableSizes?: T;
+  keyFeatures?:
+    | T
+    | {
+        feature?: T;
+        id?: T;
+      };
+  certificationsNote?: T;
+  colorways?:
+    | T
+    | {
+        name?: T;
+        swatchHex?: T;
+        textureSetKey?: T;
+        posterImage?: T;
+        gallery?: T;
+        id?: T;
+      };
+  model3d?:
+    | T
+    | {
+        glbFile?: T;
+        fileSizeKB?: T;
+        pipelineVersion?: T;
+        fallbackMode?: T;
+      };
+  moqStartingAt?: T;
+  priceStartingAtUSD?: T;
+  showTeasers?: T;
+  moqWarningOverride?: T;
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fabric-library_select".
+ */
+export interface FabricLibrarySelect<T extends boolean = true> {
+  code?: T;
+  name?: T;
+  category?: T;
+  notes?: T;
+  allowedFibres?:
+    | T
+    | {
+        fibre?: T;
+        blendable?: T;
+        notes?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "buyers_select".
+ */
+export interface BuyersSelect<T extends boolean = true> {
+  name?: T;
+  company?: T;
+  country?: T;
+  phone?: T;
+  website?: T;
+  status?: T;
+  rejectionReason?: T;
+  savedProducts?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  _verified?: T;
+  _verificationToken?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "rfqs_select".
+ */
+export interface RfqsSelect<T extends boolean = true> {
+  referenceNumber?: T;
+  source?: T;
+  buyer?: T;
+  submittedAt?: T;
+  name?: T;
+  company?: T;
+  email?: T;
+  phone?: T;
+  country?: T;
+  requestType?: T;
+  styles?:
+    | T
+    | {
+        productRef?: T;
+        category?: T;
+        description?: T;
+        fabricFamily?: T;
+        fibres?:
+          | T
+          | {
+              fibre?: T;
+              percentage?: T;
+              id?: T;
+            };
+        certificationsRequested?: T;
+        brandingOptions?: T;
+        brandingOther?: T;
+        colours?:
+          | T
+          | {
+              colour?: T;
+              quantity?: T;
+              id?: T;
+            };
+        sizes?:
+          | T
+          | {
+              size?: T;
+              quantity?: T;
+              id?: T;
+            };
+        quantity?: T;
+        targetPrice?: T;
+        currency?: T;
+        files?:
+          | T
+          | {
+              key?: T;
+              filename?: T;
+              sizeBytes?: T;
+              mimeType?: T;
+              scanStatus?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  consents?:
+    | T
+    | {
+        processingConsent?: T;
+        processingConsentAt?: T;
+        consentPolicyVersion?: T;
+        marketingOptIn?: T;
+        marketingDoubleOptInRequired?: T;
+        marketingDoubleOptInConfirmedAt?: T;
+        consentSource?: T;
+      };
+  attribution?:
+    | T
+    | {
+        utmSource?: T;
+        utmMedium?: T;
+        utmCampaign?: T;
+        utmTerm?: T;
+        utmContent?: T;
+        landingPage?: T;
+        referrer?: T;
+      };
+  status?: T;
+  assignee?: T;
+  followUpDate?: T;
+  internalNotes?: T;
+  outcome?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inquiries_select".
+ */
+export interface InquiriesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  company?: T;
+  country?: T;
+  message?: T;
+  files?:
+    | T
+    | {
+        key?: T;
+        filename?: T;
+        sizeBytes?: T;
+        mimeType?: T;
+        scanStatus?: T;
+        id?: T;
+      };
+  consents?:
+    | T
+    | {
+        processingConsent?: T;
+        processingConsentAt?: T;
+        consentPolicyVersion?: T;
+        marketingOptIn?: T;
+        marketingDoubleOptInRequired?: T;
+        marketingDoubleOptInConfirmedAt?: T;
+        consentSource?: T;
+      };
+  attribution?:
+    | T
+    | {
+        utmSource?: T;
+        utmMedium?: T;
+        utmCampaign?: T;
+        utmTerm?: T;
+        utmContent?: T;
+        landingPage?: T;
+        referrer?: T;
+      };
+  status?: T;
+  internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "admins_select".
+ */
+export interface AdminsSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -310,6 +2422,424 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * Contact details, the WhatsApp button, and site-wide defaults.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * PLACEHOLDER — this is deliberately fake so nobody can call it by accident. Replace it with the real number when you are ready for the floating WhatsApp button to work.
+   */
+  whatsappNumber?: string | null;
+  /**
+   * Leave off until the number above is real.
+   */
+  whatsappEnabled?: boolean | null;
+  emails?: {
+    partner?: string | null;
+    info?: string | null;
+    privacy?: string | null;
+  };
+  address?: string | null;
+  socialLinks?:
+    | {
+        platform: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Used everywhere we promise a reply. Keep it consistent — it appears on forms and in emails.
+   */
+  responsePromise?: string | null;
+  /**
+   * If someone asks for fewer than this many pieces of a style, the quote form gently warns them. It never blocks the request. Not shown publicly.
+   */
+  moqWarningDefault?: number | null;
+  /**
+   * Off until you confirm real numbers. While off, no MOQ or price appears anywhere on the public site, whatever individual products say.
+   */
+  showMoqPublicly?: boolean | null;
+  announcement?: {
+    enabled?: boolean | null;
+    text?: string | null;
+    href?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Countries we do not take new partnerships from. Applies to the quote form, buyer signup and the contact form — all three, automatically.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exclusion-list".
+ */
+export interface ExclusionList {
+  id: number;
+  /**
+   * Anyone choosing one of these sees the polite message below and cannot submit. Changes take effect straight away.
+   */
+  countries?:
+    | (
+        | 'AF'
+        | 'AL'
+        | 'DZ'
+        | 'AD'
+        | 'AO'
+        | 'AG'
+        | 'AR'
+        | 'AM'
+        | 'AU'
+        | 'AT'
+        | 'AZ'
+        | 'BS'
+        | 'BH'
+        | 'BD'
+        | 'BB'
+        | 'BY'
+        | 'BE'
+        | 'BZ'
+        | 'BJ'
+        | 'BT'
+        | 'BO'
+        | 'BA'
+        | 'BW'
+        | 'BR'
+        | 'BN'
+        | 'BG'
+        | 'BF'
+        | 'BI'
+        | 'CV'
+        | 'KH'
+        | 'CM'
+        | 'CA'
+        | 'CF'
+        | 'TD'
+        | 'CL'
+        | 'CN'
+        | 'CO'
+        | 'KM'
+        | 'CG'
+        | 'CD'
+        | 'CR'
+        | 'CI'
+        | 'HR'
+        | 'CU'
+        | 'CY'
+        | 'CZ'
+        | 'DK'
+        | 'DJ'
+        | 'DM'
+        | 'DO'
+        | 'EC'
+        | 'EG'
+        | 'SV'
+        | 'GQ'
+        | 'ER'
+        | 'EE'
+        | 'SZ'
+        | 'ET'
+        | 'FJ'
+        | 'FI'
+        | 'FR'
+        | 'GA'
+        | 'GM'
+        | 'GE'
+        | 'DE'
+        | 'GH'
+        | 'GR'
+        | 'GD'
+        | 'GT'
+        | 'GN'
+        | 'GW'
+        | 'GY'
+        | 'HT'
+        | 'VA'
+        | 'HN'
+        | 'HK'
+        | 'HU'
+        | 'IS'
+        | 'IN'
+        | 'ID'
+        | 'IR'
+        | 'IQ'
+        | 'IE'
+        | 'IL'
+        | 'IT'
+        | 'JM'
+        | 'JP'
+        | 'JO'
+        | 'KZ'
+        | 'KE'
+        | 'KI'
+        | 'KP'
+        | 'KR'
+        | 'KW'
+        | 'KG'
+        | 'LA'
+        | 'LV'
+        | 'LB'
+        | 'LS'
+        | 'LR'
+        | 'LY'
+        | 'LI'
+        | 'LT'
+        | 'LU'
+        | 'MO'
+        | 'MG'
+        | 'MW'
+        | 'MY'
+        | 'MV'
+        | 'ML'
+        | 'MT'
+        | 'MH'
+        | 'MR'
+        | 'MU'
+        | 'MX'
+        | 'FM'
+        | 'MD'
+        | 'MC'
+        | 'MN'
+        | 'ME'
+        | 'MA'
+        | 'MZ'
+        | 'MM'
+        | 'NA'
+        | 'NR'
+        | 'NP'
+        | 'NL'
+        | 'NZ'
+        | 'NI'
+        | 'NE'
+        | 'NG'
+        | 'MK'
+        | 'NO'
+        | 'OM'
+        | 'PK'
+        | 'PW'
+        | 'PS'
+        | 'PA'
+        | 'PG'
+        | 'PY'
+        | 'PE'
+        | 'PH'
+        | 'PL'
+        | 'PT'
+        | 'QA'
+        | 'RO'
+        | 'RU'
+        | 'RW'
+        | 'KN'
+        | 'LC'
+        | 'VC'
+        | 'WS'
+        | 'SM'
+        | 'ST'
+        | 'SA'
+        | 'SN'
+        | 'RS'
+        | 'SC'
+        | 'SL'
+        | 'SG'
+        | 'SK'
+        | 'SI'
+        | 'SB'
+        | 'SO'
+        | 'ZA'
+        | 'SS'
+        | 'ES'
+        | 'LK'
+        | 'SD'
+        | 'SR'
+        | 'SE'
+        | 'CH'
+        | 'SY'
+        | 'TW'
+        | 'TJ'
+        | 'TZ'
+        | 'TH'
+        | 'TL'
+        | 'TG'
+        | 'TO'
+        | 'TT'
+        | 'TN'
+        | 'TR'
+        | 'TM'
+        | 'TV'
+        | 'UG'
+        | 'UA'
+        | 'AE'
+        | 'GB'
+        | 'US'
+        | 'UY'
+        | 'UZ'
+        | 'VU'
+        | 'VE'
+        | 'VN'
+        | 'YE'
+        | 'ZM'
+        | 'ZW'
+      )[]
+    | null;
+  /**
+   * Write {country} where the country name should appear — we fill it in automatically.
+   */
+  politeMessage?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The links across the top of every page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  items?:
+    | {
+        label: string;
+        /**
+         * A path like /about, or a full https:// address.
+         */
+        href: string;
+        children?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * The link columns at the bottom of every page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer".
+ */
+export interface Footer {
+  id: number;
+  columns?:
+    | {
+        heading: string;
+        links?:
+          | {
+              label: string;
+              href: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * The small print at the very bottom.
+   */
+  legalLine?: string | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  whatsappNumber?: T;
+  whatsappEnabled?: T;
+  emails?:
+    | T
+    | {
+        partner?: T;
+        info?: T;
+        privacy?: T;
+      };
+  address?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  responsePromise?: T;
+  moqWarningDefault?: T;
+  showMoqPublicly?: T;
+  announcement?:
+    | T
+    | {
+        enabled?: T;
+        text?: T;
+        href?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "exclusion-list_select".
+ */
+export interface ExclusionListSelect<T extends boolean = true> {
+  countries?: T;
+  politeMessage?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  items?:
+    | T
+    | {
+        label?: T;
+        href?: T;
+        children?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "footer_select".
+ */
+export interface FooterSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        heading?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              href?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  legalLine?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

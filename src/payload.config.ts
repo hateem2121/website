@@ -8,8 +8,21 @@ import { CloudflareContext, getCloudflareContext } from '@opennextjs/cloudflare'
 import { GetPlatformProxyOptions } from 'wrangler'
 import { r2Storage } from '@payloadcms/storage-r2'
 
-import { Users } from './collections/Users'
+import { Admins } from './collections/Admins'
+import { Buyers } from './collections/Buyers'
+import { Categories } from './collections/Categories'
+import { CaseStudies } from './collections/CaseStudies'
+import { FabricLibrary } from './collections/FabricLibrary'
+import { Inquiries } from './collections/Inquiries'
 import { Media } from './collections/Media'
+import { Pages } from './collections/Pages'
+import { Posts } from './collections/Posts'
+import { Products } from './collections/Products'
+import { RFQs } from './collections/RFQs'
+import { ExclusionList } from './globals/ExclusionList'
+import { Footer } from './globals/Footer'
+import { Navigation } from './globals/Navigation'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -45,12 +58,46 @@ const cloudflare =
 
 export default buildConfig({
   admin: {
-    user: Users.slug,
+    // Naming `admins` here is what keeps buyers out of the admin panel: Payload refuses admin
+    // access whenever the logged-in user's collection differs from this one, before any role
+    // check runs (spec §4: "buyers can never reach /admin").
+    user: Admins.slug,
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    components: {
+      views: {
+        // Buyer Approval Queue (spec §4.1, §10). `path` is relative to the admin route, so this
+        // resolves to /admin/approval-queue. Re-run `pnpm generate:importmap` after touching this.
+        approvalQueue: {
+          Component: '/views/ApprovalQueue#ApprovalQueue',
+          path: '/approval-queue',
+          exact: true,
+          meta: { title: 'Approval queue' },
+        },
+      },
+      // Custom views get no sidebar link automatically.
+      afterNavLinks: ['/components/ApprovalQueueNavLink#ApprovalQueueNavLink'],
+    },
   },
-  collections: [Users, Media],
+  collections: [
+    // Content
+    Pages,
+    Posts,
+    CaseStudies,
+    Media,
+    // Catalog
+    Categories,
+    Products,
+    FabricLibrary,
+    // Buyers & demand
+    Buyers,
+    RFQs,
+    Inquiries,
+    // Settings
+    Admins,
+  ],
+  globals: [SiteSettings, ExclusionList, Navigation, Footer],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

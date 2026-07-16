@@ -4,6 +4,46 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-16 — Session 4 · Phase 2 CMS schema built (code complete, typecheck green) — NOT yet migrated, seeded, or verified running
+
+**Status: roughly two-thirds of Phase 2.** All schema code is written and passes typecheck; nothing has touched production, and the schema is inert until a migration runs. Committed now so the work can't be lost — committing is safe precisely because it changes no database.
+
+**Built (spec §4):**
+- **11 collections:** `admins` (template's Users renamed/scoped), `buyers`, `categories`, `products`, `fabric-library`, `rfqs`, `inquiries`, `pages`, `posts`, `case-studies`, `media`. All labels/descriptions written for non-technical editors per §4.
+- **4 globals:** `site-settings`, `exclusion-list`, `navigation`, `footer`. Globals self-seed via `defaultValue` (Payload returns defaults for a never-saved global), so no data-writing seed step is needed for them.
+- **Access rules** (`src/access/`): role-based, every rule checks the user's *collection* before its role. `config.admin.user = 'admins'` is what keeps buyers out of /admin (Payload refuses admin access when the user's collection ≠ that setting, before any role check).
+- **Live Preview** on `pages`, `products`, `posts` (URL fns + breakpoints); built-in drafts implement §4.1's `status (draft/published)`.
+- **Approval Queue** custom admin view at `/admin/approval-queue` + `afterNavLinks` link, both registered in `importMap.js`.
+- **Exclusion list enforced at all three entry points** (RFQ, buyer signup, contact form) via `src/hooks/enforceExclusionList.ts`, reading the global on every call so admin edits apply with no deploy (Appendix B).
+- Shared modules: `src/data/countries.ts` (ISO-3166 + EU flag for §8.6 double-opt-in + ISO-4217 currency map), `src/data/catalog-options.ts`, `src/fields/` (seo, slug, consent+attribution, privateFiles), `src/blocks/` (8 page blocks).
+
+**Seeded (staged in code, not yet in the DB):** exclusion list = BD/CN/IN/IL/PK/LK + polite message (copy C1) · WhatsApp `+00-000-0000000` with the button OFF (§21.2, X3) · responsePromise "within 2 business days" (§21.5) · moqWarningDefault 250 with `showMoqPublicly` OFF (§8.3, RQ4). **Categories (5) still need a real seed step** — they're rows, not global defaults.
+
+**Fabric library: structure only, deliberately unseeded** — per Hateem's instruction and RFQ Plan §16 item 1.
+
+**Three security holes found and closed while building** (recorded because each was a real bug, not a hypothetical):
+1. `buyers.create` is public (self-signup), so without field-level access a signup could POST `status:"approved"` and self-approve. `status` + `rejectionReason` are now admin-only at field level.
+2. Same shape on `admins.role`: an editor may edit their own profile, so `role` is admin-only at field level or they could self-promote.
+3. A custom admin view inherits **no** access control — Payload only checks you can reach /admin at all. Without an explicit check an `editor` would see every pending buyer's name/company/email. The Approval Queue now enforces `isAdminUser` itself. (Found by an adversarial verifier refuting the recon's security claim.)
+
+Also: `cookies.secure` defaults to FALSE in Payload — auth cookies would ship without the Secure flag. Set to `secure: isProduction` on both auth collections (off locally so http://localhost still works). Flagged for Hateem as security-relevant config (CLAUDE.md §6).
+
+**Verified so far:** config loads · `payload generate:types` green · `payload generate:importmap` green (view + nav link registered) · `tsc --noEmit` clean. **NOT yet verified: nothing has been watched running** — no production build, no login, no test product. Per CLAUDE.md §9 this is therefore NOT done.
+
+**Method note:** a 12-agent recon workflow verified Payload 3.86 API shapes against installed code; **the session usage limit fired mid-run and killed 5 agents**, including the slug-rename-migration one (the most safety-critical). One dead agent's artifact survived and answered its own question better than a summary would have: a throwaway all-field-types Payload config whose generated migration proved blocks → one table per block type, drafts → `_<slug>_v` tables, relationships → one shared `<slug>_rels` table, and that json/point/richText all store as text. Probe files mined then removed.
+
+**BLOCKING — needs Hateem's decision before the migration:** the `users` → `admins` rename touches his live admin account in production D1. Renaming affects the `users` table, `users_sessions`, 5 indexes, and `users_id` FK columns in `payload_locked_documents_rels` + `payload_preferences_rels`. Payload's generated migration will almost certainly DROP+CREATE (data loss) since it diffs snapshots and cannot see a rename — so it must be hand-written. His account also needs `name` + `role='admin'` backfilled, or he keeps his login but silently loses admin powers. Options put to him 2026-07-16 (A: hand-written rename preserving the account · B: keep slug `users`, relabel in UI · C: drop+recreate). **Parked — he dismissed the question; awaiting his answer.**
+
+**Open questions (non-blocking):**
+1. **RFQ Plan §16 items 2 & 3 (size lists, branding options)** — these are option *values* the product/RFQ schema needs, and they sit in the same unapproved register as the fabric library. Built with the §16 draft values, marked PROVISIONAL in `src/data/catalog-options.ts`; nothing is entered against them, so a correction is a text edit, not a migration. Asked; parked.
+2. `exclusionList.politeMessage` seeded with draft copy C1 (§16 item 4) — CMS-editable, so low-cost to correct.
+3. Categories: create/delete restricted to admins, `order` read-only. Should the five be hard-locked (create/delete = false) instead?
+4. Carried over: Neue Stance licence · the 4 Phase-0 dashboard items (runbook §5) · certification marquee names/logos.
+
+**Next step:** Hateem's rename decision → hand-write + locally test the migration → seed the 5 categories → production build → **watch it work** (login, create a test product myself) → walkthrough doc for the §17 Phase-2 gate ("Hateem creates a test product unaided").
+
+---
+
 ## 2026-07-16 — Session 3 (cont.) · ✅ PHASE 1 CLOSED — "PAPER & INK · Olive Ink" locked; DESIGN.md is now design law
 
 Hateem locked the direction (option A). Recorded in DECISIONS.md along with the deliberate spec-§6 volt override and the earlier session decisions (Balanced motion, 3D globe, Neue Stance pending licence).
