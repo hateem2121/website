@@ -188,7 +188,7 @@ All public pages: prerendered/static, CMS-managed copy, unique metadata + JSON-L
 
 **Process (A2-D — mandatory gate before any page build):**
 1. Present **2–3 distinct design directions** to Hateem — each with: palette, type pairing, sample hero, sample product card, motion character description. Directions should span e.g. dark performance-tech / light sustainability-forward / bold editorial, but each must feel distinct.
-2. **Palette rule (A1): unique, unusual colors — explicitly NOT the default corporate blues/greens every apparel site uses.** Derive candidates from the logo, fabric/textile tones, or unexpected pairings; deliver as Tailwind v4 OKLCH tokens with accessible contrast (WCAG AA minimum, including on-photo text treatments).
+2. **Palette rule (A1):** derive candidates from the logo, fabric/textile tones, reference/inspiration sites Hateem provides, or unexpected pairings; deliver as Tailwind v4 OKLCH tokens with accessible contrast (WCAG AA minimum, including on-photo text treatments). *(Amended 2026-07-16: the original "no corporate blues/greens" prohibition was removed at Hateem's explicit request — see DECISIONS.md.)*
 3. Hateem picks one; it becomes the locked token set (CSS variables mapped through shadcn conventions, dark-mode considered).
 
 **Animation intensity (4.4 — "mix, applied contextually"):**

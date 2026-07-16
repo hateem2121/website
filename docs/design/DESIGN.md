@@ -52,7 +52,7 @@ Both modes are first-class designs — never generate one by inverting the other
 | Serif accents | **Instrument Serif** italic | *Only* accent words inside display headlines (1–2 per headline, lowercase, 1.06–1.08em of surrounding size, in volt-deep/volt). Never body copy. |
 | Labels | **system monospace** (`ui-monospace` stack — zero download) | `[ BRACKETED ]`, `N°001`, coords, specs, form labels, buttons. 9–12px, UPPERCASE, tracking .08–.14em. |
 
-**Open item:** Neue Stance (Hateem holds files) may replace Archivo *display* duties **only after** its commercial web licence is confirmed — body stays Archivo, family budget stays 2. Until then: Archivo everywhere.
+**Open item:** Neue Stance (Hateem holds the font files but, as of 2026-07-16, is unsure whether he holds a commercial web licence) may replace Archivo *display* duties **only after** the licence is confirmed — body stays Archivo, family budget stays 2. Per spec §12 (future-proof test: genuinely free long-term, not a trial) and CLAUDE.md §11 (no spend without approval), the default until then is **Archivo everywhere**, no exceptions. To resolve: check the Pangram Pangram account used to get the files, or search email/payment records for a receipt; if none exists, a web licence starts at ~$40 and is Hateem's purchase decision to make (CLAUDE.md §6 — anything that could cost money is always an ask).
 
 ## 3. Motifs & texture
 
@@ -93,5 +93,5 @@ Photography: light mode = natural warm; dark mode = olive duotone (`grayscale(65
 
 - References studied first-hand 2026-07-16 (browser pane): landonorris.com, wembi.ai, hildenkaira.fi, sharebien.com. Analysis + approved plan: `~/.claude/plans/i-like-the-direction-async-diffie.md` (machine-local); durable summary in BUILD_LOG 2026-07-16.
 - Palette variant "A · Olive Ink" chosen from three rendered boards; motion "Balanced"; 3D globe for About map (reuses spec §7 engine).
-- Spec §6 note: volt lime is a **deliberate, recorded override** of §6's "no neon sports-green" palette rule (DECISIONS.md 2026-07-16) — volt is a signal inside a paper/ink editorial system, never the whole identity. Proposed §6 amendment awaits Hateem's wording approval.
+- Spec §6 note: the original "no corporate blues/greens" palette prohibition was **removed by Hateem's explicit request** (DECISIONS.md 2026-07-16) rather than scoped to an exception — a standing change for all future palette decisions, not limited to volt. Volt remains used as a signal inside a paper/ink editorial system, never the whole identity, by design choice rather than spec constraint.
 - Contrast: 18/18 AA both modes (script + pairs committed beside this file).

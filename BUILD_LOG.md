@@ -10,9 +10,17 @@ Hateem locked the direction (option A). Recorded in DECISIONS.md along with the 
 
 **Created `docs/design/DESIGN.md`** — the frozen design system for Phases 2–8: full color tokens (light+dark, hex+OKLCH, usage rules incl. "volt never text on light"), type system (Archivo variable + Instrument Serif accents + system mono), motifs (blueprint grid, contours, wireframe tech-packs, numbering, grain/glow), Balanced motion rules with hard accessibility gates, component notes (buttons/cards/footer/nav), imagery treatment. Contrast tooling committed beside it (`contrast-check.py` + `contrast-pairs.json`, 18/18 AA) so any token change can be re-verified with one command.
 
-**Open questions (non-blocking):** (1) Proposed spec §6 amendment wording awaits Hateem approval — Claude may not edit spec files. (2) Neue Stance web licence — confirm/decline; Archivo carries display until then. (3) The 4 dashboard items from Phase 0 (runbook §5). (4) Certification marquee final names/logos.
+**Open questions (non-blocking):** (1) ~~Proposed spec §6 amendment wording~~ **RESOLVED 2026-07-16** — see next entry. (2) Neue Stance web licence — Hateem confirmed 2026-07-16 he's unsure whether he holds one; Archivo carries display until confirmed (DESIGN.md §2 has the check-and-decide steps). (3) The 4 dashboard items from Phase 0 (runbook §5). (4) Certification marquee final names/logos.
 
 **Next step:** Phase 2 — CMS schema (spec §4): all collections/globals/access rules/Live Preview/Approval Queue; seed 5 categories, exclusion list, dummy-WhatsApp settings. Gate: Hateem creates a test product unaided via a walkthrough doc.
+
+---
+
+## 2026-07-16 — Session 3 (cont.) · Spec §6 amended: "no corporate blues/greens" rule removed entirely
+
+Closed the Phase 1 open item. Offered Hateem two options: scope a narrow logged exception for the volt-lime accent, or remove the §6 palette prohibition outright. **He chose full removal** — a standing change to the palette rule for all future design decisions, not just the current volt accent. Applied verbatim to `RUN_APPAREL_Website_Build_Master_Prompt.md` §6 point 2 (prohibition sentence deleted, inline amendment note added) after his explicit approval, per CLAUDE.md §2's process; logged in DECISIONS.md. `docs/design/DESIGN.md`'s provenance note updated to match.
+
+**Self-correction logged for transparency:** while recording this, an initial edit briefly rewrote an *existing* DECISIONS.md entry in place instead of appending a new one — caught before committing/pushing (DECISIONS.md is append-only, entries must never be rewritten, per its own header and CLAUDE.md §4). Reverted the original entry to its exact prior text and appended a new entry that supersedes it instead. No incorrect state was ever pushed to GitHub.
 
 ---
 
