@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction C · Press Run — RUN APPAREL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Franklin:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DIRECTION C · PRESS RUN — bold editorial / sports daily
+   Palette defined in OKLCH; hex fallbacks precede each token.
+   ============================================================ */
+:root {
+  --paper:        #faf8f5; --paper:        oklch(0.98 0.005 90);
+  --paper-2:      #eeebe4; --paper-2:      oklch(0.94 0.01 90);
+  --ink:          #0d0d0d; --ink:          oklch(0.16 0 0);
+  --ink-2:        #555555; --ink-2:        oklch(0.45 0 0);
+  --violet:       #7f0fdc; --violet:       oklch(0.5 0.26 300);
+  --violet-press: #6213ab; --violet-press: oklch(0.42 0.21 300);
+  --signal:       #ee5e23; --signal:       oklch(0.66 0.19 40);
+
+  --font-display: "Anton", "Arial Narrow", sans-serif;
+  --font-body: "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  --rule: 1px solid var(--ink);
+  --rule-heavy: 4px solid var(--ink);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { background: var(--paper); }
+
+body {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  background: var(--paper);
+  border-top: 8px solid var(--ink);
+}
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 32px; }
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+}
+
+/* ---- section slug (the small uppercase label) ---- */
+.slug {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  border-top: var(--rule-heavy);
+  padding-top: 10px;
+  margin-bottom: 34px;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.slug .no {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2px 9px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.slug .tail {
+  margin-left: auto;
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+}
+
+section, header.masthead { padding-block: 56px 72px; }
+
+/* =========================================
+   01 · MASTHEAD
+   ========================================= */
+.masthead { padding-top: 30px; }
+.topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding-bottom: 10px;
+  border-bottom: var(--rule);
+}
+.topline .mid { color: var(--ink-2); font-weight: 500; }
+.topline .edge { color: var(--violet); }
+
+.nameplate {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: end;
+  padding: 40px 0 34px;
+  border-bottom: var(--rule-heavy);
+}
+.nameplate h1 {
+  font-size: clamp(72px, 10.5vw, 138px);
+  line-height: 0.88;
+}
+.nameplate h1 .hit { color: var(--violet); }
+.thesis {
+  margin-top: 22px;
+  font-size: 19px;
+  line-height: 1.5;
+  max-width: 56ch;
+}
+.thesis strong { font-weight: 700; }
+
+.logo-plate {
+  border: 2px solid var(--ink);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 22px), calc(100% - 22px) 100%, 0 100%);
+}
+.logo-plate .main {
+  padding: 34px 30px 30px;
+  background: var(--paper);
+}
+.logo-plate .main svg { display: block; width: 100%; height: auto; fill: var(--ink); }
+.logo-row { display: flex; border-top: 2px solid var(--ink); }
+.logo-row .cell {
+  flex: 1;
+  padding: 14px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo-row .cell + .cell { border-left: 2px solid var(--ink); }
+.logo-row svg { width: 100%; max-width: 82px; height: auto; display: block; }
+.cell.on-paper  { background: var(--paper);  } .cell.on-paper  svg { fill: var(--violet); }
+.cell.on-ink    { background: var(--ink);    } .cell.on-ink    svg { fill: var(--paper); }
+.cell.on-violet { background: var(--violet); } .cell.on-violet svg { fill: var(--paper); }
+.logo-plate figcaption {
+  border-top: 2px solid var(--ink);
+  padding: 9px 12px 13px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+/* =========================================
+   02 · PALETTE
+   ========================================= */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+.swatch { border: 2px solid var(--ink); background: var(--paper); }
+.swatch .chip { height: 108px; border-bottom: 2px solid var(--ink); position: relative; }
+.chip.c-paper  { background: var(--paper); }
+.chip.c-paper2 { background: var(--paper-2); }
+.chip.c-ink    { background: var(--ink); }
+.chip.c-ink2   { background: var(--ink-2); }
+.chip.c-violet { background: var(--violet); }
+.chip.c-vpress { background: var(--violet-press); }
+.chip.c-signal { background: var(--signal); }
+.chip .slash {
+  position: absolute; right: 0; bottom: 0;
+  width: 26px; height: 26px;
+  background: var(--signal);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.swatch .meta { padding: 14px 16px 16px; }
+.swatch .name { font-family: var(--font-display); font-size: 21px; text-transform: uppercase; margin-bottom: 6px; }
+.swatch .val {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}
+.swatch .use { margin-top: 8px; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+
+/* =========================================
+   03 · TYPE PAIRING
+   ========================================= */
+.type-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; }
+.spec-block > * + * { margin-top: 26px; }
+.spec-xl { font-size: clamp(56px, 7.5vw, 96px); }
+.spec-lg { font-size: clamp(36px, 4.5vw, 58px); }
+.spec-md { font-size: clamp(24px, 2.8vw, 34px); }
+.spec-xl .hit, .spec-lg .hit { color: var(--violet); }
+.spec-note {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--ink-2); margin-bottom: 6px;
+}
+.type-side { border-left: var(--rule); padding-left: 40px; }
+.type-side .body-spec { font-size: 17px; }
+.type-side .body-spec + .body-spec { margin-top: 14px; }
+.weights { margin-top: 30px; border-top: var(--rule-heavy); }
+.weights li {
+  list-style: none;
+  display: flex; justify-content: space-between; gap: 18px;
+  padding: 11px 0;
+  border-bottom: var(--rule);
+  font-size: 14px;
+}
+.weights li .w { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.weights li .for { color: var(--ink-2); text-align: right; }
+.weights li .w.anton { font-family: var(--font-display); font-weight: 400; font-size: 16px; letter-spacing: 0.03em; }
+.weights li .w.lf-500 { font-weight: 500; }
+.weights li .w.lf-400 { font-weight: 400; }
+
+/* =========================================
+   04 · SAMPLE HERO
+   ========================================= */
+.hero-shell { border: 2px solid var(--ink); background: var(--paper); }
+.hero-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding: 14px 26px;
+  border-bottom: 2px solid var(--ink);
+}
+.hero-bar svg { height: 26px; width: auto; fill: var(--ink); display: block; }
+.hero-nav { display: flex; gap: 26px; font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+.hero-nav .rfq { color: var(--violet); }
+.hero-date {
+  padding: 8px 26px;
+  border-bottom: 2px solid var(--ink);
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  font-size: 11.5px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
+}
+.hero-main {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+}
+.hero-copy { padding: 46px 40px 48px 26px; }
+.kicker {
+  display: inline-block;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  border-bottom: 4px solid var(--signal);
+  padding-bottom: 5px;
+  margin-bottom: 26px;
+}
+.hero-copy h3 {
+  font-size: clamp(68px, 9vw, 124px);
+  line-height: 0.88;
+}
+.hero-copy h3 .hit { color: var(--violet); }
+.hero-sub {
+  margin: 26px 0 34px;
+  font-size: 19px;
+  line-height: 1.55;
+  max-width: 46ch;
+}
+.hero-sub strong { font-weight: 700; }
+.cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 15px 28px;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid var(--ink);
+}
+.btn-primary { background: var(--violet); border-color: var(--violet); color: var(--paper); }
+.btn-primary:hover { background: var(--violet-press); border-color: var(--violet-press); }
+.btn-ghost { background: transparent; color: var(--ink); }
+.btn-ghost:hover { background: var(--ink); color: var(--paper); }
+
+.hero-stats { border-left: 2px solid var(--ink); display: flex; flex-direction: column; }
+.hero-stats .head {
+  background: var(--ink); color: var(--paper);
+  font-size: 12px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+  padding: 11px 22px;
+}
+.stat { padding: 16px 22px 14px; border-bottom: var(--rule); flex: 1; }
+.stat:last-child { border-bottom: none; }
+.stat .n { font-family: var(--font-display); font-size: 40px; line-height: 1; }
+.stat .n sup { font-size: 20px; color: var(--violet); }
+.stat .d { font-size: 13px; color: var(--ink-2); margin-top: 3px; }
+
+.ticker {
+  overflow: hidden;
+  background: var(--ink);
+  color: var(--paper);
+  border-top: 2px solid var(--ink);
+  white-space: nowrap;
+}
+.ticker-track {
+  display: inline-flex;
+  padding: 12px 0;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.ticker-track span { padding: 0 18px; }
+.ticker-track .sep { color: var(--signal); }
+@media (prefers-reduced-motion: no-preference) {
+  .ticker-track { animation: tick 26s linear infinite; }
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+}
+
+/* =========================================
+   05 · PRODUCT CARD
+   ========================================= */
+.cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;
+  align-items: start;
+}
+.card-col .state-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 14px;
+}
+.card {
+  border: 2px solid var(--ink);
+  background: var(--paper);
+  max-width: 430px;
+}
+.card .ph {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-bottom: 2px solid var(--ink);
+  background:
+    linear-gradient(115deg, transparent 0 58%, var(--violet) 58% 66%, transparent 66% 100%),
+    repeating-linear-gradient(115deg, var(--paper-2) 0 14px, var(--paper) 14px 30px);
+}
+.card .ph .tag {
+  position: absolute; top: 0; left: 0;
+  background: var(--signal); color: var(--ink);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 7px 14px 7px 12px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+.card .body { padding: 20px 22px 22px; }
+.card .cat {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-2);
+}
+.card .pname { font-family: var(--font-display); font-size: 30px; text-transform: uppercase; line-height: 1; margin: 8px 0 14px; }
+.card .specs { border-top: var(--rule); }
+.card .specs div {
+  display: flex; justify-content: space-between; gap: 14px;
+  font-size: 13.5px; padding: 8px 0;
+  border-bottom: var(--rule);
+}
+.card .specs dt { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 11.5px; padding-top: 2px; white-space: nowrap; }
+.card .specs dd { text-align: right; color: var(--ink); }
+.card .btn { display: block; text-align: center; margin-top: 18px; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+/* simulated hover state */
+.card.is-hover {
+  border-color: var(--violet);
+  box-shadow: 8px 8px 0 var(--violet);
+  transform: translate(-4px, -4px);
+}
+.card.is-hover .ph {
+  border-bottom-color: var(--violet);
+  background:
+    linear-gradient(115deg, transparent 0 50%, var(--violet) 50% 62%, transparent 62% 100%),
+    repeating-linear-gradient(115deg, var(--paper-2) 0 14px, var(--paper) 14px 30px);
+}
+.card.is-hover .pname { color: var(--violet); }
+.card.is-hover .btn { background: var(--violet); border-color: var(--violet); }
+
+/* =========================================
+   06 · MOTION CHARACTER
+   ========================================= */
+.motion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.motion-copy p + p { margin-top: 14px; }
+.motion-copy .lead { font-size: 19px; font-weight: 500; }
+.motion-rules { margin-top: 22px; border-top: var(--rule-heavy); }
+.motion-rules li {
+  list-style: none;
+  display: grid; grid-template-columns: 130px 1fr; gap: 16px;
+  padding: 10px 0; border-bottom: var(--rule); font-size: 14px;
+}
+.motion-rules .where { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 12px; padding-top: 2px; }
+.motion-rules .how { color: var(--ink-2); }
+
+.demo { border: 2px solid var(--ink); margin-bottom: 22px; }
+.demo .demo-label {
+  border-bottom: 2px solid var(--ink);
+  padding: 8px 16px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-2);
+  display: flex; justify-content: space-between; gap: 12px;
+}
+.demo .stage { padding: 28px 24px; }
+
+/* demo A — press reveal */
+.press-line { overflow: hidden; }
+.press-line .display { font-size: 44px; line-height: 1.02; }
+@media (prefers-reduced-motion: no-preference) {
+  .press-line .display { animation: press-in 3.2s steps(3, end) infinite; }
+  .press-line:nth-child(2) .display { animation-delay: 0.14s; }
+  .press-line:nth-child(3) .display { animation-delay: 0.28s; }
+  @keyframes press-in {
+    0%   { transform: translateY(110%); }
+    6%   { transform: translateY(0); }
+    88%  { transform: translateY(0); }
+    94%  { transform: translateY(-110%); }
+    94.01% { transform: translateY(110%); }
+    100% { transform: translateY(110%); }
+  }
+}
+.press-line:nth-child(3) .display { color: var(--violet); }
+
+/* demo B — hard-cut button */
+.btn-snap {
+  background: var(--ink); color: var(--paper); border-color: var(--ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .btn-snap { transition: transform 0.12s steps(2, end), box-shadow 0.12s steps(2, end), background-color 0.12s steps(2, end); }
+}
+.btn-snap:hover {
+  background: var(--violet); border-color: var(--violet);
+  transform: translate(-3px, -3px);
+  box-shadow: 5px 5px 0 var(--ink);
+}
+
+/* demo C — underline wipe */
+.wipe-link {
+  font-family: var(--font-display);
+  font-size: 30px; text-transform: uppercase;
+  text-decoration: none; color: var(--ink);
+  background-image: linear-gradient(var(--signal), var(--signal));
+  background-repeat: no-repeat;
+  background-size: 0% 6px;
+  background-position: 0 96%;
+  cursor: pointer;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .wipe-link { transition: background-size 0.16s steps(4, end); }
+}
+.wipe-link:hover { background-size: 100% 6px; }
+.demo .hint { font-size: 12.5px; color: var(--ink-2); margin-top: 12px; }
+
+/* =========================================
+   07 · VOICE SAMPLE
+   ========================================= */
+.voice { border: 2px solid var(--ink); }
+.voice .line {
+  display: grid; grid-template-columns: 150px 1fr; gap: 30px; align-items: baseline;
+  padding: 30px 30px 32px;
+}
+.voice .line + .line { border-top: var(--rule); }
+.voice .where {
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2);
+}
+.voice .v1 { font-family: var(--font-display); font-size: clamp(34px, 4.6vw, 54px); text-transform: uppercase; line-height: 0.95; }
+.voice .v1 .hit { color: var(--violet); }
+.voice .v2 { font-family: var(--font-display); font-size: clamp(26px, 3.4vw, 38px); text-transform: uppercase; line-height: 1; }
+.voice .v3 { font-size: 20px; font-weight: 500; line-height: 1.5; max-width: 52ch; }
+.voice .v3 strong { font-weight: 700; }
+
+/* =========================================
+   COLOPHON
+   ========================================= */
+.colophon {
+  border-top: var(--rule-heavy);
+  padding: 22px 0 60px;
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
+}
+.colophon .c-hit { color: var(--violet); font-weight: 700; }
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+@media (max-width: 980px) {
+  .nameplate { grid-template-columns: 1fr; }
+  .logo-plate { max-width: 380px; }
+  .swatches { grid-template-columns: repeat(2, 1fr); }
+  .type-grid, .motion-grid { grid-template-columns: 1fr; }
+  .type-side { border-left: none; padding-left: 0; border-top: var(--rule); padding-top: 30px; }
+  .hero-main { grid-template-columns: 1fr; }
+  .hero-stats { border-left: none; border-top: 2px solid var(--ink); }
+  .cards { grid-template-columns: 1fr; }
+  .hero-nav { display: none; }
+}
+@media (max-width: 560px) {
+  .wrap { padding: 0 18px; }
+  .swatches { grid-template-columns: 1fr; }
+  .voice .line { grid-template-columns: 1fr; gap: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- shared logo symbol -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="run-logo">
+      <path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/>
+      <path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/>
+      <polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/>
+      <polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/>
+      <polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/>
+      <polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ================= 01 · MASTHEAD ================= -->
+<header class="masthead wrap">
+  <div class="slug" style="border-top:none;padding-top:0;">
+    <span class="no">01</span> Direction Masthead
+    <span class="tail">RUN APPAREL · DESIGN DIRECTION STUDY</span>
+  </div>
+
+  <div class="topline">
+    <span class="edge">Direction C</span>
+    <span class="mid">Sialkot, Pakistan — Wednesday, July 15, 2026 · Vol. CXXXVII</span>
+    <span>Trade only — no retail</span>
+  </div>
+
+  <div class="nameplate">
+    <div>
+      <h1>Press <span class="hit">Run.</span></h1>
+      <p class="thesis">The sports daily's front page: <strong>huge type, hard grids, ink on paper</strong> — and the factory's numbers treated as headlines. Loud, graphic, magazine-confident. A press run is a print run. It is also how RUN trains.</p>
+    </div>
+    <figure class="logo-plate">
+      <div class="main">
+        <svg viewBox="0 0 397.72 126.43" role="img" aria-label="RUN Apparel logo"><use href="#run-logo"/></svg>
+      </div>
+      <div class="logo-row" aria-hidden="true">
+        <div class="cell on-paper"><svg viewBox="0 0 397.72 126.43"><use href="#run-logo"/></svg></div>
+        <div class="cell on-ink"><svg viewBox="0 0 397.72 126.43"><use href="#run-logo"/></svg></div>
+        <div class="cell on-violet"><svg viewBox="0 0 397.72 126.43"><use href="#run-logo"/></svg></div>
+      </div>
+      <figcaption>The wordmark runs like a nameplate — ink first, violet for the front page only.</figcaption>
+    </figure>
+  </div>
+</header>
+
+<!-- ================= 02 · PALETTE ================= -->
+<section class="wrap">
+  <div class="slug">
+    <span class="no">02</span> Palette
+    <span class="tail">OKLCH tokens · no corporate blue anywhere</span>
+  </div>
+
+  <div class="swatches">
+    <div class="swatch">
+      <div class="chip c-paper"></div>
+      <div class="meta">
+        <div class="name">Paper</div>
+        <div class="val">oklch(0.98 0.005 90)<br>#FAF8F5</div>
+        <p class="use">Page background. Warm newsprint white — never pure #fff.</p>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip c-paper2"></div>
+      <div class="meta">
+        <div class="name">Paper Tint</div>
+        <div class="val">oklch(0.94 0.01 90)<br>#EEEBE4</div>
+        <p class="use">Tinted panels, image-placeholder fields, table stripes.</p>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip c-ink"></div>
+      <div class="meta">
+        <div class="name">Ink</div>
+        <div class="val">oklch(0.16 0 0)<br>#0D0D0D</div>
+        <p class="use">All running text, rules, and the big solid blocks. The press ink.</p>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip c-ink2"></div>
+      <div class="meta">
+        <div class="name">Byline Grey</div>
+        <div class="val">oklch(0.45 0 0)<br>#555555</div>
+        <p class="use">Bylines, captions, meta lines. Secondary text only.</p>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip c-violet"></div>
+      <div class="meta">
+        <div class="name">Electric Violet</div>
+        <div class="val">oklch(0.5 0.26 300)<br>#7F0FDC</div>
+        <p class="use">The signature. Headline hits, primary CTAs, front-page kickers.</p>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip c-vpress"></div>
+      <div class="meta">
+        <div class="name">Violet Press</div>
+        <div class="val">oklch(0.42 0.21 300)<br>#6213AB</div>
+        <p class="use">Hover / pressed state of Electric Violet. Nothing else.</p>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="chip c-signal"><span class="slash"></span></div>
+      <div class="meta">
+        <div class="name">Signal</div>
+        <div class="val">oklch(0.66 0.19 40)<br>#EE5E23</div>
+        <p class="use">Tiny doses: tag fills, kicker underlines, ticker separators. Never body text.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 03 · TYPE PAIRING ================= -->
+<section class="wrap">
+  <div class="slug">
+    <span class="no">03</span> Type Pairing
+    <span class="tail">Anton + Libre Franklin · 2 families total</span>
+  </div>
+
+  <div class="type-grid">
+    <div class="spec-block">
+      <div>
+        <p class="spec-note">Anton 400 · display · 96px</p>
+        <h3 class="spec-xl">Never look <span class="hit">back.</span></h3>
+      </div>
+      <div>
+        <p class="spec-note">Anton 400 · display · 58px</p>
+        <h3 class="spec-lg">100,000 units. Every month.</h3>
+      </div>
+      <div>
+        <p class="spec-note">Anton 400 · display · 34px</p>
+        <h3 class="spec-md">Five generations of Sialkot craft</h3>
+      </div>
+    </div>
+    <div class="type-side">
+      <p class="spec-note">Libre Franklin 400 · body · 17px</p>
+      <p class="body-spec">Every panel is cut, sewn, and checked in one 193,000-square-metre facility in Sialkot. The line runs past five quality checkpoints before a single jersey ships — the same standard whether the order is for a village club or a continental league.</p>
+      <p class="body-spec">Type does the work photography usually does. Headlines carry the story; the body face stays newsy, plain, and fast to read.</p>
+
+      <ul class="weights">
+        <li><span class="w anton">Anton 400</span><span class="for">All display — headlines, numerals, nameplates. Caps only.</span></li>
+        <li><span class="w lf-400">Libre Franklin 400</span><span class="for">Body copy, 16–19px.</span></li>
+        <li><span class="w lf-500">Libre Franklin 500</span><span class="for">Decks, spec lines, emphasis.</span></li>
+        <li><span class="w">Libre Franklin 700</span><span class="for">Kickers, labels, buttons — always letterspaced caps.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 04 · SAMPLE HERO ================= -->
+<section class="wrap">
+  <div class="slug">
+    <span class="no">04</span> Sample Hero
+    <span class="tail">Homepage, above the fold</span>
+  </div>
+
+  <div class="hero-shell">
+    <div class="hero-bar">
+      <svg viewBox="0 0 397.72 126.43" role="img" aria-label="RUN Apparel"><use href="#run-logo"/></svg>
+      <nav class="hero-nav" aria-label="Sample navigation">
+        <span>Capabilities</span><span>Heritage</span><span>Catalog</span><span class="rfq">Start RFQ</span>
+      </nav>
+    </div>
+    <div class="hero-date">
+      <span>Sialkot, Pakistan — Est. 1889</span>
+      <span>B2B sports-apparel manufacturing · Trade only</span>
+    </div>
+
+    <div class="hero-main">
+      <div class="hero-copy">
+        <span class="kicker">Front page · Manufacturing</span>
+        <h3>The extra <span class="hit">mile.</span></h3>
+        <p class="hero-sub">Five generations of Sialkot craft since <strong>1889</strong>. <strong>100,000+ units a month</strong>, built for the brands, teams, and programs that go the distance.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#">Start your RFQ</a>
+          <a class="btn btn-ghost" href="#">Explore capabilities</a>
+        </div>
+      </div>
+      <aside class="hero-stats" aria-label="Factory numbers">
+        <div class="head">Today's numbers</div>
+        <div class="stat"><div class="n">1889</div><div class="d">Roots in Sialkot leathercraft — five generations deep</div></div>
+        <div class="stat"><div class="n">100,000<sup>+</sup></div><div class="d">Units per month across five categories</div></div>
+        <div class="stat"><div class="n">200<sup>+</sup></div><div class="d">Machines on a 193,000 m² floor</div></div>
+        <div class="stat"><div class="n">5<sup>+</sup></div><div class="d">QC checkpoints before anything ships</div></div>
+      </aside>
+    </div>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>Est. 1889 — Sialkot</span><span class="sep">◆</span>
+        <span>193,000 m² facility</span><span class="sep">◆</span>
+        <span>200+ machines</span><span class="sep">◆</span>
+        <span>100,000+ units / month</span><span class="sep">◆</span>
+        <span>5+ QC checkpoints</span><span class="sep">◆</span>
+        <span>Exports: Europe · North America · South America · Middle East</span><span class="sep">◆</span>
+        <span>Est. 1889 — Sialkot</span><span class="sep">◆</span>
+        <span>193,000 m² facility</span><span class="sep">◆</span>
+        <span>200+ machines</span><span class="sep">◆</span>
+        <span>100,000+ units / month</span><span class="sep">◆</span>
+        <span>5+ QC checkpoints</span><span class="sep">◆</span>
+        <span>Exports: Europe · North America · South America · Middle East</span><span class="sep">◆</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 · SAMPLE PRODUCT CARD ================= -->
+<section class="wrap">
+  <div class="slug">
+    <span class="no">05</span> Sample Product Card
+    <span class="tail">B2B catalog · default + hover, side by side</span>
+  </div>
+
+  <div class="cards">
+    <div class="card-col">
+      <div class="state-label">Default state</div>
+      <article class="card">
+        <div class="ph"><span class="tag">Team Wear</span></div>
+        <div class="body">
+          <div class="cat">Catalog № TW-014</div>
+          <h3 class="pname">Pro Team Jersey</h3>
+          <dl class="specs">
+            <div><dt>Fabric</dt><dd>160 gsm recycled poly interlock, flatlock seams</dd></div>
+            <div><dt>MOQ</dt><dd>300 units per colorway</dd></div>
+            <div><dt>Custom</dt><dd>Full sublimation, crest embroidery, woven labels</dd></div>
+          </dl>
+          <a class="btn" href="#">Request quote</a>
+        </div>
+      </article>
+    </div>
+    <div class="card-col">
+      <div class="state-label">Hover state (simulated)</div>
+      <article class="card is-hover">
+        <div class="ph"><span class="tag">Team Wear</span></div>
+        <div class="body">
+          <div class="cat">Catalog № TW-014</div>
+          <h3 class="pname">Pro Team Jersey</h3>
+          <dl class="specs">
+            <div><dt>Fabric</dt><dd>160 gsm recycled poly interlock, flatlock seams</dd></div>
+            <div><dt>MOQ</dt><dd>300 units per colorway</dd></div>
+            <div><dt>Custom</dt><dd>Full sublimation, crest embroidery, woven labels</dd></div>
+          </dl>
+          <a class="btn" href="#">Request quote</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 · MOTION CHARACTER ================= -->
+<section class="wrap">
+  <div class="slug">
+    <span class="no">06</span> Motion Character
+    <span class="tail">Kinetic type · hard cuts over eases</span>
+  </div>
+
+  <div class="motion-grid">
+    <div class="motion-copy">
+      <p class="lead">Motion behaves like a printing press: type slides into place in hard 100–200&nbsp;ms cuts, stepped rather than eased — a mechanical snap, never a float.</p>
+      <p>Headlines reveal line by line as if the press is laying them down. Stat strips run as tickers (1889 → 2026, 100,000 units a month). Image blocks swap like turning pages — an instant wipe, no crossfade. Buttons snap up-and-left with a hard offset shadow, like a stamp lifting off paper.</p>
+      <ul class="motion-rules">
+        <li><span class="where">Bold</span><span class="how">Home hero, heritage story, category landing pages — full kinetic type and tickers.</span></li>
+        <li><span class="where">Subtle</span><span class="how">RFQ forms and buyer portal — 100 ms opacity and border shifts only. Nothing moves that the buyer is trying to read or fill.</span></li>
+        <li><span class="where">Minimal</span><span class="how">Catalog grids and spec tables — no entrance animation; hover states snap instantly.</span></li>
+        <li><span class="where">Always</span><span class="how">Every animation sits inside <em>prefers-reduced-motion: no-preference</em>. Reduced motion gets the finished layout, static.</span></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="demo">
+        <div class="demo-label"><span>Demo A — Headline press-reveal</span><span>CSS loop · steps(3)</span></div>
+        <div class="stage">
+          <div class="press-line"><div class="display">Stop</div></div>
+          <div class="press-line"><div class="display">The</div></div>
+          <div class="press-line"><div class="display">Presses.</div></div>
+        </div>
+      </div>
+      <div class="demo">
+        <div class="demo-label"><span>Demo B — Stamp-snap button</span><span>hover me · 120 ms steps(2)</span></div>
+        <div class="stage">
+          <a class="btn btn-snap" href="#">Start your RFQ</a>
+          <p class="hint">Background, lift, and shadow all cut in two steps — no glide.</p>
+        </div>
+      </div>
+      <div class="demo">
+        <div class="demo-label"><span>Demo C — Signal underline wipe</span><span>hover me · 160 ms steps(4)</span></div>
+        <div class="stage">
+          <a class="wipe-link" href="#">Explore capabilities</a>
+          <p class="hint">The warm signal appears only in doses like this.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 · VOICE SAMPLE ================= -->
+<section class="wrap">
+  <div class="slug">
+    <span class="no">07</span> Voice Sample
+    <span class="tail">Marketing copy in this direction's mood</span>
+  </div>
+
+  <div class="voice">
+    <div class="line">
+      <span class="where">Home hero</span>
+      <p class="v1">The extra mile is our <span class="hit">home turf.</span></p>
+    </div>
+    <div class="line">
+      <span class="where">Heritage page</span>
+      <p class="v2">Cutting since 1889. Never look back.</p>
+    </div>
+    <div class="line">
+      <span class="where">Capabilities</span>
+      <p class="v3"><strong>100,000 units a month, for a better tomorrow</strong> — each one past five checkpoints before it leaves Sialkot.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap colophon">
+  <span><span class="c-hit">Direction C · Press Run</span> — design exploration</span>
+  <span>RUN APPAREL (PVT) LTD · Sialkot, Pakistan</span>
+  <span>Set in Anton &amp; Libre Franklin · July 2026</span>
+</footer>
+
+</body>
+</html>

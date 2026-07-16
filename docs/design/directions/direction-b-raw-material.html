@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direction B · Raw Material — RUN APPAREL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Work+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ TOKENS — defined in OKLCH ============ */
+  :root{
+    --ecru:        oklch(0.96 0.015 90);   /* #F6F2E7 unbleached cotton — page ground */
+    --canvas:      oklch(0.92 0.02  95);   /* #E8E5D6 raw canvas — cards, panels */
+    --thread:      oklch(0.86 0.022 92);   /* #D6D1C1 selvage thread — hairlines, stitching */
+    --umber:       oklch(0.28 0.03  60);   /* #34251A dark umber — primary ink */
+    --umber-soft:  oklch(0.45 0.03  60);   /* #625245 washed umber — secondary text */
+    --madder:      oklch(0.55 0.15  35);   /* #B8492E madder clay — display accent, large type */
+    --madder-deep: oklch(0.47 0.14  35);   /* #99351B fired madder — buttons, links, small accents */
+    --moss:        oklch(0.46 0.07 130);   /* #4B6035 moss thread — sparing labels, ticks */
+
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Work Sans", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --font-code: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+    --ease-settle: cubic-bezier(0.22, 1, 0.36, 1); /* soft drape — things settle, never snap */
+    --notch: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior:auto; }
+  body{
+    background:var(--ecru);
+    color:var(--umber);
+    font-family:var(--font-body);
+    font-size:17px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* paper grain — pure CSS, inline data-URI, no external request */
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    z-index:60;
+    opacity:0.05;
+    mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  ::selection{ background:var(--madder); color:var(--ecru); }
+
+  .wrap{ max-width:1160px; margin-inline:auto; padding-inline:clamp(24px, 5vw, 56px); }
+
+  section{ padding-block:clamp(64px, 8vw, 104px); }
+  section + section{ border-top:1px dashed var(--thread); }
+
+  h1,h2,h3,h4{
+    font-family:var(--font-display);
+    font-optical-sizing:auto;
+    font-weight:600;
+    line-height:1.08;
+    letter-spacing:-0.01em;
+  }
+
+  a{ color:var(--madder-deep); }
+
+  /* section label — the "chalk mark" on every bolt of cloth */
+  .sec-label{
+    display:flex; align-items:center; gap:16px;
+    font-size:11px; font-weight:500;
+    letter-spacing:0.24em; text-transform:uppercase;
+    color:var(--umber-soft);
+    margin-bottom:clamp(32px, 4vw, 48px);
+  }
+  .sec-label b{ color:var(--madder-deep); font-weight:500; }
+  .sec-label::after{
+    content:""; flex:1; height:0;
+    border-top:1px dashed var(--thread);
+  }
+
+  .sec-intro{
+    max-width:62ch;
+    color:var(--umber-soft);
+    margin-bottom:clamp(28px, 4vw, 44px);
+  }
+
+  /* buttons — notched corner echoes the logo's 45° cuts */
+  .btn{
+    display:inline-block;
+    font-family:var(--font-body);
+    font-size:15px; font-weight:500;
+    letter-spacing:0.02em;
+    text-decoration:none;
+    padding:15px 30px;
+    clip-path:var(--notch);
+    cursor:pointer;
+    border:0;
+  }
+  .btn-primary{ background:var(--madder-deep); color:var(--ecru); }
+  .btn-secondary{
+    background:transparent; color:var(--umber);
+    box-shadow:inset 0 0 0 1.5px var(--umber);
+  }
+  .btn:focus-visible{ outline:2px dashed var(--madder-deep); outline-offset:4px; }
+
+  /* ============ 01 · MASTHEAD ============ */
+  .masthead{ padding-top:clamp(56px, 7vw, 96px); }
+  .mast-row{ display:flex; align-items:flex-start; gap:28px; }
+  .mast-badge{
+    flex:0 0 auto;
+    width:76px; height:76px;
+    background:var(--madder-deep);
+    color:var(--ecru);
+    font-family:var(--font-display); font-weight:600; font-size:42px;
+    display:grid; place-items:center;
+    clip-path:var(--notch);
+  }
+  .mast-kicker{
+    font-size:12px; font-weight:500; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--moss);
+    margin-bottom:6px;
+  }
+  .mast-row h1{ font-size:clamp(44px, 6.5vw, 76px); }
+  .thesis{
+    font-size:clamp(18px, 2vw, 21px);
+    color:var(--umber-soft);
+    max-width:56ch;
+    margin-top:28px;
+  }
+  .thesis strong{ color:var(--umber); font-weight:500; }
+
+  .logo-board{
+    margin-top:clamp(40px, 5vw, 64px);
+    display:grid;
+    grid-template-columns:1.6fr 1fr;
+    gap:20px;
+  }
+  .logo-main{
+    background:var(--canvas);
+    border:1px solid var(--thread);
+    outline:1px dashed var(--thread); outline-offset:-9px;
+    display:grid; place-items:center;
+    padding:clamp(40px, 6vw, 80px);
+  }
+  .logo-main svg{ width:min(420px, 100%); height:auto; fill:var(--umber); }
+  .logo-alts{ display:grid; gap:20px; }
+  .logo-chip{
+    border:1px solid var(--thread);
+    display:flex; align-items:center; gap:20px;
+    padding:18px 22px;
+  }
+  .logo-chip svg{ width:104px; height:auto; flex:0 0 auto; }
+  .logo-chip p{ font-size:12.5px; line-height:1.5; }
+  .chip-ecru{ background:var(--ecru); }
+  .chip-ecru svg{ fill:var(--madder); }
+  .chip-ecru p{ color:var(--umber-soft); }
+  .chip-umber{ background:var(--umber); border-color:var(--umber); }
+  .chip-umber svg{ fill:var(--ecru); }
+  .chip-umber p{ color:var(--thread); }
+  .chip-canvas{ background:var(--canvas); }
+  .chip-canvas svg{ fill:var(--umber); opacity:0.92; }
+  .chip-canvas p{ color:var(--umber-soft); }
+
+  /* ============ 02 · PALETTE ============ */
+  .swatches{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:20px;
+  }
+  .sw{
+    background:var(--canvas);
+    border:1px solid var(--thread);
+  }
+  .sw-chip{ height:104px; border-bottom:1px solid var(--thread); }
+  .sw-meta{ padding:18px 20px 22px; }
+  .sw-meta h3{ font-size:19px; font-weight:600; margin-bottom:2px; }
+  .sw-meta code{
+    font-family:var(--font-code);
+    font-size:12px;
+    color:var(--madder-deep);
+  }
+  .sw-val{
+    font-family:var(--font-code);
+    font-size:11.5px;
+    color:var(--umber-soft);
+    margin-top:10px;
+    line-height:1.7;
+  }
+  .sw-note{
+    font-size:13px;
+    color:var(--umber-soft);
+    margin-top:10px;
+    border-top:1px dashed var(--thread);
+    padding-top:10px;
+  }
+
+  /* ============ 03 · TYPE ============ */
+  .spec-block{
+    background:var(--canvas);
+    border:1px solid var(--thread);
+    padding:clamp(32px, 5vw, 64px);
+  }
+  .spec-cap{
+    font-size:11px; font-weight:500; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--moss);
+    margin-bottom:14px;
+  }
+  .spec-item + .spec-item{
+    margin-top:clamp(32px, 4vw, 48px);
+    padding-top:clamp(32px, 4vw, 48px);
+    border-top:1px dashed var(--thread);
+  }
+  .spec-d1{ font-size:clamp(44px, 5.5vw, 68px); font-weight:600; }
+  .spec-d2{ font-size:clamp(30px, 3.6vw, 42px); font-weight:500; }
+  .spec-d3{ font-size:clamp(22px, 2.6vw, 28px); font-weight:500; font-style:italic; letter-spacing:0; }
+  .spec-d1 em, .spec-d2 em{ font-style:italic; color:var(--madder); }
+  .spec-body{ max-width:64ch; font-size:17px; }
+  .spec-body strong{ font-weight:500; color:var(--umber); }
+  .weights{
+    display:flex; flex-wrap:wrap; gap:14px;
+    margin-top:18px;
+  }
+  .wt{
+    border:1px solid var(--thread);
+    background:var(--ecru);
+    padding:14px 18px;
+    min-width:120px;
+  }
+  .wt .aa{ font-size:30px; line-height:1.1; display:block; }
+  .wt small{ display:block; font-size:11px; letter-spacing:0.08em; color:var(--umber-soft); margin-top:8px; }
+  .wt-fr .aa{ font-family:var(--font-display); }
+  .wt-ws .aa{ font-family:var(--font-body); }
+
+  /* ============ 04 · HERO ============ */
+  .hero-frame{
+    position:relative;
+    background:var(--ecru);
+    border:1px solid var(--thread);
+    overflow:hidden;
+    /* woven crosshatch, CSS only */
+    background-image:
+      repeating-linear-gradient(90deg, rgba(52,37,26,0.028) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(0deg,  rgba(52,37,26,0.02)  0 1px, transparent 1px 7px);
+  }
+  .hero-inner{
+    position:relative; z-index:2;
+    padding:clamp(48px, 6vw, 96px) clamp(28px, 5vw, 88px);
+    max-width:720px;
+  }
+  .hero-logo svg{ width:148px; height:auto; fill:var(--umber); display:block; }
+  .hero-eyebrow{
+    margin-top:44px;
+    font-size:12px; font-weight:500; letter-spacing:0.22em;
+    text-transform:uppercase; color:var(--moss);
+  }
+  .hero-h{
+    margin-top:16px;
+    font-size:clamp(48px, 7vw, 84px);
+    line-height:1.02;
+    letter-spacing:-0.015em;
+  }
+  .hero-h .dot{ color:var(--madder); }
+  .hero-sub{
+    margin-top:26px;
+    font-size:clamp(17px, 1.8vw, 19px);
+    color:var(--umber-soft);
+    max-width:52ch;
+  }
+  .hero-ctas{ margin-top:38px; display:flex; flex-wrap:wrap; gap:16px; }
+  .hero-proof{
+    margin-top:52px;
+    padding-top:22px;
+    border-top:1px dashed var(--thread);
+    display:flex; flex-wrap:wrap; gap:12px 36px;
+    font-size:13.5px; font-weight:500;
+    color:var(--umber-soft);
+  }
+  .hero-proof span b{ color:var(--umber); font-weight:500; }
+  .hero-proof span::before{
+    content:""; display:inline-block;
+    width:8px; height:8px; margin-right:10px;
+    background:var(--madder);
+    clip-path:polygon(0 0, 100% 0, 100% 100%); /* tiny 45° cut, from the wordmark */
+  }
+  /* folded-cloth diagonals, echoing the logo's 45° geometry */
+  .hero-cloth{
+    position:absolute; inset:0 0 0 auto;
+    width:44%; z-index:1;
+    pointer-events:none;
+  }
+  .hero-cloth i{ position:absolute; display:block; }
+  .hero-cloth .c1{
+    inset:-8% -22% -8% 30%;
+    background:var(--canvas);
+    clip-path:polygon(42% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .hero-cloth .c2{
+    inset:-8% -22% -8% 46%;
+    background:var(--thread);
+    clip-path:polygon(42% 0, 100% 0, 100% 100%, 0 100%);
+    opacity:0.75;
+  }
+  .hero-cloth .c3{
+    inset:-8% -22% -8% 58%;
+    background:var(--madder);
+    clip-path:polygon(42% 0, 47% 0, 5% 100%, 0 100%);
+  }
+  .hero-cloth .c4{
+    inset:-8% -22% -8% 72%;
+    background:var(--moss);
+    clip-path:polygon(42% 0, 44.5% 0, 2.5% 100%, 0 100%);
+    opacity:0.85;
+  }
+
+  /* ============ 05 · PRODUCT CARD ============ */
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 420px));
+    gap:clamp(24px, 4vw, 48px);
+  }
+  .card-state{
+    font-size:11px; font-weight:500; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--umber-soft);
+    margin-bottom:14px;
+  }
+  .card{
+    background:var(--canvas);
+    border:1px solid var(--thread);
+    box-shadow:0 1px 0 rgba(52,37,26,0.04);
+  }
+  .card-media{
+    position:relative;
+    aspect-ratio:4 / 3;
+    border-bottom:1px solid var(--thread);
+    /* undyed-cloth weave, CSS only */
+    background:
+      repeating-linear-gradient(45deg,  rgba(52,37,26,0.045) 0 1px, transparent 1px 8px),
+      repeating-linear-gradient(-45deg, rgba(52,37,26,0.045) 0 1px, transparent 1px 8px),
+      linear-gradient(160deg, oklch(0.945 0.017 92), oklch(0.905 0.022 95));
+  }
+  .card-media::after{
+    /* selvage edge — the woven strip with tracer threads */
+    content:""; position:absolute; left:0; right:0; bottom:0; height:8px;
+    background:repeating-linear-gradient(90deg,
+      var(--madder) 0 14px, var(--ecru) 14px 18px,
+      var(--moss) 18px 26px, var(--ecru) 26px 30px);
+  }
+  .card-tag{
+    position:absolute; top:14px; left:14px;
+    background:var(--ecru);
+    border:1px solid var(--thread);
+    clip-path:var(--notch);
+    font-size:10.5px; font-weight:500;
+    letter-spacing:0.18em; text-transform:uppercase;
+    color:var(--moss);
+    padding:6px 12px;
+  }
+  .card-body{ padding:24px 26px 28px; }
+  .card-body h3{ font-size:23px; font-weight:600; }
+  .card-cat{
+    font-size:11.5px; font-weight:500; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--moss);
+    margin-top:4px;
+  }
+  .card-spec{
+    margin-top:14px;
+    font-size:14px;
+    color:var(--umber-soft);
+    line-height:1.6;
+  }
+  .card-facts{
+    margin-top:14px;
+    padding-top:14px;
+    border-top:1px dashed var(--thread);
+    font-size:13.5px;
+    color:var(--umber-soft);
+    display:grid; gap:6px;
+  }
+  .card-facts b{ color:var(--umber); font-weight:500; }
+  .card-cta{
+    display:inline-block;
+    margin-top:20px;
+    font-size:14px; font-weight:500;
+    text-decoration:none;
+    color:var(--madder-deep);
+    padding:11px 20px;
+    box-shadow:inset 0 0 0 1.5px var(--madder-deep);
+    clip-path:var(--notch);
+  }
+  .card-cta::after{ content:" →"; }
+  /* hover state — faked on the second card, live on the first */
+  .card.is-hover{
+    transform:translateY(-4px);
+    border-color:var(--madder);
+    box-shadow:0 22px 44px -24px rgba(52,37,26,0.35);
+  }
+  .card.is-hover .card-cta{
+    background:var(--madder-deep);
+    color:var(--ecru);
+    box-shadow:inset 0 0 0 1.5px var(--madder-deep);
+  }
+  .card.is-hover .card-media{ filter:saturate(1.06) brightness(1.015); }
+  .card-note{
+    grid-column:1 / -1;
+    font-size:13px; color:var(--umber-soft);
+    max-width:70ch;
+  }
+
+  /* ============ 06 · MOTION ============ */
+  .motion-copy{ max-width:66ch; }
+  .motion-copy p + p{ margin-top:16px; }
+  .motion-copy strong{ font-weight:500; color:var(--umber); }
+  .demos{
+    margin-top:44px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:20px;
+  }
+  .demo{
+    background:var(--canvas);
+    border:1px solid var(--thread);
+    padding:32px 28px;
+    min-height:220px;
+    display:flex; flex-direction:column;
+    justify-content:space-between; gap:28px;
+  }
+  .demo-cap{
+    font-size:11px; font-weight:500; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--umber-soft);
+    border-top:1px dashed var(--thread);
+    padding-top:12px;
+  }
+  /* demo 1 — diagonal ink fill on hover */
+  .demo-btn{
+    position:relative; align-self:flex-start;
+    overflow:hidden; isolation:isolate;
+    background:transparent;
+    color:var(--madder-deep);
+    box-shadow:inset 0 0 0 1.5px var(--madder-deep);
+  }
+  .demo-btn::before{
+    content:""; position:absolute; inset:0; z-index:-1;
+    background:var(--madder-deep);
+    transform:translateX(-103%) skewX(-12deg) scaleX(1.2);
+    transform-origin:left;
+  }
+  /* demo 2 — headline rises off the cutting table (loops) */
+  .demo-rise{ overflow:hidden; align-self:flex-start; }
+  .demo-rise span{
+    display:block;
+    font-family:var(--font-display);
+    font-weight:600; font-size:31px; line-height:1.15;
+    color:var(--umber);
+  }
+  /* demo 3 — a stitch runs the seam (loops) */
+  .demo-stitch-head{
+    font-family:var(--font-display);
+    font-weight:500; font-size:24px;
+    color:var(--umber);
+  }
+  .demo-stitch{
+    height:3px; margin-top:14px; width:100%;
+    background:repeating-linear-gradient(90deg,
+      var(--madder-deep) 0 9px, transparent 9px 16px);
+  }
+
+  @media (prefers-reduced-motion: no-preference){
+    .btn{ transition:transform 450ms var(--ease-settle), filter 450ms var(--ease-settle); }
+    .btn:hover{ transform:translateY(-2px); filter:brightness(0.94); }
+    .btn-secondary:hover{ filter:none; background:rgba(52,37,26,0.05); }
+
+    .card{
+      transition:transform 500ms var(--ease-settle),
+                 box-shadow 500ms var(--ease-settle),
+                 border-color 500ms var(--ease-settle);
+    }
+    .card-cta{
+      transition:background 400ms var(--ease-settle), color 400ms var(--ease-settle);
+    }
+    .card.is-live:hover{
+      transform:translateY(-4px);
+      border-color:var(--madder);
+      box-shadow:0 22px 44px -24px rgba(52,37,26,0.35);
+    }
+    .card.is-live:hover .card-cta{
+      background:var(--madder-deep); color:var(--ecru);
+    }
+
+    .demo-btn::before{ transition:transform 480ms var(--ease-settle); }
+    .demo-btn{ transition:color 480ms var(--ease-settle); }
+    .demo-btn:hover{ color:var(--ecru); }
+    .demo-btn:hover::before{ transform:translateX(0) skewX(0) scaleX(1.2); }
+
+    .demo-rise span{ animation:rise 5.6s var(--ease-settle) infinite; }
+    .demo-stitch{ animation:stitch 4.8s var(--ease-settle) infinite; }
+
+    @keyframes rise{
+      0%       { transform:translateY(115%); opacity:0; }
+      14%      { transform:translateY(0);    opacity:1; }
+      82%      { transform:translateY(0);    opacity:1; }
+      94%,100% { transform:translateY(115%); opacity:0; }
+    }
+    @keyframes stitch{
+      0%      { clip-path:inset(0 100% 0 0); }
+      38%     { clip-path:inset(0 0 0 0); }
+      86%     { clip-path:inset(0 0 0 0); }
+      96%,100%{ clip-path:inset(0 100% 0 0); }
+    }
+  }
+
+  /* ============ 07 · VOICE ============ */
+  .voice-panel{
+    background:var(--umber);
+    color:var(--ecru);
+    padding:clamp(40px, 6vw, 80px);
+    position:relative;
+    overflow:hidden;
+  }
+  .voice-panel::before{
+    content:""; position:absolute; top:0; bottom:0; right:-60px; width:200px;
+    background:var(--madder);
+    clip-path:polygon(74% 0, 86% 0, 34% 100%, 22% 100%);
+    opacity:0.9;
+  }
+  .voice-line{ position:relative; z-index:1; }
+  .voice-line + .voice-line{
+    margin-top:clamp(30px, 4vw, 44px);
+    padding-top:clamp(30px, 4vw, 44px);
+    border-top:1px dashed rgba(214,209,193,0.28);
+  }
+  .voice-anchor{
+    font-size:11px; font-weight:500; letter-spacing:0.24em;
+    text-transform:uppercase; color:var(--thread);
+    margin-bottom:12px;
+  }
+  .voice-line p{
+    font-family:var(--font-display);
+    font-weight:500;
+    font-size:clamp(24px, 3vw, 34px);
+    line-height:1.25;
+    max-width:26em;
+  }
+  .voice-line em{ font-style:italic; }
+
+  footer{
+    padding:36px 0 64px;
+    border-top:1px dashed var(--thread);
+    font-size:12.5px;
+    color:var(--umber-soft);
+    display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 960px){
+    .swatches{ grid-template-columns:repeat(2, 1fr); }
+    .demos{ grid-template-columns:1fr; }
+    .cards{ grid-template-columns:1fr; }
+    .logo-board{ grid-template-columns:1fr; }
+    .hero-cloth{ display:none; }
+    .hero-inner{ max-width:none; }
+  }
+  @media (max-width: 560px){
+    .swatches{ grid-template-columns:1fr; }
+    .mast-row{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- RUN wordmark, defined once, recolored per use via CSS fill -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="run-logo" viewBox="0 0 397.72 126.43">
+      <path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/>
+      <path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/>
+      <polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/>
+      <polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/>
+      <polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/>
+      <polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/>
+    </symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+
+  <!-- ============ 01 · DIRECTION MASTHEAD ============ -->
+  <section class="masthead">
+    <div class="sec-label"><span><b>01</b> · Direction masthead</span></div>
+    <div class="mast-row">
+      <div class="mast-badge">B</div>
+      <div>
+        <p class="mast-kicker">Design direction B</p>
+        <h1>Raw Material</h1>
+      </div>
+    </div>
+    <p class="thesis">The honest workshop: undyed cloth, natural-dye colour and craft you can touch.
+      <strong>Calm, warm, transparent</strong> — sustainability proven by material truth, never by green cliché.</p>
+
+    <div class="logo-board">
+      <div class="logo-main">
+        <svg viewBox="0 0 397.72 126.43" role="img" aria-label="RUN wordmark in dark umber on raw canvas"><use href="#run-logo"/></svg>
+      </div>
+      <div class="logo-alts">
+        <div class="logo-chip chip-canvas">
+          <svg viewBox="0 0 397.72 126.43" aria-hidden="true"><use href="#run-logo"/></svg>
+          <p><strong>Umber ink</strong> — the everyday mark, on ecru or canvas. Quiet, certain.</p>
+        </div>
+        <div class="logo-chip chip-ecru">
+          <svg viewBox="0 0 397.72 126.43" aria-hidden="true"><use href="#run-logo"/></svg>
+          <p><strong>Madder clay</strong> — reserved for campaign moments and large lockups only.</p>
+        </div>
+        <div class="logo-chip chip-umber">
+          <svg viewBox="0 0 397.72 126.43" aria-hidden="true"><use href="#run-logo"/></svg>
+          <p><strong>Reversed on umber</strong> — footer, woven labels, garment tags.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 · PALETTE ============ -->
+  <section>
+    <div class="sec-label"><span><b>02</b> · Palette</span></div>
+    <p class="sec-intro">Eight tones, all of them from the workshop floor: unbleached cotton, raw canvas, umber ink,
+      and the two dyes a Sialkot dyer would actually name — madder and moss. No corporate blue, no eco-green.</p>
+    <div class="swatches">
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--ecru); border-bottom:1px solid var(--thread);"></div>
+        <div class="sw-meta">
+          <h3>Unbleached Cotton</h3>
+          <code>--ecru</code>
+          <p class="sw-val">oklch(0.96 0.015 90)<br>#F6F2E7</p>
+          <p class="sw-note">Page ground — the undyed bolt everything else sits on.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--canvas);"></div>
+        <div class="sw-meta">
+          <h3>Raw Canvas</h3>
+          <code>--canvas</code>
+          <p class="sw-val">oklch(0.92 0.02 95)<br>#E8E5D6</p>
+          <p class="sw-note">Cards, panels, specimen blocks — one shade deeper, like doubled cloth.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--thread);"></div>
+        <div class="sw-meta">
+          <h3>Selvage Thread</h3>
+          <code>--thread</code>
+          <p class="sw-val">oklch(0.86 0.022 92)<br>#D6D1C1</p>
+          <p class="sw-note">Hairlines, stitch borders, dividers. As text, only reversed on umber.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--umber);"></div>
+        <div class="sw-meta">
+          <h3>Dark Umber</h3>
+          <code>--umber</code>
+          <p class="sw-val">oklch(0.28 0.03 60)<br>#34251A</p>
+          <p class="sw-note">Primary ink — headlines, body text, the logo's everyday colour.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--umber-soft);"></div>
+        <div class="sw-meta">
+          <h3>Washed Umber</h3>
+          <code>--umber-soft</code>
+          <p class="sw-val">oklch(0.45 0.03 60)<br>#625245</p>
+          <p class="sw-note">Secondary text, captions, spec lines — ink diluted with water.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--madder);"></div>
+        <div class="sw-meta">
+          <h3>Madder Clay</h3>
+          <code>--madder</code>
+          <p class="sw-val">oklch(0.55 0.15 35)<br>#B8492E</p>
+          <p class="sw-note">The signature. Display accents and large type only on light grounds.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--madder-deep);"></div>
+        <div class="sw-meta">
+          <h3>Fired Madder</h3>
+          <code>--madder-deep</code>
+          <p class="sw-val">oklch(0.47 0.14 35)<br>#99351B</p>
+          <p class="sw-note">Buttons, links, small accents — the kiln-dark cut of the same dye.</p>
+        </div>
+      </div>
+      <div class="sw">
+        <div class="sw-chip" style="background:var(--moss);"></div>
+        <div class="sw-meta">
+          <h3>Moss Thread</h3>
+          <code>--moss</code>
+          <p class="sw-val">oklch(0.46 0.07 130)<br>#4B6035</p>
+          <p class="sw-note">Sparing support — category labels and ticks. Muddy on purpose; never eco-green.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · TYPE PAIRING ============ -->
+  <section>
+    <div class="sec-label"><span><b>03</b> · Type pairing</span></div>
+    <p class="sec-intro"><strong style="color:var(--umber); font-weight:500;">Fraunces</strong> (display — a soft, warm serif with
+      old-workshop character, optical sizing on) paired with <strong style="color:var(--umber); font-weight:500;">Work Sans</strong>
+      (body — plain, legible, gets out of the way). Two families total.</p>
+    <div class="spec-block">
+      <div class="spec-item">
+        <p class="spec-cap">Display · Fraunces 600 · 68px</p>
+        <p class="spec-d1">The honest <em>workshop.</em></p>
+      </div>
+      <div class="spec-item">
+        <p class="spec-cap">Heading · Fraunces 500 · 42px</p>
+        <p class="spec-d2">Five generations. One standard.</p>
+      </div>
+      <div class="spec-item">
+        <p class="spec-cap">Editorial accent · Fraunces 500 italic · 28px</p>
+        <p class="spec-d3">Cloth you can trace, from Sialkot to the start line.</p>
+      </div>
+      <div class="spec-item">
+        <p class="spec-cap">Body · Work Sans 400 · 17px</p>
+        <p class="spec-body">RUN APPAREL is a B2B sports-apparel manufacturer in Sialkot, Pakistan, with a craft
+          lineage that reaches back to <strong>1889</strong>. Across a 193,000-square-metre facility and more than
+          200 machines, its teams cut, sew and check over <strong>100,000 garments a month</strong> for athletic
+          brands in Europe, the Americas and the Middle East. Every number in this paragraph is a fact a buyer
+          can audit — which is the entire idea of Raw Material.</p>
+      </div>
+      <div class="spec-item">
+        <p class="spec-cap">Weights in use</p>
+        <div class="weights">
+          <div class="wt wt-fr"><span class="aa" style="font-weight:400;">Aa</span><small>Fraunces 400</small></div>
+          <div class="wt wt-fr"><span class="aa" style="font-weight:500;">Aa</span><small>Fraunces 500</small></div>
+          <div class="wt wt-fr"><span class="aa" style="font-weight:600;">Aa</span><small>Fraunces 600</small></div>
+          <div class="wt wt-fr"><span class="aa" style="font-weight:500; font-style:italic;">Aa</span><small>Fraunces 500 italic</small></div>
+          <div class="wt wt-ws"><span class="aa" style="font-weight:400;">Aa</span><small>Work Sans 400</small></div>
+          <div class="wt wt-ws"><span class="aa" style="font-weight:500;">Aa</span><small>Work Sans 500</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 · SAMPLE HERO ============ -->
+  <section>
+    <div class="sec-label"><span><b>04</b> · Sample hero</span></div>
+    <div class="hero-frame">
+      <div class="hero-cloth" aria-hidden="true">
+        <i class="c1"></i><i class="c2"></i><i class="c3"></i><i class="c4"></i>
+      </div>
+      <div class="hero-inner">
+        <div class="hero-logo">
+          <svg viewBox="0 0 397.72 126.43" role="img" aria-label="RUN Apparel"><use href="#run-logo"/></svg>
+        </div>
+        <p class="hero-eyebrow">Sialkot, Pakistan · Craft lineage since 1889</p>
+        <h2 class="hero-h">For a better tomorrow<span class="dot">.</span></h2>
+        <p class="hero-sub">Five generations of Sialkot craft behind every seam — today, 100,000+ garments
+          a month, cut, sewn and checked under one roof you're welcome to visit.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="#">Start your RFQ</a>
+          <a class="btn btn-secondary" href="#">Explore capabilities</a>
+        </div>
+        <div class="hero-proof">
+          <span><b>100,000+</b> units a month</span>
+          <span><b>200+</b> machines on the floor</span>
+          <span><b>5+</b> quality checkpoints</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 · SAMPLE PRODUCT CARD ============ -->
+  <section>
+    <div class="sec-label"><span><b>05</b> · Sample product card</span></div>
+    <p class="sec-intro">A B2B catalog card: spec first, no prices, no cart. The placeholder texture is the
+      product's own cloth — an undyed weave with a selvage edge — so even empty states stay on-thesis.</p>
+    <div class="cards">
+      <div>
+        <p class="card-state">Default</p>
+        <div class="card is-live">
+          <div class="card-media"><span class="card-tag">Team Wear</span></div>
+          <div class="card-body">
+            <h3>Pro Team Jersey</h3>
+            <p class="card-cat">Team Wear · Style RA-TW-104</p>
+            <p class="card-spec">160&thinsp;gsm recycled polyester interlock · moisture-wicking knit ·
+              flatlock seams throughout</p>
+            <div class="card-facts">
+              <span><b>MOQ</b> — 300 units per colourway</span>
+              <span><b>Customization</b> — sublimation, embroidery, woven labels; full spec sheet on request</span>
+            </div>
+            <a class="card-cta" href="#">Request quote</a>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="card-state">Hover</p>
+        <div class="card is-hover">
+          <div class="card-media"><span class="card-tag">Team Wear</span></div>
+          <div class="card-body">
+            <h3>Pro Team Jersey</h3>
+            <p class="card-cat">Team Wear · Style RA-TW-104</p>
+            <p class="card-spec">160&thinsp;gsm recycled polyester interlock · moisture-wicking knit ·
+              flatlock seams throughout</p>
+            <div class="card-facts">
+              <span><b>MOQ</b> — 300 units per colourway</span>
+              <span><b>Customization</b> — sublimation, embroidery, woven labels; full spec sheet on request</span>
+            </div>
+            <a class="card-cta" href="#">Request quote</a>
+          </div>
+        </div>
+      </div>
+      <p class="card-note">On hover the card settles upward 4px over 500ms, the border warms to madder,
+        and the quote button fills — enough to feel the cloth move, never enough to distract a buyer
+        scanning forty styles. (The left card carries the live hover; the right shows it frozen.)</p>
+    </div>
+  </section>
+
+  <!-- ============ 06 · MOTION CHARACTER ============ -->
+  <section>
+    <div class="sec-label"><span><b>06</b> · Motion character</span></div>
+    <div class="motion-copy">
+      <p>Motion in Raw Material behaves like cloth, not software. Elements <strong>drape into place over
+        400–600&thinsp;ms</strong> on soft ease-out curves — they settle, they never snap. Reveals read as fabric
+        lifted off the cutting table: a rise, a slow landing, done.</p>
+      <p><strong>Bold</strong> on the home hero, the heritage timeline and category landings — full panels slide
+        and settle, headlines rise, the madder seam draws itself across the page.
+        <strong>Subtle</strong> on forms, the RFQ flow and the buyer portal — a 200&thinsp;ms fade and a gentle
+        lift, nothing that interrupts the work. <strong>Minimal</strong> on catalog grids — a soft shadow and a
+        stitch of underline, so forty products stay scannable. Every animation on this page is wrapped in
+        <span style="font-family:var(--font-code); font-size:0.85em;">prefers-reduced-motion: no-preference</span>
+        and simply disappears for visitors who ask for stillness.</p>
+    </div>
+    <div class="demos">
+      <div class="demo">
+        <button class="btn demo-btn" type="button">Start your RFQ</button>
+        <p class="demo-cap">Hover — dye fills the button on a 480ms diagonal, like ink into cloth</p>
+      </div>
+      <div class="demo">
+        <div class="demo-rise"><span>Never look back.</span></div>
+        <p class="demo-cap">Headline reveal — rises and settles, ease-out, then rests (looped here)</p>
+      </div>
+      <div class="demo">
+        <div>
+          <p class="demo-stitch-head">The extra mile.</p>
+          <div class="demo-stitch"></div>
+        </div>
+        <p class="demo-cap">Section rule — a madder stitch runs the seam left to right (looped here)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 07 · VOICE SAMPLE ============ -->
+  <section>
+    <div class="sec-label"><span><b>07</b> · Voice sample</span></div>
+    <div class="voice-panel">
+      <div class="voice-line">
+        <p class="voice-anchor">The Extra Mile</p>
+        <p>Five checkpoints before it ships. The extra mile is <em>stitched in</em> — not printed on.</p>
+      </div>
+      <div class="voice-line">
+        <p class="voice-anchor">For a Better Tomorrow</p>
+        <p>Recycled yarn. Dyes we can name. A factory floor you're <em>welcome to walk.</em></p>
+      </div>
+      <div class="voice-line">
+        <p class="voice-anchor">Never Look Back</p>
+        <p>Never look back — except to <em>1889,</em> where the standard was set.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Direction B · Raw Material — design direction sample for review</span>
+    <span>RUN APPAREL (PVT) LTD · Sialkot, Pakistan</span>
+  </footer>
+
+</div>
+</body>
+</html>

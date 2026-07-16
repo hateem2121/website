@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Direction A · Night Forge — RUN APPAREL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+  /* ============ NIGHT FORGE — TOKENS (OKLCH) ============ */
+  :root{
+    --ink:        oklch(0.16 0.015 260);  /* #090d14 */
+    --surface:    oklch(0.21 0.02  260);  /* #131922 */
+    --surface-2:  oklch(0.26 0.025 260);  /* #1d2430 */
+    --line:       oklch(0.34 0.02  260);  /* #323843 */
+    --text:       oklch(0.93 0.01  90);   /* #eae8e0 */
+    --text-dim:   oklch(0.74 0.015 90);   /* #aeaba0 */
+    --copper:     oklch(0.68 0.15  45);   /* #e27641 */
+    --copper-hot: oklch(0.78 0.13  55);   /* #f7a062 */
+    --steel:      oklch(0.65 0.03  250);  /* #8291a1 */
+
+    --display: "Archivo Black", "Archivo", sans-serif;
+    --body: "Archivo", sans-serif;
+    --snap: cubic-bezier(0.22, 1, 0.36, 1);
+    --cut: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  }
+
+  /* Ticking-counter registration (top-level by spec; animation is media-gated below) */
+  @property --n { syntax: "<integer>"; inherits: false; initial-value: 0; }
+
+  *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background: var(--ink);
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection{ background: var(--copper); color: var(--ink); }
+
+  .wrap{ max-width: 1160px; margin: 0 auto; padding: 0 40px; }
+  section{ padding: 88px 0; border-top: 1px solid var(--line); }
+  section:first-of-type{ border-top: 0; }
+
+  /* section label */
+  .sec-label{
+    display:flex; align-items:center; gap:14px;
+    font: 600 12px/1 var(--body);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--copper);
+    margin-bottom: 40px;
+  }
+  .sec-label::before{
+    content:""; width:22px; height:12px; background: var(--copper);
+    clip-path: polygon(0 0, 100% 0, calc(100% - 12px) 100%, 0 100%); /* logo cut angle */
+  }
+  .sec-label .num{ color: var(--steel); letter-spacing: 0.18em; }
+
+  h1,h2,h3{ font-family: var(--display); font-weight: 400; line-height: 0.98; letter-spacing: -0.01em; text-transform: uppercase; }
+  .lede{ color: var(--text-dim); max-width: 62ch; }
+
+  .logo-mark svg{ display:block; width:100%; height:auto; fill: var(--copper); }
+  .logo-mark--text svg{ fill: var(--text); }
+
+  button{ font: inherit; cursor: pointer; }
+  :focus-visible{ outline: 2px solid var(--copper-hot); outline-offset: 3px; }
+
+  /* ============ 1 · MASTHEAD ============ */
+  .masthead{ padding: 96px 0 88px; position: relative; overflow: hidden; }
+  .masthead::after{ /* scanlines */
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background: repeating-linear-gradient(to bottom, transparent 0 3px, oklch(1 0 0 / 0.015) 3px 4px);
+  }
+  .mast-kicker{
+    font: 600 12px/1 var(--body); letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--steel); margin-bottom: 28px;
+  }
+  .mast-title{
+    font-size: clamp(56px, 8.5vw, 108px);
+    margin-bottom: 8px;
+  }
+  .mast-title .a{ color: var(--copper); }
+  .mast-thesis{
+    font-size: 19px; color: var(--text-dim); max-width: 58ch; margin-top: 24px;
+  }
+  .mast-thesis strong{ color: var(--text); font-weight: 600; }
+  .mast-logo-panel{
+    margin-top: 56px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    clip-path: var(--cut);
+    padding: 64px clamp(32px, 8vw, 120px);
+    position: relative;
+  }
+  .mast-logo-panel::before{ /* copper edge light along the top */
+    content:""; position:absolute; top:0; left:0; height:2px; width:38%;
+    background: linear-gradient(90deg, var(--copper), transparent);
+  }
+  .mast-logo-panel .logo-mark{ max-width: 420px; margin: 0 auto; }
+  .mast-logo-caption{
+    text-align:center; margin-top: 28px;
+    font: 500 12px/1.5 var(--body); letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--steel);
+  }
+
+  /* ============ 2 · PALETTE ============ */
+  .palette-grid{
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px;
+  }
+  .swatch-card{
+    background: var(--surface); border: 1px solid var(--line);
+    clip-path: var(--cut);
+  }
+  .swatch{ height: 96px; border-bottom: 1px solid var(--line); position:relative; }
+  .swatch::after{ /* tiny angle notch echoing the logo */
+    content:""; position:absolute; right:14px; bottom:12px; width:18px; height:10px;
+    background: oklch(1 0 0 / 0.14);
+    clip-path: polygon(0 100%, 100% 0, 100% 100%);
+  }
+  .swatch-meta{ padding: 18px 20px 22px; }
+  .swatch-name{ font: 800 14px/1.2 var(--body); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px; }
+  .swatch-values{ font-size: 13px; color: var(--text-dim); line-height: 1.7; letter-spacing: 0.02em; }
+  .swatch-values code{ font-family: var(--body); font-weight: 500; color: var(--text); background: var(--surface-2); padding: 1px 6px; }
+  .swatch-note{ font-size: 13px; color: var(--steel); margin-top: 10px; line-height: 1.55; }
+  .contrast-note{
+    margin-top: 36px; font-size: 13px; color: var(--steel); max-width: 78ch; line-height: 1.7;
+  }
+  .contrast-note strong{ color: var(--text-dim); font-weight: 600; }
+
+  /* ============ 3 · TYPE ============ */
+  .spec-block{ border: 1px solid var(--line); background: var(--surface); clip-path: var(--cut); padding: clamp(32px, 5vw, 64px); }
+  .spec-row{ padding: 28px 0; border-bottom: 1px solid var(--line); display:flex; flex-wrap:wrap; gap: 8px 40px; align-items: baseline; }
+  .spec-row:last-child{ border-bottom: 0; }
+  .spec-tag{ flex: 0 0 170px; font: 500 12px/1.6 var(--body); letter-spacing: 0.18em; text-transform: uppercase; color: var(--steel); }
+  .spec-sample{ flex:1; min-width: 260px; }
+  .t-96{ font-family: var(--display); font-size: clamp(44px, 6.5vw, 88px); line-height: 0.95; text-transform: uppercase; }
+  .t-96 .dot{ color: var(--copper); }
+  .t-48{ font-family: var(--display); font-size: clamp(28px, 3.6vw, 46px); line-height: 1.02; text-transform: uppercase; }
+  .t-26{ font-family: var(--display); font-size: 26px; line-height: 1.1; text-transform: uppercase; }
+  .t-eyebrow{ font: 600 13px/1.6 var(--body); letter-spacing: 0.3em; text-transform: uppercase; color: var(--copper); }
+  .t-body{ font: 400 17px/1.65 var(--body); max-width: 58ch; }
+  .t-body strong{ font-weight: 600; }
+  .t-meta{ font: 500 13px/1.7 var(--body); color: var(--text-dim); letter-spacing: 0.04em; }
+  .weights-list{ margin-top: 32px; display:flex; flex-wrap:wrap; gap: 12px; }
+  .weight-chip{
+    font-size: 13px; color: var(--text-dim); border: 1px solid var(--line);
+    padding: 8px 14px; letter-spacing: 0.04em;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+  .weight-chip b{ color: var(--text); font-weight: 600; }
+
+  /* ============ 4 · HERO ============ */
+  .hero-frame{ border: 1px solid var(--line); position: relative; overflow: hidden; }
+  .hero{
+    position: relative;
+    background:
+      linear-gradient(115deg, oklch(0.68 0.15 45 / 0.14) 0%, transparent 34%),
+      linear-gradient(295deg, oklch(0.65 0.03 250 / 0.08) 0%, transparent 30%),
+      var(--ink);
+    padding: clamp(56px, 8vw, 110px) clamp(28px, 6vw, 88px);
+  }
+  .hero::before{ /* diagonal forge beam */
+    content:""; position:absolute; top:-20%; right:-6%; width: 42%; height: 140%;
+    background: linear-gradient(115deg, transparent 0%, oklch(0.68 0.15 45 / 0.09) 45%, transparent 78%);
+    transform: skewX(-18deg); pointer-events:none;
+  }
+  .hero::after{ /* scanlines */
+    content:""; position:absolute; inset:0; pointer-events:none;
+    background: repeating-linear-gradient(to bottom, transparent 0 3px, oklch(1 0 0 / 0.02) 3px 4px);
+  }
+  .hero > *{ position: relative; z-index: 1; }
+  .hero .logo-mark{ width: 148px; margin-bottom: 56px; }
+  .hero-h{
+    font-size: clamp(52px, 8vw, 104px);
+    max-width: 11ch;
+  }
+  .hero-h .dot{ color: var(--copper); }
+  .hero-sub{
+    margin-top: 28px; font-size: 18px; color: var(--text-dim); max-width: 52ch; line-height: 1.65;
+  }
+  .hero-sub strong{ color: var(--text); font-weight: 600; }
+  .hero-ctas{ margin-top: 44px; display:flex; gap: 16px; flex-wrap: wrap; }
+  .hero-stats{
+    margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--line);
+    display:flex; gap: clamp(24px, 5vw, 64px); flex-wrap: wrap;
+  }
+  .stat b{ display:block; font-family: var(--display); font-size: 26px; letter-spacing: 0; color: var(--copper-hot); font-variant-numeric: tabular-nums; }
+  .stat span{ font: 500 12px/1.6 var(--body); letter-spacing: 0.18em; text-transform: uppercase; color: var(--steel); }
+
+  /* buttons */
+  .btn{
+    display:inline-block; position:relative; overflow:hidden;
+    font: 800 14px/1 var(--body); letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 18px 30px; border: 0; text-decoration: none;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+  .btn-primary{ background: var(--copper); color: var(--ink); }
+  .btn-secondary{
+    background: transparent; color: var(--text);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .btn-secondary:hover{ box-shadow: inset 0 0 0 1px var(--copper); color: var(--copper-hot); }
+
+  /* ============ 5 · PRODUCT CARD ============ */
+  .card-row{ display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 860px; }
+  .card-state-label{
+    font: 500 12px/1 var(--body); letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--steel); margin-bottom: 16px;
+  }
+  .pcard{
+    background: var(--surface); border: 1px solid var(--line);
+    clip-path: var(--cut); position: relative;
+  }
+  .pcard::before{ /* top edge light — off by default */
+    content:""; position:absolute; top:0; left:0; height:2px; width:100%;
+    background: linear-gradient(90deg, var(--copper), var(--copper-hot) 40%, transparent 85%);
+    opacity: 0; z-index: 2;
+  }
+  .pcard-img{
+    height: 210px; position: relative; border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 18% 100%, oklch(0.68 0.15 45 / 0.10), transparent 55%),
+      repeating-linear-gradient(115deg, var(--surface-2) 0 3px, var(--surface) 3px 16px);
+  }
+  .pcard-img::after{ /* angular garment silhouette suggestion */
+    content:""; position:absolute; inset: 24% 30% 14% 30%;
+    background: oklch(0.30 0.025 260);
+    clip-path: polygon(30% 0, 70% 0, 100% 22%, 84% 34%, 84% 100%, 16% 100%, 16% 34%, 0 22%);
+  }
+  .pcard-body{ padding: 24px 26px 28px; }
+  .pcard-cat{ font: 600 11px/1 var(--body); letter-spacing: 0.26em; text-transform: uppercase; color: var(--copper); margin-bottom: 12px; }
+  .pcard-name{ font-family: var(--display); font-size: 22px; line-height: 1.08; text-transform: uppercase; margin-bottom: 14px; }
+  .pcard-spec{ font-size: 14px; color: var(--text-dim); line-height: 1.6; }
+  .pcard-moq{
+    margin: 16px 0; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    font: 500 13px/1.6 var(--body); letter-spacing: 0.06em; color: var(--text);
+  }
+  .pcard-custom{ font-size: 13px; color: var(--steel); line-height: 1.6; margin-bottom: 22px; }
+  .pcard-btn{
+    display:block; width:100%; text-align:center;
+    font: 800 13px/1 var(--body); letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 15px 0; background: transparent; color: var(--text);
+    border: 0; box-shadow: inset 0 0 0 1px var(--line);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+  /* hover state — real on :hover, faked with .is-hover for the side-by-side */
+  .pcard:hover, .pcard.is-hover{ border-color: oklch(0.68 0.15 45 / 0.55); }
+  .pcard:hover::before, .pcard.is-hover::before{ opacity: 1; }
+  .pcard:hover .pcard-img, .pcard.is-hover .pcard-img{
+    background:
+      radial-gradient(120% 90% at 18% 100%, oklch(0.68 0.15 45 / 0.22), transparent 60%),
+      repeating-linear-gradient(115deg, var(--surface-2) 0 3px, var(--surface) 3px 16px);
+  }
+  .pcard:hover .pcard-btn, .pcard.is-hover .pcard-btn{
+    background: var(--copper); color: var(--ink); box-shadow: none;
+  }
+  .pcard:hover .pcard-name, .pcard.is-hover .pcard-name{ color: var(--copper-hot); }
+
+  /* ============ 6 · MOTION ============ */
+  .motion-copy{ max-width: 70ch; color: var(--text-dim); }
+  .motion-copy strong{ color: var(--text); font-weight: 600; }
+  .motion-demos{ margin-top: 48px; display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .demo{
+    background: var(--surface); border: 1px solid var(--line); clip-path: var(--cut);
+    padding: 36px 28px 32px; min-height: 190px;
+    display:flex; flex-direction:column; justify-content:space-between; gap: 28px;
+  }
+  .demo-label{ font: 500 11px/1.6 var(--body); letter-spacing: 0.22em; text-transform: uppercase; color: var(--steel); }
+
+  .demo-wipe-h{
+    font-family: var(--display); font-size: 30px; text-transform: uppercase; line-height: 1;
+    clip-path: polygon(0 0, 112% 0, 100% 100%, 0 100%);
+  }
+  .demo-wipe-h .dot{ color: var(--copper); }
+
+  .tick-line{ font-family: var(--display); font-size: 40px; line-height: 1; color: var(--copper-hot); font-variant-numeric: tabular-nums; }
+  .tick-num::after{
+    --n: 137;
+    counter-reset: nn calc(var(--n));
+    content: counter(nn);
+  }
+  .tick-caption{ font: 500 12px/1.6 var(--body); letter-spacing: 0.18em; text-transform: uppercase; color: var(--steel); margin-top: 10px; }
+
+  /* All animation lives behind the reduced-motion gate */
+  @media (prefers-reduced-motion: no-preference){
+    .btn, .pcard-btn{ transition: background-color 180ms var(--snap), color 180ms var(--snap), box-shadow 180ms var(--snap); }
+    .pcard{ transition: transform 200ms var(--snap), border-color 200ms var(--snap); }
+    .pcard::before{ transition: opacity 200ms var(--snap); }
+    .pcard:hover, .pcard.is-hover{ transform: translateY(-4px); }
+
+    /* demo 1 — diagonal sheen snapping across the button */
+    .btn-primary::after{
+      content:""; position:absolute; top:-10%; left:0; width: 34%; height: 120%;
+      background: oklch(1 0 0 / 0.22);
+      transform: translateX(-140%) skewX(-18deg);
+      transition: transform 240ms var(--snap);
+    }
+    .btn-primary:hover::after{ transform: translateX(340%) skewX(-18deg); }
+    .btn-primary:hover{ background: var(--copper-hot); }
+
+    /* demo 2 — diagonal wipe reveal on a loop */
+    .demo-wipe-h{ animation: wipe-in 3.6s var(--snap) infinite; }
+    @keyframes wipe-in{
+      0%   { clip-path: polygon(0 0, 0% 0, -12% 100%, 0 100%); transform: translateX(-10px); }
+      22%  { clip-path: polygon(0 0, 112% 0, 100% 100%, 0 100%); transform: translateX(0); }
+      86%  { clip-path: polygon(0 0, 112% 0, 100% 100%, 0 100%); transform: translateX(0); opacity: 1; }
+      100% { clip-path: polygon(0 0, 112% 0, 100% 100%, 0 100%); opacity: 0; }
+    }
+
+    /* demo 3 — numeric counter ticking up */
+    .tick-num::after{ animation: tick 2.8s var(--snap) infinite; }
+    @keyframes tick{
+      0%        { --n: 0; }
+      75%, 100% { --n: 137; }
+    }
+  }
+
+  /* ============ 7 · VOICE ============ */
+  .voice-list{ list-style: none; max-width: 900px; }
+  .voice-list li{
+    padding: 34px 0; border-bottom: 1px solid var(--line);
+    font-family: var(--display); font-size: clamp(22px, 3vw, 32px); line-height: 1.15; text-transform: uppercase;
+  }
+  .voice-list li:last-child{ border-bottom: 0; }
+  .voice-list .anchor{ color: var(--copper); }
+  .voice-list small{
+    display:block; margin-top: 12px;
+    font: 500 12px/1.6 var(--body); letter-spacing: 0.2em; text-transform: uppercase; color: var(--steel);
+  }
+
+  footer{ border-top: 1px solid var(--line); padding: 40px 0 64px; }
+  footer p{ font: 500 12px/1.8 var(--body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--steel); }
+  footer .logo-mark{ width: 96px; margin-bottom: 20px; }
+
+  @media (max-width: 640px){
+    .wrap{ padding: 0 22px; }
+    section{ padding: 64px 0; }
+    .spec-tag{ flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ 1 · DIRECTION MASTHEAD ============ -->
+<header class="masthead">
+  <div class="wrap">
+    <p class="mast-kicker">RUN Apparel · Design Direction · 01 of series</p>
+    <h1 class="mast-title"><span class="a">A</span> · Night Forge</h1>
+    <p class="mast-thesis">Precision manufacturing at full speed — <strong>the factory at night, molten metal, five generations of momentum.</strong> Dark, technical, confident. Copper heat against cool near-black steel; every edge cut at the wordmark's angle.</p>
+    <div class="mast-logo-panel">
+      <div class="logo-mark" role="img" aria-label="RUN Apparel wordmark in molten copper">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 397.72 126.43"><g><path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/><path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/><polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/><polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/><polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/><polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/></g></svg>
+      </div>
+      <p class="mast-logo-caption">Wordmark treatment — molten copper on ink, scanline texture, single edge light</p>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 2 · PALETTE ============ -->
+<section>
+  <div class="wrap">
+    <p class="sec-label"><span class="num">02</span> Palette</p>
+    <div class="palette-grid">
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--ink);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Ink</p>
+          <p class="swatch-values">oklch(0.16 0.015 260)<br><code>#090d14</code></p>
+          <p class="swatch-note">Page background — the factory floor at night. Cool cast, never flat black.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--surface);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Surface</p>
+          <p class="swatch-values">oklch(0.21 0.02 260)<br><code>#131922</code></p>
+          <p class="swatch-note">Cards, panels, nav bars — one step of elevation above ink.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--surface-2);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Surface 2</p>
+          <p class="swatch-values">oklch(0.26 0.025 260)<br><code>#1d2430</code></p>
+          <p class="swatch-note">Hover fills, input fields, image-placeholder texture.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--line);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Line</p>
+          <p class="swatch-values">oklch(0.34 0.02 260)<br><code>#323843</code></p>
+          <p class="swatch-note">Hairline borders, dividers, table rules. Never for text.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--text);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Text</p>
+          <p class="swatch-values">oklch(0.93 0.01 90)<br><code>#eae8e0</code></p>
+          <p class="swatch-note">Headlines and body copy — warm off-white, 15.9:1 on ink.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--text-dim);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Text Dim</p>
+          <p class="swatch-values">oklch(0.74 0.015 90)<br><code>#aeaba0</code></p>
+          <p class="swatch-note">Secondary copy, spec lines, captions — 8.5:1 on ink.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--copper);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Molten Copper</p>
+          <p class="swatch-values">oklch(0.68 0.15 45)<br><code>#e27641</code></p>
+          <p class="swatch-note">Signature accent — CTAs, section labels, links. A nod to Sialkot's tanning and metalwork heritage. 6.4:1 on ink.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--copper-hot);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Copper Hot</p>
+          <p class="swatch-values">oklch(0.78 0.13 55)<br><code>#f7a062</code></p>
+          <p class="swatch-note">Hover and glow states, edge lights, key numerals — 9.4:1 on ink.</p>
+        </div>
+      </div>
+      <div class="swatch-card">
+        <div class="swatch" style="background: var(--steel);"></div>
+        <div class="swatch-meta">
+          <p class="swatch-name">Steel</p>
+          <p class="swatch-values">oklch(0.65 0.03 250)<br><code>#8291a1</code></p>
+          <p class="swatch-note">Secondary UI — meta text, inactive states, machine-grade grey. 6.0:1 on ink.</p>
+        </div>
+      </div>
+    </div>
+    <p class="contrast-note"><strong>Measured contrast (WCAG 2.1):</strong> text on ink 15.9:1 · text on surface 14.4:1 · text-dim on ink 8.5:1 · text-dim on surface 7.7:1 · copper on ink 6.4:1 · copper on surface 5.8:1 · steel on ink 6.0:1 · ink on copper (button text) 6.4:1 · ink on copper-hot 9.4:1. Every text pair clears AA at body size (4.5:1); no corporate blue anywhere in the system.</p>
+  </div>
+</section>
+
+<!-- ============ 3 · TYPE PAIRING ============ -->
+<section>
+  <div class="wrap">
+    <p class="sec-label"><span class="num">03</span> Type Pairing</p>
+    <div class="spec-block">
+      <div class="spec-row">
+        <p class="spec-tag">Display / 88px<br>Archivo Black</p>
+        <p class="spec-sample t-96">Never look back<span class="dot">.</span></p>
+      </div>
+      <div class="spec-row">
+        <p class="spec-tag">Display / 46px<br>Archivo Black</p>
+        <p class="spec-sample t-48">Five generations. One direction.</p>
+      </div>
+      <div class="spec-row">
+        <p class="spec-tag">Display / 26px<br>Archivo Black</p>
+        <p class="spec-sample t-26">Built in Sialkot. Proven everywhere.</p>
+      </div>
+      <div class="spec-row">
+        <p class="spec-tag">Eyebrow / 13px<br>Archivo 600</p>
+        <p class="spec-sample t-eyebrow">Sustainable · High-Performance · Ethically Manufactured</p>
+      </div>
+      <div class="spec-row">
+        <p class="spec-tag">Body / 17px<br>Archivo 400</p>
+        <p class="spec-sample t-body">The line started in 1889, when Allah Ditta Ghafuree worked leather by hand in Sialkot. Five generations later the same family runs <strong>200+ machines across a 193,000&nbsp;m² facility</strong>, shipping performance apparel to Europe, the Americas and the Middle East — 100,000+ units a month, checked at five QC gates before anything leaves the floor.</p>
+      </div>
+      <div class="spec-row">
+        <p class="spec-tag">Meta / 13px<br>Archivo 500</p>
+        <p class="spec-sample t-meta">MOQ 300 UNITS · 160GSM RECYCLED POLY INTERLOCK · 4–5 WEEK LEAD</p>
+      </div>
+    </div>
+    <div class="weights-list">
+      <span class="weight-chip"><b>Archivo Black</b> — display, all-caps, tight leading</span>
+      <span class="weight-chip"><b>Archivo 800</b> — buttons, emphatic UI</span>
+      <span class="weight-chip"><b>Archivo 600</b> — eyebrows, labels, strong body</span>
+      <span class="weight-chip"><b>Archivo 500</b> — meta and spec lines</span>
+      <span class="weight-chip"><b>Archivo 400</b> — body copy</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4 · SAMPLE HERO ============ -->
+<section>
+  <div class="wrap">
+    <p class="sec-label"><span class="num">04</span> Sample Hero</p>
+  </div>
+  <div class="hero-frame">
+    <div class="hero">
+      <div class="wrap">
+        <div class="logo-mark" role="img" aria-label="RUN Apparel logo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 397.72 126.43"><g><path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/><path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/><polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/><polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/><polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/><polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/></g></svg>
+        </div>
+        <h2 class="hero-h">Never look back<span class="dot">.</span></h2>
+        <p class="hero-sub">Performance apparel forged in Sialkot since <strong>1889</strong> — five generations, <strong>100,000+ units a month</strong>, five QC checkpoints deep. Built for the brands that never slow down.</p>
+        <div class="hero-ctas">
+          <button type="button" class="btn btn-primary">Start your RFQ</button>
+          <button type="button" class="btn btn-secondary">Explore capabilities</button>
+        </div>
+        <div class="hero-stats">
+          <p class="stat"><b>1889</b><span>Heritage roots</span></p>
+          <p class="stat"><b>100K+</b><span>Units / month</span></p>
+          <p class="stat"><b>200+</b><span>Machines</span></p>
+          <p class="stat"><b>5+</b><span>QC checkpoints</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5 · SAMPLE PRODUCT CARD ============ -->
+<section>
+  <div class="wrap">
+    <p class="sec-label"><span class="num">05</span> Sample Product Card</p>
+    <div class="card-row">
+      <div>
+        <p class="card-state-label">Default</p>
+        <article class="pcard">
+          <div class="pcard-img" role="img" aria-label="Product image placeholder"></div>
+          <div class="pcard-body">
+            <p class="pcard-cat">Team Wear</p>
+            <h3 class="pcard-name">Pro Team Jersey</h3>
+            <p class="pcard-spec">160gsm recycled poly interlock · flatlock seams · moisture-wicking finish</p>
+            <p class="pcard-moq">MOQ 300 units · 4–5 week lead time</p>
+            <p class="pcard-custom">Full sublimation print, embroidered crests, custom neck tape and size-run labelling.</p>
+            <button type="button" class="pcard-btn">Request quote</button>
+          </div>
+        </article>
+      </div>
+      <div>
+        <p class="card-state-label">Hover — copper edge light, lifted, filled CTA</p>
+        <article class="pcard is-hover">
+          <div class="pcard-img" role="img" aria-label="Product image placeholder"></div>
+          <div class="pcard-body">
+            <p class="pcard-cat">Team Wear</p>
+            <h3 class="pcard-name">Pro Team Jersey</h3>
+            <p class="pcard-spec">160gsm recycled poly interlock · flatlock seams · moisture-wicking finish</p>
+            <p class="pcard-moq">MOQ 300 units · 4–5 week lead time</p>
+            <p class="pcard-custom">Full sublimation print, embroidered crests, custom neck tape and size-run labelling.</p>
+            <button type="button" class="pcard-btn">Request quote</button>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 · MOTION CHARACTER ============ -->
+<section>
+  <div class="wrap">
+    <p class="sec-label"><span class="num">06</span> Motion Character</p>
+    <p class="motion-copy">Night Forge moves like calibrated machinery: <strong>fast, precise, no bounce.</strong> Everything snaps in 150–250ms on <strong>cubic-bezier(0.22,&nbsp;1,&nbsp;0.36,&nbsp;1)</strong> — a hard launch with a clean stop, like a press finishing its stroke. Reveals wipe in on the diagonal, echoing the wordmark's cut angles; numerals tick upward like a production counter; hovers get a single copper edge light, never a soft glow. Motion is <strong>bold on the home hero, heritage story and category landings</strong> (diagonal wipes, ticking counters, beam sweeps), <strong>subtle on forms and the buyer portal</strong> (state changes and focus only), and <strong>minimal on catalog grids</strong> (a lift and an edge light — nothing that races the eye while scanning products). Every animation on this page sits behind <strong>prefers-reduced-motion</strong>; with motion off, all content renders complete and static.</p>
+    <div class="motion-demos">
+      <div class="demo">
+        <p class="demo-label">Demo 01 · CTA — diagonal sheen, 240ms snap (hover it)</p>
+        <div><button type="button" class="btn btn-primary">Start your RFQ</button></div>
+      </div>
+      <div class="demo">
+        <p class="demo-label">Demo 02 · Heading — diagonal wipe reveal (loops)</p>
+        <p class="demo-wipe-h">The extra mile<span class="dot">.</span></p>
+      </div>
+      <div class="demo">
+        <p class="demo-label">Demo 03 · Production counter — numerals tick (loops)</p>
+        <div>
+          <p class="tick-line"><span class="tick-num"></span></p>
+          <p class="tick-caption">Years of momentum since 1889</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 · VOICE SAMPLE ============ -->
+<section>
+  <div class="wrap">
+    <p class="sec-label"><span class="num">07</span> Voice Sample</p>
+    <ul class="voice-list">
+      <li><span class="anchor">Never look back</span> — we've been moving since 1889.
+        <small>Home hero / heritage</small></li>
+      <li><span class="anchor">The extra mile</span> is a shift on our floor: 200+ machines, five QC gates, zero shortcuts.
+        <small>Capabilities / quality</small></li>
+      <li><span class="anchor">For a better tomorrow</span>, built tonight — 100,000 units a month out of Sialkot.
+        <small>Sustainability / scale</small></li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo-mark logo-mark--text" role="img" aria-label="RUN Apparel logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 397.72 126.43"><g><path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/><path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/><polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/><polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/><polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/><polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/></g></svg>
+    </div>
+    <p>Direction A · Night Forge — dark performance-tech · RUN Apparel (Pvt) Ltd · B2B only · Sialkot, Pakistan</p>
+  </div>
+</footer>
+
+</body>
+</html>

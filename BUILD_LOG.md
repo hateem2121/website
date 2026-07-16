@@ -4,6 +4,20 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-16 — Session 3 · Phase 1: "PAPER & INK" combined direction built — awaiting Hateem's §6 gate pick
+
+**Process:** Hateem liked draft direction C, then pointed at 4 reference sites (landonorris.com, wembi.ai, hildenkaira.fi, sharebien.com) and asked for deep first-hand interaction before recommending. All four were browsed/scrolled/screenshotted in the browser pane. Key finding: they all live on one axis — warm paper ↔ warm ink, lime as the constant signal, technical-drawing garnish throughout (Lando's own site transitions light→dark in one scroll). Full observations + approved plan: `~/.claude/plans/i-like-the-direction-async-diffie.md`.
+
+**Decisions taken by Hateem this session:** motion = Balanced · About-map = 3D globe (reuses spec §7 Three.js engine) · display font = Neue Stance self-hosted (⚠️ commercial web licence still unconfirmed — free build uses Archivo+Instrument Serif; Stance swaps in later if licensed) · accent = tuned "RUN volt" lime `#CDF345` · palette variant = **A · Olive Ink** (picked from three rendered boards).
+
+**Built:** `docs/design/directions/direction-d-paper-ink.html` — self-contained preview with a working light/dark toggle ("LIGHTS ON/OFF"). Light = warm paper editorial (Wembi/H&K); dark = olive-ink cinematic with volt display type (Lando/Share Bien). Includes: dual palette boards (hex+OKLCH), type specimens (Archivo variable + Instrument Serif accents + system mono labels), sample hero with blueprint grid + contour lines + **wireframe garment tech-pack SVG** (RUN's own motif), B2B product cards (default+hover), motion demos (roving pill, magnetic CTA, counting stat, marquee), voice samples, command-center footer (numbered RFQ form, cert-marquee placeholder, parallax giant logotype).
+
+**Verified:** 18/18 WCAG AA contrast pairs pass in BOTH modes (script-checked; caught+fixed two too-light volt-deep values → `#5F7414`) · both modes visually reviewed in browser pane · mobile 375px: no horizontal scroll, layout stacks cleanly · all animation gated behind prefers-reduced-motion + off on touch. Note: the embedded browser pane's screenshot compositor lagged on this animation-heavy page (file:// + infinite marquees); the page itself is healthy — no console errors.
+
+**Next step:** Hateem opens the preview (double-click `docs/design/directions/direction-d-paper-ink.html`), tries both modes, and either locks the direction (→ DESIGN.md tokens + DECISIONS entries incl. the §6 volt override + Neue Stance licence open item) or requests tweaks.
+
+---
+
 ## 2026-07-15 — Session 2 (cont.) · ✅ PHASE 0 CLOSED (Hateem sign-off recorded in DECISIONS.md) → Phase 1 opens
 
 Hateem signed off Phase 0 against spec §17 row 0 (option A: gate items met; the four dashboard items — R2 lifecycle rule, billing alerts, Access, Bot Fight — stay on the open list, click-paths in runbook §5; raise at natural checkpoints). Recorded in DECISIONS.md.

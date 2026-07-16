@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>Direction D — PAPER &amp; INK · RUN APPAREL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RUN APPAREL — Direction D "PAPER & INK" · Olive Ink variant
+   Light = "The Workshop" · Dark = "The Night Shift"
+   Tokens are semantic; dark is its own design, not an inversion.
+   ============================================================ */
+:root{
+  /* constant signal */
+  --volt:#CDF345;            /* oklch(0.92 0.20 118) */
+  --volt-deep:#5F7414;       /* volt for text/lines on light — AA verified (4.57:1 on paper) */
+  /* light mode — Paper / The Workshop */
+  --bg:#F1EFEA;              /* paper  oklch(0.951 0.007 90)  */
+  --surface:#FAF9F6;         /* card   oklch(0.978 0.004 90)  */
+  --wash:#E4E1D8;            /* wash   oklch(0.906 0.012 92)  */
+  --raised:#FFFFFF;
+  --text:#1D1F1A;            /* ink    oklch(0.235 0.011 130) */
+  --muted:#63665B;           /* oklch(0.50 0.02 120)          */
+  --line:rgba(29,31,26,.16);
+  --line-strong:rgba(29,31,26,.6);
+  --grid:rgba(29,31,26,.05);
+  --tag-bg:var(--volt); --tag-fg:#1D1F1A;
+  --btn-bg:#1D1F1A; --btn-fg:var(--volt);
+  --display-accent:#1D1F1A;  /* big type color            */
+  --serif-accent:#5F7414;    /* serif italic accent words — AA verified on paper */
+  --glow:transparent;
+  --grain-opacity:0;
+  --duotone:sepia(14%) saturate(60%);
+  color-scheme:light;
+}
+html[data-theme="dark"]{
+  /* dark mode — Ink / The Night Shift (olive-ink, 4-level ramp) */
+  --bg:#1C1F18;              /* base    oklch(0.235 0.014 128) */
+  --surface:#23271F;         /* surface oklch(0.272 0.016 128) */
+  --wash:#2C3126;            /* raised  */
+  --raised:#363C2F;          /* overlay */
+  --text:#ECEBE4;            /* oklch(0.937 0.006 95) */
+  --muted:#A2A695;
+  --line:rgba(236,235,228,.14);
+  --line-strong:rgba(236,235,228,.55);
+  --grid:rgba(236,235,228,.05);
+  --tag-bg:transparent; --tag-fg:var(--volt);
+  --btn-bg:var(--volt); --btn-fg:#1C1F18;
+  --display-accent:var(--volt);
+  --serif-accent:var(--volt);
+  --glow:rgba(205,243,69,.10);
+  --grain-opacity:.05;
+  --duotone:grayscale(65%) sepia(30%) hue-rotate(50deg) saturate(70%) brightness(.9);
+  color-scheme:dark;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:"Archivo",ui-sans-serif,system-ui,sans-serif;
+  font-size:17px;line-height:1.55;
+  transition:background-color .35s ease,color .35s ease;
+  overflow-x:hidden;
+}
+::selection{background:var(--volt);color:#1D1F1A;}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
+em.serif{font-family:"Instrument Serif",Georgia,serif;font-style:italic;font-weight:400;color:var(--serif-accent);letter-spacing:0;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(18px,4vw,48px);}
+
+/* grain overlay — dark mode only */
+body::after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9;
+  opacity:var(--grain-opacity);transition:opacity .35s ease;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+}
+
+/* ---------- sticky header ---------- */
+header.bar{
+  position:sticky;top:0;z-index:50;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px clamp(18px,4vw,48px);
+  background:color-mix(in oklab,var(--bg) 88%,transparent);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+header.bar .logo svg{height:16px;width:auto;display:block;fill:var(--text);transition:fill .35s;}
+header.bar .label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.toggle{
+  display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none;
+  border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;
+  background:var(--surface);color:var(--text);
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+}
+.toggle .dot{width:9px;height:9px;border-radius:50%;background:var(--volt);box-shadow:0 0 0 0 rgba(205,243,69,.5);}
+.toggle:hover .dot{box-shadow:0 0 10px 1px rgba(205,243,69,.7);}
+
+/* ---------- section scaffolding (Wembi numbering) ---------- */
+section.block{border-top:1px solid var(--line);padding:26px 0 72px;}
+.sechead{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  margin-bottom:42px;
+}
+.sechead .n{color:var(--muted);}
+.sechead .t{color:var(--text);}
+h2.big{
+  font-weight:800;font-stretch:112%;letter-spacing:-.02em;
+  font-size:clamp(30px,4.6vw,54px);line-height:.95;margin-bottom:20px;
+}
+p.lede{max-width:56ch;color:var(--muted);margin-bottom:36px;}
+
+/* ---------- masthead ---------- */
+.masthead{padding:84px 0 72px;position:relative;}
+.masthead h1{
+  font-weight:800;font-stretch:120%;letter-spacing:-.03em;
+  font-size:clamp(46px,9vw,124px);line-height:.88;text-transform:uppercase;
+}
+.masthead .thesis{max-width:62ch;color:var(--muted);margin-top:26px;font-size:18px;}
+.masthead .tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px;}
+.chip{
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--line-strong);border-radius:999px;padding:6px 13px;color:var(--text);
+}
+
+/* ---------- palette boards ---------- */
+.boards{display:grid;gap:18px;}
+.board{border-radius:16px;overflow:hidden;border:1px solid var(--line);}
+.board .bhead{
+  display:flex;justify-content:space-between;padding:16px 20px;
+  font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+}
+.board .cells{display:grid;grid-template-columns:repeat(6,1fr);}
+@media(max-width:760px){.board .cells{grid-template-columns:repeat(3,1fr);}}
+.cell{padding:34px 0 0;}
+.cell .meta{display:block;padding:10px 10px 12px;font-family:ui-monospace,"SF Mono",Menlo,monospace;}
+.cell .nm{display:block;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;}
+.cell .hx{display:block;font-size:9px;opacity:.75;margin-top:2px;}
+.cell .ok{display:block;font-size:8px;opacity:.55;margin-top:2px;}
+
+/* ---------- type specimens ---------- */
+.spec{border-top:1px dashed var(--line);padding:26px 0;}
+.spec .cap{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:700;}
+.t-display{font-weight:800;font-stretch:122%;letter-spacing:-.03em;font-size:clamp(44px,8vw,104px);line-height:.88;text-transform:uppercase;}
+.t-mixed{font-weight:800;font-stretch:112%;letter-spacing:-.02em;font-size:clamp(30px,5vw,64px);line-height:1;text-transform:uppercase;}
+.t-mixed em.serif{font-size:1.08em;text-transform:none;}
+.t-body{max-width:60ch;font-size:17px;}
+.t-mono{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.t-mono b{color:var(--text);}
+
+/* ---------- HERO SAMPLE ---------- */
+.hero{
+  position:relative;border-radius:20px;overflow:hidden;
+  background:var(--surface);border:1px solid var(--line);
+  padding:clamp(28px,5vw,64px);
+  background-image:
+    radial-gradient(ellipse 55% 45% at 82% 12%,var(--glow),transparent 70%),
+    linear-gradient(var(--grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:auto,30px 30px,30px 30px;
+}
+.hero .contours{position:absolute;inset:0;pointer-events:none;opacity:.5;}
+.hero .contours path{fill:none;stroke:var(--line);stroke-width:1;}
+.hero .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:clamp(36px,6vw,84px);position:relative;}
+.hero .top svg.lg{height:clamp(14px,2vw,20px);width:auto;fill:var(--text);transition:fill .35s;}
+.hero .coords{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.hero .grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(24px,4vw,56px);align-items:end;position:relative;}
+@media(max-width:860px){.hero .grid2{grid-template-columns:1fr;}}
+.hero .tag{
+  display:inline-block;font-family:ui-monospace,monospace;font-size:10.5px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  background:var(--tag-bg);color:var(--tag-fg);
+  padding:5px 10px;border-radius:4px;margin-bottom:22px;
+}
+html[data-theme="dark"] .hero .tag{padding:5px 0;}
+.hero h3{
+  font-weight:800;font-stretch:122%;letter-spacing:-.03em;
+  font-size:clamp(44px,7.2vw,110px);line-height:.86;text-transform:uppercase;
+  color:var(--display-accent);
+}
+.hero h3 .line{display:block;overflow:hidden;}
+.hero h3 .line>span{display:inline-block;}
+.hero h3 em.serif{font-size:1.06em;text-transform:none;}
+.hero .sub{max-width:44ch;color:var(--muted);margin:26px 0 34px;font-size:16.5px;}
+.hero .ctas{display:flex;gap:12px;flex-wrap:wrap;}
+.btn{
+  display:inline-block;position:relative;cursor:pointer;
+  font-family:ui-monospace,monospace;font-size:11px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;text-decoration:none;
+  padding:14px 22px;border-radius:10px;border:1.5px solid transparent;
+  transition:transform .18s cubic-bezier(.22,1,.36,1),background .18s,color .18s;
+  will-change:transform;
+}
+.btn.primary{background:var(--btn-bg);color:var(--btn-fg);}
+.btn.primary:hover{transform:translateY(-2px);}
+.btn.ghost{border-color:var(--line-strong);color:var(--text);background:transparent;}
+.btn.ghost:hover{background:var(--text);color:var(--bg);}
+.hero .scrollcue{
+  position:absolute;right:0;bottom:0;width:74px;height:74px;pointer-events:none;
+}
+.hero .scrollcue svg{width:100%;height:100%;}
+.hero .scrollcue text{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;fill:var(--muted);}
+@media (prefers-reduced-motion:no-preference){
+  .hero .scrollcue svg{animation:spin 14s linear infinite;}
+  .hero h3 .line>span{transform:translateY(110%);animation:rise .9s cubic-bezier(.22,1,.36,1) forwards;}
+  .hero h3 .line:nth-child(2)>span{animation-delay:.12s;}
+  .hero h3 .line:nth-child(3)>span{animation-delay:.24s;}
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes rise{to{transform:translateY(0);}}
+
+/* wireframe garment (tech-pack) */
+.techpack{position:relative;}
+.techpack svg{width:100%;max-width:330px;height:auto;display:block;margin-left:auto;}
+.techpack .stroke{fill:none;stroke:var(--text);stroke-width:1.4;}
+.techpack .seam{fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4;}
+.techpack .dim{stroke:var(--volt-deep);stroke-width:1;}
+html[data-theme="dark"] .techpack .dim{stroke:var(--volt);}
+.techpack text{font-family:ui-monospace,monospace;font-size:8px;letter-spacing:.08em;fill:var(--muted);text-transform:uppercase;}
+.techpack .voltlabel{fill:var(--volt-deep);font-weight:700;}
+html[data-theme="dark"] .techpack .voltlabel{fill:var(--volt);}
+
+/* ---------- marquee ---------- */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;margin-top:72px;}
+.marquee .track{display:flex;gap:64px;white-space:nowrap;width:max-content;}
+.marquee span{
+  font-weight:800;font-stretch:118%;letter-spacing:-.01em;font-size:clamp(20px,3vw,34px);text-transform:uppercase;
+}
+.marquee span em.serif{font-size:1.1em;text-transform:none;}
+.marquee .mono-sep{color:var(--volt-deep);font-weight:400;}
+html[data-theme="dark"] .marquee .mono-sep{color:var(--volt);}
+@media (prefers-reduced-motion:no-preference){
+  .marquee .track{animation:slide 26s linear infinite;}
+}
+@keyframes slide{to{transform:translateX(-50%);}}
+
+/* ---------- product cards ---------- */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:820px;}
+@media(max-width:700px){.cards{grid-template-columns:1fr;}}
+.pcard{
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  transition:transform .25s cubic-bezier(.22,1,.36,1),box-shadow .25s;
+}
+.pcard .img{
+  position:relative;height:220px;background:var(--wash);
+  display:flex;align-items:center;justify-content:center;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+}
+.pcard .img svg{height:150px;width:auto;}
+.pcard .body{padding:20px;}
+.pcard .cat{font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.pcard h4{font-weight:800;font-stretch:110%;font-size:21px;letter-spacing:-.01em;margin-bottom:12px;}
+.pcard .specs{list-style:none;font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.04em;color:var(--muted);display:grid;gap:5px;margin-bottom:18px;text-transform:uppercase;}
+.pcard .specs b{color:var(--text);font-weight:700;}
+.pcard .rfq{
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid var(--line);padding-top:14px;
+  font-family:ui-monospace,monospace;font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+}
+.pcard .rfq .go{color:var(--volt-deep);}
+html[data-theme="dark"] .pcard .rfq .go{color:var(--volt);}
+.pcard.hovered,.pcard:hover{transform:translateY(-6px);box-shadow:0 18px 44px -18px rgba(0,0,0,.35);}
+.pcard.hovered .rfq .go::after,.pcard:hover .rfq .go::after{content:" →";}
+.cardnote{font-family:ui-monospace,monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:12px;}
+
+/* ---------- motion demos ---------- */
+.motion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:860px){.motion-grid{grid-template-columns:1fr;}}
+.mcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;min-height:190px;display:flex;flex-direction:column;}
+.mcard .cap{font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;}
+.mcard .demo{flex:1;display:flex;align-items:center;justify-content:center;}
+.rove{list-style:none;display:flex;flex-direction:column;gap:6px;width:100%;}
+.rove li{
+  position:relative;font-weight:700;font-stretch:108%;font-size:19px;letter-spacing:-.01em;
+  padding:7px 14px;border-radius:999px;width:max-content;transition:background .4s,color .4s;
+}
+.rove li.on{background:var(--volt);color:#1D1F1A;}
+.magwrap{display:flex;align-items:center;justify-content:center;width:100%;height:110px;}
+.mstat{font-weight:800;font-stretch:120%;font-size:44px;letter-spacing:-.02em;color:var(--display-accent);}
+.mstat small{display:block;font-family:ui-monospace,monospace;font-size:9px;font-weight:400;letter-spacing:.14em;color:var(--muted);margin-top:6px;text-transform:uppercase;}
+.motion-note{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:22px;max-width:70ch;line-height:1.8;}
+
+/* ---------- voice ---------- */
+.voice p{
+  font-weight:800;font-stretch:114%;letter-spacing:-.02em;text-transform:uppercase;
+  font-size:clamp(24px,3.6vw,44px);line-height:1.06;margin-bottom:26px;max-width:22ch;
+}
+.voice p em.serif{font-size:1.08em;text-transform:none;}
+.voice .who{font-family:ui-monospace,monospace;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:-14px;margin-bottom:34px;}
+
+/* ---------- footer sample ---------- */
+.footer{
+  position:relative;border-radius:20px 20px 0 0;overflow:hidden;margin-top:20px;
+  background:var(--surface);border:1px solid var(--line);border-bottom:none;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:30px 30px;
+  padding:clamp(28px,5vw,60px) clamp(20px,4vw,56px) 0;
+}
+.footer .fgrid{display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:clamp(24px,4vw,56px);}
+@media(max-width:900px){.footer .fgrid{grid-template-columns:1fr;}}
+.footer .flabel{font-family:ui-monospace,monospace;font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:22px;}
+.footer h5{
+  font-weight:800;font-stretch:122%;letter-spacing:-.03em;text-transform:uppercase;
+  font-size:clamp(34px,4.6vw,58px);line-height:.9;margin-bottom:34px;
+}
+.field{margin-bottom:26px;}
+.field label{
+  display:flex;gap:10px;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+  transition:color .2s;
+}
+.field input,.field textarea{
+  width:100%;background:transparent;border:none;border-bottom:1px solid var(--line-strong);
+  font-family:ui-monospace,monospace;font-size:15px;letter-spacing:.03em;color:var(--text);
+  padding:6px 0 10px;text-transform:uppercase;outline:none;resize:none;
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--muted);opacity:.55;}
+.field:focus-within label{color:var(--volt-deep);}
+html[data-theme="dark"] .field:focus-within label{color:var(--volt);}
+.field input:focus,.field textarea:focus{border-bottom-color:var(--volt-deep);}
+html[data-theme="dark"] .field input:focus,html[data-theme="dark"] .field textarea:focus{border-bottom-color:var(--volt);}
+.footer .flinks{list-style:none;display:grid;gap:10px;font-size:14.5px;}
+.footer .flinks a{color:var(--text);text-decoration:none;}
+.footer .flinks a:hover{color:var(--volt-deep);}
+html[data-theme="dark"] .footer .flinks a:hover{color:var(--volt);}
+.footer .fcol{border-left:1px solid var(--line);padding-left:clamp(16px,2vw,28px);}
+@media(max-width:900px){.footer .fcol{border-left:none;padding-left:0;border-top:1px solid var(--line);padding-top:22px;}}
+.certline{
+  border-top:1px solid var(--line);margin-top:44px;padding:16px 0;overflow:hidden;
+}
+.certline .track{display:flex;gap:56px;white-space:nowrap;width:max-content;font-family:ui-monospace,monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+.certline .track span:hover{color:var(--volt-deep);}
+html[data-theme="dark"] .certline .track span:hover{color:var(--volt);}
+@media (prefers-reduced-motion:no-preference){.certline .track{animation:slide 32s linear infinite;}}
+.copybar{
+  border-top:1px solid var(--line);padding:14px 0;text-align:center;
+  font-family:ui-monospace,monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+}
+.gianttype{
+  display:block;width:100%;overflow:hidden;line-height:.78;pointer-events:none;user-select:none;
+  font-weight:800;font-stretch:125%;letter-spacing:-.04em;text-transform:uppercase;
+  font-size:clamp(64px,12.5vw,180px);text-align:center;
+  color:var(--text);opacity:.08;transform:translateY(14%);
+}
+html[data-theme="dark"] .gianttype{color:var(--volt);opacity:.10;}
+
+/* mode annotation chips */
+.modeform{
+  font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <span class="logo" aria-label="RUN APPAREL">
+    <svg viewBox="0 0 397.72 126.43" xmlns="http://www.w3.org/2000/svg"><g><path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/><path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/><polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/><polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/><polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/><polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/></g></svg>
+  </span>
+  <span class="label mono">Direction D — Paper &amp; Ink · Olive Ink</span>
+  <button class="toggle" id="themeToggle" aria-pressed="false">
+    <span class="dot"></span><span id="toggleLabel">Lights: on</span>
+  </button>
+</header>
+
+<div class="wrap">
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <h1>Paper<br>&amp; Ink</h1>
+    <p class="thesis">One identity, photographed in two lighting conditions. <strong>Light mode is the workshop</strong> — warm paper, ink type, technical drawings, volt as a stamp. <strong>Dark mode is the night shift</strong> — olive ink, film grain, one luminous glow, volt doing the talking. The technical-drawing garnish — contour lines, wireframe tech-packs, numbered sections, bracketed labels — runs through both.</p>
+    <div class="tags">
+      <span class="chip">editorial × technical</span>
+      <span class="chip">volt = signal, never noise</span>
+      <span class="chip">both modes are first-class</span>
+    </div>
+  </div>
+
+  <!-- 001 PALETTE -->
+  <section class="block" id="palette">
+    <div class="sechead"><span class="n">N°001</span><span class="t">Palette — Olive Ink</span><span class="n">N°001</span></div>
+    <div class="boards">
+      <div class="board" style="background:#F1EFEA;">
+        <div class="bhead" style="color:#1D1F1A;"><span>Light — “The Workshop”</span><span>default</span></div>
+        <div class="cells">
+          <div class="cell" style="background:#F1EFEA"><span class="meta" style="color:#1D1F1A"><span class="nm">paper</span><span class="hx">#F1EFEA</span><span class="ok">oklch(.951 .007 90)</span></span></div>
+          <div class="cell" style="background:#FAF9F6"><span class="meta" style="color:#1D1F1A"><span class="nm">card</span><span class="hx">#FAF9F6</span><span class="ok">oklch(.978 .004 90)</span></span></div>
+          <div class="cell" style="background:#E4E1D8"><span class="meta" style="color:#1D1F1A"><span class="nm">wash</span><span class="hx">#E4E1D8</span><span class="ok">oklch(.906 .012 92)</span></span></div>
+          <div class="cell" style="background:#1D1F1A"><span class="meta" style="color:#ECEBE4"><span class="nm">ink · text</span><span class="hx">#1D1F1A</span><span class="ok">oklch(.235 .011 130)</span></span></div>
+          <div class="cell" style="background:#63665B"><span class="meta" style="color:#FAF9F6"><span class="nm">muted</span><span class="hx">#63665B</span><span class="ok">oklch(.50 .02 120)</span></span></div>
+          <div class="cell" style="background:#CDF345"><span class="meta" style="color:#1D1F1A"><span class="nm">volt — blocks only</span><span class="hx">#CDF345</span><span class="ok">oklch(.92 .20 118)</span></span></div>
+        </div>
+      </div>
+      <div class="board" style="background:#1C1F18;">
+        <div class="bhead" style="color:#ECEBE4;"><span>Dark — “The Night Shift”</span><span>4-level elevation</span></div>
+        <div class="cells">
+          <div class="cell" style="background:#1C1F18"><span class="meta" style="color:#ECEBE4"><span class="nm">base</span><span class="hx">#1C1F18</span><span class="ok">oklch(.235 .014 128)</span></span></div>
+          <div class="cell" style="background:#23271F"><span class="meta" style="color:#ECEBE4"><span class="nm">surface</span><span class="hx">#23271F</span><span class="ok">oklch(.272 .016 128)</span></span></div>
+          <div class="cell" style="background:#2C3126"><span class="meta" style="color:#ECEBE4"><span class="nm">raised</span><span class="hx">#2C3126</span><span class="ok">oklch(.31 .017 128)</span></span></div>
+          <div class="cell" style="background:#363C2F"><span class="meta" style="color:#ECEBE4"><span class="nm">overlay</span><span class="hx">#363C2F</span><span class="ok">oklch(.35 .019 128)</span></span></div>
+          <div class="cell" style="background:#ECEBE4"><span class="meta" style="color:#1C1F18"><span class="nm">text</span><span class="hx">#ECEBE4</span><span class="ok">oklch(.937 .006 95)</span></span></div>
+          <div class="cell" style="background:#CDF345"><span class="meta" style="color:#1C1F18"><span class="nm">volt — type + glow</span><span class="hx">#CDF345</span><span class="ok">oklch(.92 .20 118)</span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 002 TYPE -->
+  <section class="block" id="type">
+    <div class="sechead"><span class="n">N°002</span><span class="t">Type pairing</span><span class="n">N°002</span></div>
+    <div class="spec">
+      <p class="cap">Display — Archivo · variable · 800–900 · width 122%</p>
+      <p class="t-display">Built to run</p>
+    </div>
+    <div class="spec">
+      <p class="cap">The mixed headline — grotesk caps × Instrument Serif italic accents (the volt words)</p>
+      <p class="t-mixed">Redefining <em class="serif">limits,</em><br>chasing <em class="serif">tomorrow.</em></p>
+    </div>
+    <div class="spec">
+      <p class="cap">Body — Archivo · 400/500 · 17px</p>
+      <p class="t-body">RUN is more than just a name — it's a commitment to going the extra mile. Every stitch reflects dedication to sustainability, quality, and ethical craftsmanship. Five generations of Sialkot manufacturing, engineered for partners who chase progress and never look back.</p>
+    </div>
+    <div class="spec">
+      <p class="cap">Labels — system monospace · zero download</p>
+      <p class="t-mono">[ HQ COORDINATES ] &nbsp; N°001 — <b>32.4945° N, 74.5229° E</b> &nbsp; · &nbsp; [ CAPACITY ] <b>100,000 U/MO</b> &nbsp; · &nbsp; [ EST. ] <b>1889</b></p>
+    </div>
+  </section>
+
+  <!-- 003 HERO -->
+  <section class="block" id="hero">
+    <div class="sechead"><span class="n">N°003</span><span class="t">Sample hero</span><span class="n">N°003</span></div>
+    <div class="hero">
+      <svg class="contours" viewBox="0 0 1100 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path d="M-40,520 C180,430 260,560 470,470 C650,395 700,520 900,430 C1010,385 1080,430 1160,400"/>
+        <path d="M-40,560 C190,470 280,600 500,505 C670,435 730,560 930,465 C1030,420 1090,465 1160,440"/>
+        <path d="M-40,600 C200,515 300,640 530,545 C690,480 760,600 960,505 C1050,462 1100,500 1160,480"/>
+        <path d="M840,-20 C800,90 900,150 980,110 C1070,65 1060,10 1160,20"/>
+        <path d="M800,-20 C760,120 890,195 990,145 C1090,95 1090,30 1160,50"/>
+      </svg>
+      <div class="top">
+        <svg class="lg" viewBox="0 0 397.72 126.43" xmlns="http://www.w3.org/2000/svg"><g><path d="M390.35,11.57c.33-.26.58-.6.74-.99.16-.4.25-.85.25-1.36s-.08-.99-.25-1.38c-.17-.39-.43-.72-.78-.99-.35-.27-.79-.47-1.33-.6-.53-.13-1.18-.2-1.93-.2h-4.75v10.7h1.12v-4.39h2.71l3.57,4.39h1.41l-3.58-4.4c.59-.01,1.13-.07,1.58-.19.51-.13.93-.33,1.26-.6M387.1,11.3h-3.7v-4.17h3.7c.55,0,1.02.04,1.41.13.39.09.7.22.94.39.24.17.41.39.52.65.11.26.16.57.16.92,0,.34-.05.64-.16.9-.11.27-.28.48-.52.66-.24.17-.55.3-.94.39-.39.09-.86.13-1.41.13"/><path d="M386.81,22.31c-6.01,0-10.91-4.89-10.91-10.91s4.89-10.91,10.91-10.91,10.91,4.89,10.91,10.91-4.89,10.91-10.91,10.91M386.81,1.21c-5.62,0-10.2,4.58-10.2,10.2s4.58,10.2,10.2,10.2,10.2-4.58,10.2-10.2-4.58-10.2-10.2-10.2"/><polygon points="180.42 3.93 135.59 47.51 135.59 126.42 181.61 126.42 263.2 47.16 263.2 0 215.35 0 215.35 91.91 180.42 91.91 180.42 3.93"/><polygon points="322.2 126.42 366.59 80.45 366.59 0 320.57 0 238.98 79.26 238.98 126.42 286.83 126.42 286.83 34.51 322.2 34.51 322.2 126.42"/><polygon points="0 0 124.78 0 124.78 49.45 45.52 126.42 .4 126.42 .27 83.91 88.37 83.91 88.37 34.51 .15 34.51 0 0"/><polygon points="124.78 83.91 124.78 126.43 88.37 126.43 88.37 93.38 98.13 83.91 124.78 83.91"/></g></svg>
+        <span class="coords">N°001 — Sialkot · 32.49° N, 74.52° E</span>
+      </div>
+      <div class="grid2">
+        <div>
+          <span class="tag">[ B2B Sports-Apparel Manufacturing ]</span>
+          <h3>
+            <span class="line"><span>Never</span></span>
+            <span class="line"><span><em class="serif">look</em> back.</span></span>
+          </h3>
+          <p class="sub">Five generations of Sialkot craft. 100,000 units a month. Sustainable, high-performance apparel for brands that go the extra mile.</p>
+          <div class="ctas">
+            <a class="btn primary magnetic" href="#">Start your RFQ</a>
+            <a class="btn ghost" href="#">Explore capabilities</a>
+          </div>
+        </div>
+        <div class="techpack" aria-label="Wireframe garment technical drawing">
+          <svg viewBox="0 0 330 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- performance tee — tech-pack wireframe -->
+            <path class="stroke" d="M115,58 C130,44 200,44 215,58 L275,92 L258,140 L232,126 L232,330 C232,342 208,352 165,352 C122,352 98,342 98,330 L98,126 L72,140 L55,92 Z"/>
+            <path class="seam" d="M115,58 C132,80 198,80 215,58"/>
+            <path class="seam" d="M98,150 L232,150"/>
+            <path class="seam" d="M98,310 C120,320 210,320 232,310"/>
+            <path class="seam" d="M165,88 L165,352"/>
+            <path class="seam" d="M72,138 L98,124"/>
+            <path class="seam" d="M258,138 L232,124"/>
+            <!-- dimension: chest -->
+            <line class="dim" x1="98" y1="178" x2="232" y2="178"/>
+            <line class="dim" x1="98" y1="172" x2="98" y2="184"/>
+            <line class="dim" x1="232" y1="172" x2="232" y2="184"/>
+            <text class="voltlabel" x="140" y="171">chest 56 cm</text>
+            <!-- dimension: length -->
+            <line class="dim" x1="262" y1="150" x2="262" y2="352"/>
+            <line class="dim" x1="256" y1="150" x2="268" y2="150"/>
+            <line class="dim" x1="256" y1="352" x2="268" y2="352"/>
+            <text class="voltlabel" x="270" y="255" transform="rotate(90 270 255)">body 74 cm</text>
+            <!-- callouts -->
+            <text x="30" y="30">[ 04 — flatlock seams ]</text>
+            <line class="seam" x1="88" y1="36" x2="165" y2="74"/>
+            <text x="16" y="378">[ fabric — 160gsm recycled interlock ]</text>
+          </svg>
+        </div>
+      </div>
+      <div class="scrollcue" aria-hidden="true">
+        <svg viewBox="0 0 74 74"><defs><path id="circ" d="M37,7 a30,30 0 1,1 -0.01,0"/></defs><text><textPath href="#circ">scroll · scroll · scroll · scroll ·&#160;</textPath></text></svg>
+      </div>
+    </div>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="track" id="marqueeTrack">
+        <span>The <em class="serif">extra</em> mile</span><span class="mono-sep">///</span>
+        <span>Est. 1889</span><span class="mono-sep">///</span>
+        <span>For a <em class="serif">better</em> tomorrow</span><span class="mono-sep">///</span>
+        <span>100,000 u/mo</span><span class="mono-sep">///</span>
+        <span>Never <em class="serif">look</em> back</span><span class="mono-sep">///</span>
+        <span>Sialkot → the world</span><span class="mono-sep">///</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 004 PRODUCT CARD -->
+  <section class="block" id="card">
+    <div class="sechead"><span class="n">N°004</span><span class="t">Product card — B2B catalog</span><span class="n">N°004</span></div>
+    <div class="cards">
+      <div class="pcard">
+        <div class="img">
+          <svg viewBox="0 0 330 400" xmlns="http://www.w3.org/2000/svg">
+            <path class="stroke" style="fill:none;stroke:var(--text);stroke-width:1.4" d="M115,58 C130,44 200,44 215,58 L275,92 L258,140 L232,126 L232,330 C232,342 208,352 165,352 C122,352 98,342 98,330 L98,126 L72,140 L55,92 Z"/>
+            <path style="fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4" d="M115,58 C132,80 198,80 215,58"/>
+            <path style="fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4" d="M165,88 L165,352"/>
+          </svg>
+        </div>
+        <div class="body">
+          <p class="cat">Team Wear — N°012</p>
+          <h4>Pro Team Jersey</h4>
+          <ul class="specs">
+            <li>[ fabric ] <b>160gsm recycled poly interlock</b></li>
+            <li>[ moq ] <b>from 300 units / colorway</b></li>
+            <li>[ custom ] <b>full sublimation · your spec</b></li>
+          </ul>
+          <div class="rfq"><span>Request quote</span><span class="go">RFQ</span></div>
+        </div>
+      </div>
+      <div class="pcard hovered">
+        <div class="img">
+          <svg viewBox="0 0 330 400" xmlns="http://www.w3.org/2000/svg">
+            <path style="fill:none;stroke:var(--text);stroke-width:1.4" d="M115,58 C130,44 200,44 215,58 L275,92 L258,140 L232,126 L232,330 C232,342 208,352 165,352 C122,352 98,342 98,330 L98,126 L72,140 L55,92 Z"/>
+            <path style="fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4" d="M115,58 C132,80 198,80 215,58"/>
+            <path style="fill:none;stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4" d="M165,88 L165,352"/>
+            <line style="stroke:var(--volt-deep);stroke-width:1" x1="98" y1="178" x2="232" y2="178"/>
+          </svg>
+        </div>
+        <div class="body">
+          <p class="cat">Team Wear — N°012</p>
+          <h4>Pro Team Jersey</h4>
+          <ul class="specs">
+            <li>[ fabric ] <b>160gsm recycled poly interlock</b></li>
+            <li>[ moq ] <b>from 300 units / colorway</b></li>
+            <li>[ custom ] <b>full sublimation · your spec</b></li>
+          </ul>
+          <div class="rfq"><span>Request quote</span><span class="go">RFQ</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="cardnote">left — default state · right — hover state (lift + shadow + volt dimension line + arrow). photography replaces wireframes in production; wireframe stays as the loading/empty state.</p>
+  </section>
+
+  <!-- 005 MOTION -->
+  <section class="block" id="motion">
+    <div class="sechead"><span class="n">N°005</span><span class="t">Motion character — balanced</span><span class="n">N°005</span></div>
+    <h2 class="big">Precise, <em class="serif" style="font-stretch:100%">unhurried,</em> alive.</h2>
+    <p class="lede">Bold where the story is told — home hero, heritage, category landings. Subtle on forms and the portal. Minimal in catalog grids and spec tables. Every effect honors reduced-motion and switches off on touch devices.</p>
+    <div class="motion-grid">
+      <div class="mcard">
+        <p class="cap">Roving highlight — category lists (Wembi)</p>
+        <div class="demo">
+          <ul class="rove" id="roveList">
+            <li class="on">Team Wear</li>
+            <li>Active Wear</li>
+            <li>Casual Wear</li>
+            <li>Outer Wear</li>
+            <li>Accessories</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mcard">
+        <p class="cap">Magnetic CTA — pulls toward the cursor</p>
+        <div class="demo magwrap">
+          <a class="btn primary magnetic" href="#" style="pointer-events:auto">Start your RFQ</a>
+        </div>
+      </div>
+      <div class="mcard">
+        <p class="cap">Counting stats — ticks up on scroll-in</p>
+        <div class="demo">
+          <div class="mstat"><span id="statNum">0</span>,000<small>units / month · est. 1889</small></div>
+        </div>
+      </div>
+    </div>
+    <p class="motion-note">Also in the kit: kinetic hero lines (rise on load — live above) · opposing marquees · scroll-spy dot in the floating nav · pinned process cards (GSAP ScrollTrigger) · tilted photo reveals · grain + one luminous glow per screen (dark) · parallax giant logotype (footer below). Dropped by decision: whole-page skew, heavy backdrop-blur.</p>
+  </section>
+
+  <!-- 006 VOICE -->
+  <section class="block" id="voice">
+    <div class="sechead"><span class="n">N°006</span><span class="t">Voice — bold · heritage × innovation</span><span class="n">N°006</span></div>
+    <div class="voice">
+      <p>Your label. Our <em class="serif">obsession.</em></p>
+      <p class="who">— capability pages</p>
+      <p>136 years in. Still <em class="serif">running.</em></p>
+      <p class="who">— heritage timeline</p>
+      <p>Quote in days. <em class="serif">Not</em> weeks.</p>
+      <p class="who">— RFQ entry</p>
+    </div>
+  </section>
+
+  <!-- 007 FOOTER -->
+  <section class="block" id="footer" style="padding-bottom:0;">
+    <div class="sechead"><span class="n">N°007</span><span class="t">Footer — command center</span><span class="n">N°007</span></div>
+  </section>
+</div>
+
+<div class="footer" id="footerBlock">
+  <div class="fgrid">
+    <div>
+      <p class="flabel">[ Start your RFQ ]</p>
+      <h5>Submit<br>specifications</h5>
+      <form onsubmit="return false;">
+        <div class="field">
+          <label><span>01</span><span>Company name</span></label>
+          <input type="text" placeholder="Enter company" aria-label="Company name">
+        </div>
+        <div class="field">
+          <label><span>02</span><span>Email address</span></label>
+          <input type="email" placeholder="name@domain.com" aria-label="Email address">
+        </div>
+        <div class="field">
+          <label><span>03</span><span>Project specifications</span></label>
+          <textarea rows="2" placeholder="Fabric / quantity / timeline" aria-label="Project specifications"></textarea>
+        </div>
+        <button class="btn primary magnetic" type="submit">Request quote →</button>
+      </form>
+    </div>
+    <div class="fcol">
+      <p class="flabel">[ HQ coordinates ]</p>
+      <ul class="flinks">
+        <li>13 Km Daska Road</li>
+        <li>Sialkot 51040, Pakistan</li>
+        <li style="margin-top:14px"><a href="#">partner@wear-run.com</a></li>
+        <li><a href="#">+92 ··· ··· ····</a></li>
+      </ul>
+    </div>
+    <div class="fcol">
+      <p class="flabel">[ Network ]</p>
+      <ul class="flinks">
+        <li><a href="#">Instagram</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li style="margin-top:14px"><a href="#">Privacy</a></li>
+        <li><a href="#">Terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="certline" aria-hidden="true">
+    <div class="track">
+      <span>[ certification marquee — final names pending Hateem's approval ]</span>
+      <span>[ compliance credentials shown here, grayscale → volt on hover ]</span>
+      <span>[ certification marquee — final names pending Hateem's approval ]</span>
+      <span>[ compliance credentials shown here, grayscale → volt on hover ]</span>
+    </div>
+  </div>
+  <div class="copybar">© 2026 RUN APPAREL (PVT) LTD · All rights reserved</div>
+  <span class="gianttype" id="gianttype">Run Apparel</span>
+</div>
+
+<script>
+/* theme toggle — light default; system preference respected on first load */
+(function(){
+  var root=document.documentElement,btn=document.getElementById('themeToggle'),lab=document.getElementById('toggleLabel');
+  function apply(mode){
+    if(mode==='dark'){root.setAttribute('data-theme','dark');lab.textContent='Lights: off';btn.setAttribute('aria-pressed','true');}
+    else{root.removeAttribute('data-theme');lab.textContent='Lights: on';btn.setAttribute('aria-pressed','false');}
+  }
+  var pref=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';
+  apply(pref);
+  btn.addEventListener('click',function(){apply(root.hasAttribute('data-theme')?'light':'dark');});
+})();
+
+var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var touch=window.matchMedia('(pointer: coarse)').matches;
+
+/* roving pill highlight */
+(function(){
+  if(reduced)return;
+  var items=document.querySelectorAll('#roveList li'),i=0;
+  setInterval(function(){items[i].classList.remove('on');i=(i+1)%items.length;items[i].classList.add('on');},1400);
+})();
+
+/* magnetic buttons (desktop pointers only) */
+(function(){
+  if(reduced||touch)return;
+  document.querySelectorAll('.magnetic').forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+      var r=el.getBoundingClientRect(),x=e.clientX-r.left-r.width/2,y=e.clientY-r.top-r.height/2;
+      el.style.transform='translate('+x*0.18+'px,'+y*0.28+'px)';
+    });
+    el.addEventListener('mouseleave',function(){el.style.transform='';});
+  });
+})();
+
+/* counting stat on scroll-in */
+(function(){
+  var el=document.getElementById('statNum'),done=false;
+  if(reduced){el.textContent='100';return;}
+  new IntersectionObserver(function(en){
+    if(en[0].isIntersecting&&!done){done=true;
+      var v=0,t=setInterval(function(){v+=4;if(v>=100){v=100;clearInterval(t);}el.textContent=v;},28);
+    }
+  },{threshold:.5}).observe(el);
+})();
+
+/* parallax giant logotype */
+(function(){
+  if(reduced)return;
+  var g=document.getElementById('gianttype');
+  window.addEventListener('scroll',function(){
+    var r=g.getBoundingClientRect(),vh=window.innerHeight;
+    if(r.top<vh&&r.bottom>0){
+      var p=1-(r.top/vh); /* 0→1 as it enters */
+      g.style.transform='translateY('+(30-p*34)+'%)';
+    }
+  },{passive:true});
+})();
+</script>
+</body>
+</html>
