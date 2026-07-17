@@ -1,5 +1,15 @@
 # Handoff prompt — investigate the macOS local build failure
 
+> **✅ RESOLVED 2026-07-17 — see the BUILD_LOG.md Session-5 entry for the full evidence.**
+> Root causes: (1) the `useContext` crash was the Claude Code desktop app leaking `NODE_ENV=development`
+> into every shell it runs — `env -u NODE_ENV pnpm run build` goes green; it was never macOS, Node, or the
+> repo. (2) `SQLITE_BUSY` is one Miniflare boot per build worker on one sqlite file — a `NEXT_PHASE`-gated
+> stub fix is validated and awaits Hateem's approval. (3) The vitest failure was esbuild's realm check under
+> vitest's jsdom global-mixing — fixed, `test:int` green. **Corrections to the text below:** the "strongest
+> untested lead" (route-group layout wrapping the synthetic pages) is REFUTED — Next uses its builtin layout;
+> and the "stale install ruled out" elimination did not hold — the store contained two React copies when this
+> session began (real dirt, though proven not to be the cause of the crash).
+
 Paste the block below into a **new Claude Code session** in `~/Sites/website-main`.
 Everything above the block is context for Hateem; the block itself is self-contained.
 

@@ -4,6 +4,36 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-17 — Session 5 · 🟢 The local build/test mystery SOLVED — it was the tool's own shell, not the Mac
+
+Ran the investigation from `docs/INVESTIGATION-local-build.md`. Every conclusion below was confirmed by a controlled test (logs kept in the session scratchpad); **verified** vs **inferred** is labeled.
+
+**1 · The `useContext` build crash — VERIFIED root cause: a polluted shell environment, not the code, not the Mac.**
+The Claude Code desktop app (the tool Hateem runs Claude in) injects `NODE_ENV=development` into every command Claude executes. ("Environment variable" = a hidden setting every program inherits from whatever launched it. `NODE_ENV` tells JavaScript tools whether they're in development or production mode.) `next build` must run in production mode; with the leaked value it assembles a mix of development and production React, which shows up as the duplicate-key warnings (development-only warnings that should be impossible in a production build) and then the `useContext` crash. Proof: the identical build run with the variable removed (`env -u NODE_ENV pnpm run build`, single worker) → **exit 0, first green local build ever on this machine**. The variable was traced to the Claude Code app process itself — it is NOT in any shell profile, launchd, or Hateem's own Terminal, and CI never has it, which is exactly why CI was always green. This also explains why every earlier elimination (three Node versions, clean install, the 18693f7 control checkout) "failed identically": all of them ran inside the same contaminated shell.
+
+**2 · Two leads honestly killed on the way (both VERIFIED refuted).**
+(a) The handoff doc's "strongest untested lead" (no root layout → Payload's layout wraps the synthetic pages) is wrong: Next's own loader wraps `/_not-found`/`/_global-error` in its **builtin** layout when no root layout exists — checked in Next's source and in the compiled build artifacts; zero Payload modules appear in those pages. Do not add a root layout for this. (b) `node_modules` really did contain **two React copies** (19.2.1 dirt left by the same-day dep bump, alongside 19.2.7; the lockfile only knew 19.2.7) — a genuine defect, fixed by a verified clean reinstall — but the crash persisted on a proven single-React install, so it was NOT the cause. The earlier "stale install ruled out" claim was contradicted by the observed dirt; **inferred:** that old test predated the dep bump that re-dirtied the store.
+
+**3 · The `SQLITE_BUSY` crash — VERIFIED mechanism and a validated (not yet applied) fix.**
+`payload.config.ts` resolves its database connection at import time, so every one of Next's parallel build workers (9 on this 14-core Mac) boots its own Miniflare/workerd ("miniature local copy of Cloudflare's server") against the one local database file; they collide during the file's crash-recovery step and the runtime dies at startup. Validated fix, **awaiting Hateem's approval before touching the repo**: when Next signals "this is the build phase" (`NEXT_PHASE`), hand Payload inert stub bindings instead of booting Miniflare. A throw-on-any-access probe proved **nothing reads D1 or R2 during the entire build** (0 accesses across 9 workers, exit 0, no workerd process ever started, static generation 385ms), and the exact CI command (`pnpm exec opennextjs-cloudflare build`) ran green end-to-end with the stub in place.
+
+**4 · The failing tests — FIXED (applied + committed).**
+The invariant crash came from esbuild's startup self-check running under vitest's jsdom environment, which swaps the global `Uint8Array` for jsdom's copy but not `TextEncoder` — two different "realms" that fail an `instanceof` check the moment the Payload config pulls in wrangler. The int test never touches a browser DOM, so `vitest.config.mts` now uses `environment: 'node'` (a future DOM test can opt back into jsdom per-file). Next layer beneath: no `PAYLOAD_SECRET` locally → created a **gitignored** local `.env` with a freshly generated value used only by this machine (the real production secret stays in Wrangler, untouched, per §11). **`pnpm run test:int` is now GREEN (1/1).** Safety property verified: under tests `remoteBindings` is false — they touch only the local sqlite file, never production D1.
+
+**5 · Bonus: `next dev` works now too** (homepage and `/admin/login` both HTTP 200 locally). It needed the `.env`, plus one more harness leak dodged: the Claude Code app also injects `PORT=5002` (a port already occupied on this machine) and `next dev` honors it — start dev with an explicit free port (`PORT=3789 pnpm run dev`).
+
+**6 · The handoff's CI-risk question, answered with sources:** Workers Builds paid runners have **4 vCPUs** (Cloudflare changelog 2025-09-07 — raised from 2), and Next uses `cores − 1` build workers → CI runs ~3 concurrent Miniflare boots today and survives. **Inferred** why: a fresh CI checkout has no stale write-ahead-log file, and the fatal collision path (`SQLITE_BUSY_RECOVERY`) needs one. Verdict: the risk is **real but dormant** — Cloudflare has already raised runner cores once. The §3 fix eliminates the whole class at any core count and would make CI builds faster.
+
+**State right now:** tests green · dev server green · `next build` green only via the workaround (`env -u NODE_ENV`, single worker); full-speed local builds wait on the §3 fix. Deploy path untouched; nothing pushed changes what CI builds. `node@22` uninstalled per the handoff's standing instruction (default Node 24.18.0 intact).
+
+**Awaiting Hateem (the one question, options in the session report):** apply the two validated build fixes — the `NEXT_PHASE` stub in `payload.config.ts` and an explicit `NODE_ENV=production` on the `build` script (belt-and-braces against the harness leak) — or keep using the manual workaround.
+
+**Open (non-blocking):** `.node-version` still 22 (now proven irrelevant to these failures; still stale vs the template's `engines` — revisit when touching CI anyway) · the harness env leak is worth reporting to Anthropic (Claude Code 2.1.209) · carried over: Neue Stance licence · Phase-0 dashboard items · certification marquee assets.
+
+**Next step:** Hateem's answer on the build fixes → apply + verify (`opennextjs-cloudflare build` green locally, then CI) → then Phase 3 (public pages) has a fully working local preview.
+
+---
+
 ## 2026-07-17 — Session 4 (cont.) · Version audit (spec §0.4) + the local build/test mystery, honestly resolved
 
 **Hateem asked: is everything the latest stable as of 17 Jul 2026?** Audited all 29 deps against the npm registry.
