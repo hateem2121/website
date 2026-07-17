@@ -4,6 +4,32 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-17 — Session 7 · Re-verified every stack against the live registry — all current, zero drift, nothing to apply
+
+**Hateem asked again whether every stack is on the latest stable version.** Ran the §0.4 audit fresh against the live npm registry rather than trusting this morning's Session-6 entry. This session runs in a **new remote Linux container on branch `claude/stack-version-audit-i9iuxj`** (not the Mac; container Node is 22.22.2, which is irrelevant to a version audit). The clone already contains Session 6's commits (`fcd9586` wrangler 4.112.0 + pnpm 10.34.5, `2a02b90` Node-24 sync), so this branch equals `main`'s audited state.
+
+**Method:** queried every dependency's full version list, dropped any version containing `-` (prerelease), and compared each pin to (a) the newest stable inside its locked major and (b) the newest stable overall. pnpm and Node checked separately (they live in `packageManager` / `.node-version`, not in deps).
+
+**Result — 29/29 dependencies sit exactly at the newest stable release inside their locked major. Zero drift.** Even this morning's two drifts are closed: `wrangler` is 4.112.0 (still newest — no 4.113 yet) and `pnpm` is 10.34.5 (newest in 10.x). Toolchain also current, both checked live: **Node `.node-version` 24.18.0 = today's Latest LTS "Krypton"** (nodejs.org); **pnpm 10.34.5 = newest 10.x**.
+
+**Newer MAJOR versions exist for five dependencies plus both toolchain lines — every one is a §0.4/§12 "ask", and all were already tested-and-decided earlier today (see DECISIONS 2026-07-17). No verdict changed:**
+- `typescript` 6→7 — blocked by `typescript-eslint` peer `<6.1.0`; still the one worth revisiting when the ecosystem catches up.
+- `graphql` 16→17 — blocked by `payload@3.86.0` peer `^16.8.1`.
+- `eslint` 9→10 — blocked by `eslint-plugin-import` / `jsx-a11y` / `react` (all `^9`).
+- `@types/node` 24→26 — held on purpose (Mac + CI run Node 24; Node-26 types would describe APIs that aren't there).
+- `@vitejs/plugin-react` 4→6 — deferred (only serves React component tests, of which there are none; would pull vite 8).
+- toolchain: `pnpm` 10→11 and Node 24→26 — deferred (Node 26 isn't LTS until 2026-10-28).
+
+**Scope note for the record:** the audited stacks are the ones actually installed (`package.json` = the Phase 0–2 foundation: Payload 3.86 + Next 16 + Cloudflare tooling + test/lint chain). The other spec §2 tools — Tailwind, R3F/three/drei, Motion, GSAP, gltf-transform, zod, Resend, shadcn/ui — are **not installed yet** because their phases (3, 5, 7) haven't started; there is nothing to audit there.
+
+**No repo code changed** (nothing needed changing). This log entry is the only edit.
+
+**Open (non-blocking):** unchanged from Session 6 — revisit Node 26 + `.node-version` + `@types/node` together after 2026-10-28 · re-ask TypeScript 7 when `typescript-eslint` lifts its `<6.1.0` cap · eslint 10 waits on the three plugins accepting `^10`. Carried: the Session-6 deploy confirmation (the Workers Builds log is a Hateem-only action) is still pending.
+
+**Next step:** unchanged — Phase 3 (public pages).
+
+---
+
 ## 2026-07-17 — Session 6 · Re-audit of all 29 deps vs the live npm registry — 28/29 current; two of this morning's blocker claims corrected
 
 **Hateem asked again: is everything on the latest stable version?** Re-ran the §0.4 audit against the live registry rather than trusting this morning's entry. Method: query every dependency's full version list, filter out anything containing `-` (any `-` = prerelease), compare the pinned version to both the latest stable **within the locked major** and the latest stable overall. Also re-tested each blocked major's peer ranges instead of restating them.
