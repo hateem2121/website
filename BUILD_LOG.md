@@ -36,6 +36,8 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 **Next step:** Hateem reviews **Home** on the deployed preview → approves or requests tweaks → then the next page one at a time (recommend **About / Heritage** — it carries the GSAP timeline and the most heritage copy). Also awaiting his call on the static-vs-ISR caching decision above.
 
+**Update (same session) — added on-brand placeholder image areas to Home** (Hateem asked, for fuller design verification). New reusable `Placeholder` component: self-hosted inline SVG in the wireframe/blueprint placeholder language DESIGN.md §3/§6 prescribes, adapts to light/dark via tokens, clearly labelled so it never reads as final art. It now fills the **hero** (reworked to two columns: copy + a 4:5 image slot), **each category card** (4:3 image on top), and a **16:6 facility/team band**. No external images and no next/image (avoids the sharp-on-Workers/optimization question entirely for now); real photography (a Hateem input, spec §20) swaps in later. Re-verified: `tsc` clean · lint 0 errors · `pnpm run build` exit 0 (Home still `ƒ` dynamic) · `next start` Home HTTP 200 with the placeholder slots rendering. Pushed as a new commit → redeploys the preview.
+
 ---
 
 ## 2026-07-17 — Session 7 · Re-verified every stack against the live registry — all current, zero drift, nothing to apply

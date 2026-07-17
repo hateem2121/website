@@ -5,6 +5,7 @@ import { getCategories, getPageBySlug, getPublishedCaseStudies } from '@/lib/pay
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo'
 import type { Category, CaseStudy, Page } from '@/payload-types'
 import { JsonLd } from '@/components/frontend/JsonLd'
+import { Placeholder } from '@/components/frontend/Placeholder'
 import { RenderBlocks } from '@/components/frontend/RenderBlocks'
 import { Reveal } from '@/components/frontend/Reveal'
 
@@ -69,70 +70,43 @@ function HomeHero({ block }: { block?: Extract<NonNullable<Page['layout']>[numbe
   return (
     <section className="relative isolate overflow-hidden border-b border-[color:var(--hairline)]">
       <div className="blueprint-grid absolute inset-0 -z-10" aria-hidden="true" />
-      <WireframeGarnish />
-      <div className="u-container py-24 md:py-36">
-        <Reveal>
-          <p className="label-mono mb-6">[ B2B APPAREL MANUFACTURER · SIALKOT, PK · EST. LINEAGE 1889 ]</p>
-        </Reveal>
-        <Reveal delay={0.05}>
-          {block?.heading ? (
-            <h1 className="display display-hero max-w-5xl">{block.heading}</h1>
-          ) : (
-            <h1 className="display display-hero max-w-5xl">
-              Custom apparel, made the <span className="serif-accent">extra mile.</span>
-            </h1>
-          )}
-        </Reveal>
-        <Reveal delay={0.12}>
-          <p className="mt-7 max-w-2xl text-lg text-[color:var(--muted)]">{subheading}</p>
-        </Reveal>
-        <Reveal delay={0.18}>
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link href={block?.buttonHref ?? '/rfq'} className="btn btn-primary">
-              {block?.buttonLabel ?? 'Request a quote →'}
-            </Link>
-            <Link href="/catalog" className="btn btn-ghost">
-              Explore the catalog
-            </Link>
-          </div>
+      <div className="u-container grid items-center gap-10 py-20 md:py-28 lg:grid-cols-[1.05fr_0.95fr]">
+        <div>
+          <Reveal>
+            <p className="label-mono mb-6">[ B2B APPAREL MANUFACTURER · SIALKOT, PK · EST. LINEAGE 1889 ]</p>
+          </Reveal>
+          <Reveal delay={0.05}>
+            {block?.heading ? (
+              <h1 className="display display-hero">{block.heading}</h1>
+            ) : (
+              <h1 className="display display-hero">
+                Custom apparel, made the <span className="serif-accent">extra mile.</span>
+              </h1>
+            )}
+          </Reveal>
+          <Reveal delay={0.12}>
+            <p className="mt-7 max-w-xl text-lg text-[color:var(--muted)]">{subheading}</p>
+          </Reveal>
+          <Reveal delay={0.18}>
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link href={block?.buttonHref ?? '/rfq'} className="btn btn-primary">
+                {block?.buttonLabel ?? 'Request a quote →'}
+              </Link>
+              <Link href="/catalog" className="btn btn-ghost">
+                Explore the catalog
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+        <Reveal delay={0.1}>
+          <Placeholder
+            label="HERO PHOTOGRAPHY"
+            ratio="4 / 5"
+            className="rounded-card border border-[color:var(--hairline)]"
+          />
         </Reveal>
       </div>
     </section>
-  )
-}
-
-/** Subtle wireframe tech-pack garnish — RUN's signature motif (DESIGN.md §3). Decorative only. */
-function WireframeGarnish() {
-  return (
-    <svg
-      className="pointer-events-none absolute -right-10 top-1/2 -z-10 hidden -translate-y-1/2 opacity-[0.5] lg:block"
-      width="440"
-      height="440"
-      viewBox="0 0 440 440"
-      fill="none"
-      aria-hidden="true"
-    >
-      <rect
-        x="120"
-        y="70"
-        width="200"
-        height="300"
-        rx="10"
-        stroke="var(--hairline)"
-        strokeWidth="1.4"
-      />
-      <path d="M120 130 L60 170 M320 130 L380 170" stroke="var(--hairline)" strokeWidth="1.4" />
-      <path
-        d="M120 110 C 160 90, 280 90, 320 110"
-        stroke="var(--muted)"
-        strokeWidth="1"
-        strokeDasharray="4 5"
-      />
-      <line x1="150" y1="400" x2="290" y2="400" stroke="var(--volt-deep)" strokeWidth="1" />
-      <text x="200" y="415" textAnchor="middle" className="label-mono" fill="var(--volt-deep)" fontSize="10">
-        CHEST 56 CM
-      </text>
-    </svg>
   )
 }
 
@@ -156,17 +130,24 @@ function CategoryShowcase({ categories }: { categories: Category[] }) {
           <Reveal key={c.id} delay={(i % 3) * 0.05}>
             <Link
               href={`/catalog/${c.slug}`}
-              className="group flex h-full flex-col justify-between rounded-card border border-[color:var(--hairline)] bg-[color:var(--surface)] p-6 transition-transform hover:-translate-y-1.5"
+              className="group flex h-full flex-col overflow-hidden rounded-card border border-[color:var(--hairline)] bg-[color:var(--surface)] transition-transform hover:-translate-y-1.5"
             >
-              <div className="mb-10 flex items-center justify-between">
-                <span className="label-mono">[ N°{String(c.order ?? i + 1).padStart(3, '0')} ]</span>
-                <span className="label-mono opacity-0 transition-opacity group-hover:opacity-100">→</span>
-              </div>
-              <div>
-                <h3 className="display text-2xl">{c.name}</h3>
-                <p className="mt-2 text-sm text-[color:var(--muted)]">
-                  {c.slug ? (CATEGORY_BLURB[c.slug] ?? 'Made to order, to your specification.') : ''}
-                </p>
+              <Placeholder
+                label={c.name}
+                ratio="4 / 3"
+                className="border-b border-[color:var(--hairline)]"
+              />
+              <div className="flex flex-1 flex-col p-6">
+                <div className="mb-8 flex items-center justify-between">
+                  <span className="label-mono">[ N°{String(c.order ?? i + 1).padStart(3, '0')} ]</span>
+                  <span className="label-mono opacity-0 transition-opacity group-hover:opacity-100">→</span>
+                </div>
+                <div className="mt-auto">
+                  <h3 className="display text-2xl">{c.name}</h3>
+                  <p className="mt-2 text-sm text-[color:var(--muted)]">
+                    {c.slug ? (CATEGORY_BLURB[c.slug] ?? 'Made to order, to your specification.') : ''}
+                  </p>
+                </div>
               </div>
             </Link>
           </Reveal>
@@ -234,6 +215,17 @@ function WhyAndSustainability() {
             </Reveal>
           ))}
         </div>
+      </section>
+
+      {/* Facility / team feature image */}
+      <section className="u-container my-24">
+        <Reveal>
+          <Placeholder
+            label="FACILITY / TEAM PHOTOGRAPHY"
+            ratio="16 / 6"
+            className="rounded-card border border-[color:var(--hairline)]"
+          />
+        </Reveal>
       </section>
 
       {/* Sustainability strip — full-bleed ink band (the one mode-crossing band a light page may carry) */}
