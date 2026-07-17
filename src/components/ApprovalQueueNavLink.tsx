@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 import type { ServerProps } from 'payload'
 import { isAdminUser } from '../access'
 
@@ -14,9 +15,10 @@ import { isAdminUser } from '../access'
 export const ApprovalQueueNavLink: React.FC<ServerProps> = ({ user }) => {
   if (!isAdminUser(user)) return null
 
+  // next/link, not a raw <a>: an anchor forces a full page reload of the admin panel.
   return (
-    <a className="nav__link" href="/admin/approval-queue">
+    <Link className="nav__link" href="/admin/approval-queue">
       <span className="nav__link-label">Approval queue</span>
-    </a>
+    </Link>
   )
 }

@@ -62,7 +62,7 @@ export const Buyers: CollectionConfig = {
       },
     ],
     beforeLogin: [
-      ({ req, user }) => {
+      ({ user }) => {
         // A courtesy message only — NOT the security boundary. Access functions re-check status on
         // every request; this hook never runs for a request bearing an existing session cookie.
         const status = (user as { status?: string } | null)?.status
