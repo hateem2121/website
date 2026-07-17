@@ -4,6 +4,35 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-17 — Session 6 · Re-audit of all 29 deps vs the live npm registry — 28/29 current; two of this morning's blocker claims corrected
+
+**Hateem asked again: is everything on the latest stable version?** Re-ran the §0.4 audit against the live registry rather than trusting this morning's entry. Method: query every dependency's full version list, filter out anything containing `-` (any `-` = prerelease), compare the pinned version to both the latest stable **within the locked major** and the latest stable overall. Also re-tested each blocked major's peer ranges instead of restating them.
+
+**Result: 28 of 29 are exactly at the newest stable release inside their locked major.** `package.json` and the installed tree agree everywhere (no repeat of the two-React-copies dirt).
+
+**One genuine drift:** `wrangler` **4.111.0 → 4.112.0** (a minor released since this morning's bump). Not applied — awaiting Hateem.
+
+**Five new majors available — all five were already asked, tested and reverted today (see DECISIONS 2026-07-17). Re-verified now; three conclusions hold, two reasons were wrong:**
+- `graphql` 16→17 — **still hard-blocked**: `payload@3.86.0` declares peer `graphql: ^16.8.1`. Confirmed.
+- `typescript` 6→7 — **still hard-blocked**: `typescript-eslint@8.64.0` (newest) declares peer `typescript: >=4.8.4 <6.1.0`. Confirmed; still the one worth revisiting.
+- `@types/node` 24→26 — correctly held: the Mac and CI run Node 24, so Node-26 types would describe APIs that aren't there.
+- ⚠️ `eslint` 9→10 — **still blocked, but this morning's stated reason is wrong.** DECISIONS records "exceeds `eslint-config-next`'s `^9` cap". `eslint-config-next@16.2.10` actually declares `eslint: ">=9.0.0"` — no cap at all. The real cappers are three plugins it pulls in transitively: `eslint-plugin-import@2.32.0` (`^9`), `eslint-plugin-jsx-a11y@6.10.2` (`^9`), `eslint-plugin-react@7.37.5` (`^9.7`). `typescript-eslint` and `eslint-plugin-react-hooks` already accept `^10`. Same verdict, different — and more precise — cause: the wait is on those three plugins, not on Next. (DECISIONS is append-only per CLAUDE.md §4, so the original entry stands; this is the correction of record.)
+- ⚠️ `@vitejs/plugin-react` 4→6 — **no longer hard-blocked; it is now a live option.** This morning's reason ("needs `vite@^8`; vitest ships 7") was true of the installed tree but not of the ecosystem: **vite 8.1.5 is stable** (`latest` tag), and `vitest@4.1.10` explicitly permits `vite: ^6 || ^7 || ^8`. Plugin-react 6's two extra peers (`@rolldown/plugin-babel`, `babel-plugin-react-compiler`) are both marked **optional**, so no new dependency is required. Doing it means pulling transitive `vite` 7.3.6 → 8.x, which is a new major of a build-time dep = an ask (§0.4, §6). Low value right now — plugin-react only serves React component tests, and there are none yet.
+
+**Toolchain, checked live:** Node **24.18.0 is still "Latest LTS"** on nodejs.org (26.5.0 is Current, not LTS) — the Mac is correct and unchanged. `.node-version` still pins 22 — known, deliberate, left alone (changing it buys no fix and moves CI off a green config). `pnpm` `packageManager` pins **10.33.0**; newest in the 10 line is **10.34.5**, and **11.13.1** is the latest major (`engines` already allows `^11`).
+
+**✅ APPLIED — Hateem approved both (a) and (b).** `wrangler` 4.111.0 → **4.112.0**; `packageManager` pin `pnpm@10.33.0` → **10.34.5** (both inside their locked majors). **Full pipeline re-verified green after the bump, in the normal shell:** `tsc --noEmit` clean · `pnpm run lint` 0 errors (18 pre-existing warnings) · `test:int` 1/1 · `pnpm run build` exit 0 · `pnpm exec opennextjs-cloudflare build` (the exact CI command, and the one wrangler actually drives) complete, Worker saved. Deferred as recommended: pnpm 11, and `@vitejs/plugin-react` 6 + vite 8.
+
+**One install warning checked, not waved past:** pnpm reports `Ignored build scripts: workerd@...`. Benign and pre-existing — `workerd` (the local Cloudflare runtime) ships a prebuilt binary via an optional platform package rather than a postinstall, and it runs (`workerd --version` → 2026-07-14). A stale `workerd@1.20260710.1` directory lingers in the pnpm store but **zero lockfile references** point at it — store garbage, not a second live copy (i.e. not a repeat of the two-React-copies defect).
+
+**Node 26 — asked and answered with the official schedule** (`nodejs/Release` `schedule.json`, fetched live): v26 started 2026-05-05 and **enters LTS on 2026-10-28** — about three months out. Until then it is "Current", which fails CLAUDE.md §12's *stable* test in the sense that matters here (the line isn't yet the one receiving long-term patches). Running it locally would also widen the local-vs-CI gap from two majors to four (`.node-version` pins 22 for Workers Builds) and would make the held `@types/node` 24 describe the wrong runtime. **Recommendation: stay on 24.18.0 (Latest LTS, supported to 2028-04-30); revisit after 2026-10-28** — at which point `.node-version`, `engines.node`, and `@types/node` are one coherent decision rather than three drifting ones.
+
+**Open (non-blocking):** revisit Node 26 + `.node-version` + `@types/node` together after 2026-10-28 · re-ask on TypeScript 7 when `typescript-eslint` lifts its `<6.1.0` cap · eslint 10 waits on `eslint-plugin-import`/`jsx-a11y`/`react` accepting `^10`. Carried over: Neue Stance licence · Phase-0 dashboard items · certification marquee assets · the Claude Code env leak worth reporting to Anthropic.
+
+**Next step:** Phase 3 (public pages), which is where the project actually stands.
+
+---
+
 ## 2026-07-17 — Session 5 (cont.) · ✅ Option A applied — full local pipeline green with no workarounds
 
 Hateem chose **A** (both fixes; recorded in DECISIONS.md). Applied: (1) build-phase stub bindings in `payload.config.ts` (with a descriptive throw if anything ever does touch D1/R2 during a build — a regression would fail loudly, not silently); (2) `NODE_ENV=production` pinned on the `build` script via cross-env — a no-op on CI where the variable is absent, an antidote to the Claude Code app's leak locally. One follow-on fix while verifying: `pnpm run lint` blew Node's memory limit because `.open-next/` (which never existed locally until today's first successful builds) wasn't in eslint's ignore list — added `.open-next/` + `.wrangler/` (internal lint config; CI never runs lint).
