@@ -39,7 +39,11 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 **Open (non-blocking):** revisit Node 26 + `.node-version` + `@types/node` together after 2026-10-28 · re-ask on TypeScript 7 when `typescript-eslint` lifts its `<6.1.0` cap · eslint 10 waits on `eslint-plugin-import`/`jsx-a11y`/`react` accepting `^10`. Carried over: Neue Stance licence · Phase-0 dashboard items · certification marquee assets · the Claude Code env leak worth reporting to Anthropic.
 
-**Next step:** Phase 3 (public pages), which is where the project actually stands.
+**Pushed to `main` (Hateem authorized the deploy):** `fcd9586` (wrangler + pnpm pins) and `2a02b90` (Node sync) → `be547b8..2a02b90`. This triggers Workers Builds, and it is **the first CI build ever attempted on Node 24**.
+
+**⏳ NOT YET CONFIRMED — the deploy result. Stated honestly rather than assumed green.** The live site answers **HTTP 200** on `/`, `/api/categories` (5 categories, real DB reads) and `/admin/login` — but that proves only that *a* Worker is serving, **not that the new one deployed**: a failed build leaves the previous Worker running, which is exactly the safety property that also makes health checks useless as build evidence. Nothing in this change is user-visible, so old and new cannot be told apart from outside. **Verification requires the Workers Builds log in the Cloudflare dashboard — a Hateem action:** `wrangler deployments list` needs a `CLOUDFLARE_API_TOKEN` that this environment does not have, and the Cloudflare connector exposes D1/R2/Workers but not Builds (same dashboard-only limit already recorded on 2026-07-13 and in the Session-4 entry). If the build failed, the fix is `.node-version` → `22` (one-line revert of `2a02b90`); the site cannot break in the meantime.
+
+**Next step:** Hateem checks the Workers Builds log for a green build on Node 24.18.0 → then Phase 3 (public pages), which is where the project actually stands.
 
 ---
 
