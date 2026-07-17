@@ -4,6 +4,30 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-17 — Session 4 (cont.) · 🟢 Phase 2 migration APPLIED to production — admin account survived; 5 categories seeded
+
+**Hateem chose option A** (rename, keep the account). Delivered with a safer mechanism than hand-written table renames — see below. **Production D1 is migrated: 10 → 81 tables.**
+
+**Mechanism change (internal engineering, spec outcome unchanged): `Admins.dbName = 'users'`.**
+`payload migrate:create` turned out to be INTERACTIVE — for every new table it asks "created, or renamed from `users`?" — and it cannot detect renames (it diffs snapshots), so unattended it drops+recreates and destroys the account. Pinning `dbName` makes the rename a CMS-level concept only: collection = `admins` (spec §4.1), physical table stays `users`, and the row is never touched. Also avoids renaming `users_sessions`, 5 indexes and the `users_id` FK columns in two rels tables on a live DB. **Do not remove `dbName` without a migration that renames all of the above together** (documented in `Admins.ts`).
+
+**Two fatal defects hand-fixed in the generated migration** (both would have hit production):
+1. `ALTER TABLE users ADD name text NOT NULL` — no default. SQLite refuses to add a NOT NULL column to a populated table; the whole migration would have aborted.
+2. `role` defaults to `'editor'`. The pre-existing account would have kept its login but **silently lost admin rights** (every admin rule tests `role === 'admin'`). Added a backfill `UPDATE`. No-op on a fresh DB.
+
+**A third defect — caught only because the first rehearsal was wrong.** The generated rels-table rebuilds selected EVERY new column from the OLD table (`pages_id`, `buyers_id`, …) which don't exist there yet. That does **not** error: SQLite's legacy double-quote misfeature reinterprets an unknown `"identifier"` as a **string literal**, so rows copy across with the text `'buyers_id'` sitting in an integer FK column. It only looks safe when the table is empty — and rehearsal #1 seeded users+sessions but **no preferences**, so it passed. Production had **2 `payload_preferences_rels` rows** (admin UI prefs from Phase 0). Fixed both INSERTs to select `NULL`; re-rehearsed **with** preference rows present → clean. Lesson: rehearse against the data that actually exists, not a convenient subset.
+
+**Verified on production after applying:** account `hateem@wear-run.com` intact, `role=admin`, salt+hash+`created_at` byte-identical · both preference rows preserved with `buyers_id` NULL, `users_id` 1 · 81 tables · 5 categories seeded in locked order (Team Wear → Sports Accessories) · both migrations recorded in `payload_migrations` (batch 1, 2) · **live `/admin/login` still renders** (browser-checked) — old Worker + new DB is benign, it ignores the new columns.
+
+**⚠️ OPEN — the local production build fails, and it is PRE-EXISTING, not Phase 2's fault.**
+`next build` compiles + typechecks clean, then dies prerendering Next's own `/_global-error`: `TypeError: Cannot read properties of null (reading 'useContext')`, inside Next's dist chunk. **Proven pre-existing by a full control checkout of 18693f7 (pre-Phase-2, the code live since Phase 0) — identical failure.** Also proven NOT the Approval Queue (removing the custom view changes nothing). Most likely cause: **this Mac runs Node 24.14.1 while `.node-version` pins 22** and Phase 0's green build ran on Node 22.22.2. No Node 22 is installed here, so it could not be tested — installing one is an ask (CLAUDE.md §6). Cloudflare Workers Builds reads `.node-version` → builds on 22, the known-good path. **Consequence: CLAUDE.md §9's "builds cleanly before commit" could not be satisfied locally; CI is now the verification.** If Workers Builds fails, the old Worker simply stays deployed and the site keeps working.
+
+**Still open for the Phase 2 gate:** Hateem creates a test product unaided using `docs/WALKTHROUGH-add-a-product.md` (written, committed). His name displays as "Admin" until he edits it — deliberate, I did not type his name into his own database.
+
+**Next step:** push → watch Workers Builds → confirm the deployed admin shows the new collections → Hateem runs the walkthrough → Phase 2 sign-off against §17 row 2.
+
+---
+
 ## 2026-07-16 — Session 4 · Phase 2 CMS schema built (code complete, typecheck green) — NOT yet migrated, seeded, or verified running
 
 **Status: roughly two-thirds of Phase 2.** All schema code is written and passes typecheck; nothing has touched production, and the schema is inert until a migration runs. Committed now so the work can't be lost — committing is safe precisely because it changes no database.
