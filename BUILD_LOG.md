@@ -4,6 +4,32 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-17 — Session 4 (cont.) · Version audit (spec §0.4) + the local build/test mystery, honestly resolved
+
+**Hateem asked: is everything the latest stable as of 17 Jul 2026?** Audited all 29 deps against the npm registry.
+
+**Already current (11)** — including everything that matters: `payload` 3.86.0 · `next` 16.2.10 · `@opennextjs/cloudflare` 1.20.1 · `typescript` 6.0.3 · `@types/react-dom` 19.2.3 · `cross-env` 10.1.0. (Payload's `4.0.0-internal` and next's `16.3.0-preview` are PRERELEASES — a first audit pass wrongly counted them as newer because the filter only excluded `-alpha/-beta/-rc`. Any `-` means prerelease. Spec §2 bars Payload 4 regardless.)
+
+**18 were BEHIND within their locked major — a standing §0.4 drift since Phase 0** (where react/react-dom and wrangler were knowingly "left at template versions"). All now pinned exactly, no `^`/`~`. Notable: **react/react-dom 19.2.1 → 19.2.7** (the Phase-0 snapshot in this very log already said 19.2.7) · **wrangler 4.61.1 → 4.111.0**, fifty minors behind · eslint 9.16→9.39.5 · prettier 3.4.2→3.9.5 · graphql 16.8.1→16.14.2 · vitest 4.1.6→4.1.10 · playwright 1.59.1→1.61.1.
+
+**⏸ NEW MAJORS — awaiting Hateem (§0.4 says always ask):** `typescript` 6→**7** (already flagged Phase 0) · `eslint` 9→**10** · `graphql` 16→**17** · `jsdom` 28→**29** · `dotenv` 16→**17** · `@vitejs/plugin-react` 4→**6** · `@types/node` 24→**26**.
+
+**Node: Hateem was right, I was wrong.** nodejs.org (checked live): **v24.18.0 is "Latest LTS"**; v26.5.0 is Current (not LTS); v22 is the older LTS; v20 is EOL. So Node 24 IS latest-stable and the project's `.node-version: 22` is the stale thing, not his machine. Worse, the official Payload template wants **Node ≥ 24.15** and Phase 0 *lowered* `engines.node` to `>=20.9.0` to fit the Node-22 container. **Upgraded his Mac 24.14.1 → 24.18.0** (homebrew `node@24`; the plain `node` formula would give 26 = Current, avoided). Corepack needed re-enabling afterwards (the shim broke with the Cellar swap).
+
+**🔴 THE REAL FINDING: local dev has NEVER worked on this Mac — for anything.**
+- `next build` fails: prerendering Next's own `/_not-found` + `/_global-error` with `Cannot read properties of null (reading 'useContext')`; with `experimental.cpus:1` it's still useContext, with 14 cores it becomes `SQLITE_BUSY` (9 build workers each booting Miniflare over one local sqlite). Both failures coexist; which surfaces depends on worker count.
+- `pnpm test:int` fails: `Invariant violation: new TextEncoder().encode("") instanceof Uint8Array is incorrectly false` (jsdom cross-realm).
+- **Both are PRE-EXISTING and NOT caused by Phase 2 or the dep bumps** — proven by reinstalling the original `package.json` (identical test failure) and by a full control checkout of `18693f7`, the code live since Phase 0 (identical build failure).
+- **Ruled out with real tests, not reasoning:** my Phase 2 code · the Approval Queue view · Node 24.14 vs **24.18** vs **22.23.1** (all three fail) · stale node_modules/.next · the drizzle patch (verified applied via `patch_hash`).
+- **Conclusion: it's macOS-specific.** Phase 0's green build ran in a **Linux** container; CI (Workers Builds, Linux) built and deployed Phase 2 today — `/api/categories` serves 5 categories live. Nobody had ever tried building on this Mac until today. **This is an unbuilt capability, not a regression.**
+- **Honest correction:** I twice claimed a fix (Node, then React 19.2.7) that wasn't one. React 19.2.7 only let a *different* error (SQLITE_BUSY) surface first and mask the useContext one. Neither was the cause.
+
+**Consequence:** CLAUDE.md §9 ("builds cleanly before commit") cannot be satisfied locally at all. CI is the only verification path and has been since Phase 0. Site verified healthy after the dep push (HTTP 200 throughout, categories live, `/admin/login` 200) — though whether the dep-update build is the one currently serving can only be confirmed in the Cloudflare Workers Builds log.
+
+**Open:** the macOS build/test failure (recommend investigating before Phase 3, when local preview matters for copy review) · `.node-version` still 22 while the Mac is 24.18 — now known NOT to be the cause, so changing it buys no fix and would move CI off a green config; recommend leaving at 22 pending the Phase-3 investigation · `node@22` installed keg-only for the decisive test, harmless, removable on request.
+
+---
+
 ## 2026-07-17 — Session 4 (cont.) · 🟢 Phase 2 migration APPLIED to production — admin account survived; 5 categories seeded
 
 **Hateem chose option A** (rename, keep the account). Delivered with a safer mechanism than hand-written table renames — see below. **Production D1 is migrated: 10 → 81 tables.**
