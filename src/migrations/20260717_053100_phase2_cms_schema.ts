@@ -1139,7 +1139,14 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	FOREIGN KEY (\`users_id\`) REFERENCES \`users\`(\`id\`) ON UPDATE no action ON DELETE cascade
   );
   `)
-  await db.run(sql`INSERT INTO \`__new_payload_locked_documents_rels\`("id", "order", "parent_id", "path", "pages_id", "posts_id", "case_studies_id", "media_id", "categories_id", "products_id", "fabric_library_id", "buyers_id", "rfqs_id", "inquiries_id", "users_id") SELECT "id", "order", "parent_id", "path", "pages_id", "posts_id", "case_studies_id", "media_id", "categories_id", "products_id", "fabric_library_id", "buyers_id", "rfqs_id", "inquiries_id", "users_id" FROM \`payload_locked_documents_rels\`;`)
+  // HAND-EDITED — the generated version selected every NEW column from the OLD table, including
+  // columns that do not exist there yet (pages_id, posts_id, buyers_id, ...). That does not error,
+  // because SQLite's legacy double-quote misfeature silently reinterprets an unknown "identifier"
+  // as a STRING LITERAL — so each row would be copied with the text 'pages_id' sitting in an
+  // integer foreign-key column, or fail an FK check. It only looks harmless when the table is
+  // empty. NULL is the correct value: these columns had no data before this migration.
+  // Old columns here are: id, order, parent_id, path, users_id, media_id.
+  await db.run(sql`INSERT INTO \`__new_payload_locked_documents_rels\`("id", "order", "parent_id", "path", "pages_id", "posts_id", "case_studies_id", "media_id", "categories_id", "products_id", "fabric_library_id", "buyers_id", "rfqs_id", "inquiries_id", "users_id") SELECT "id", "order", "parent_id", "path", NULL, NULL, NULL, "media_id", NULL, NULL, NULL, NULL, NULL, NULL, "users_id" FROM \`payload_locked_documents_rels\`;`)
   await db.run(sql`DROP TABLE \`payload_locked_documents_rels\`;`)
   await db.run(sql`ALTER TABLE \`__new_payload_locked_documents_rels\` RENAME TO \`payload_locked_documents_rels\`;`)
   await db.run(sql`PRAGMA foreign_keys=ON;`)
@@ -1169,7 +1176,11 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	FOREIGN KEY (\`users_id\`) REFERENCES \`users\`(\`id\`) ON UPDATE no action ON DELETE cascade
   );
   `)
-  await db.run(sql`INSERT INTO \`__new_payload_preferences_rels\`("id", "order", "parent_id", "path", "buyers_id", "users_id") SELECT "id", "order", "parent_id", "path", "buyers_id", "users_id" FROM \`payload_preferences_rels\`;`)
+  // HAND-EDITED — same bug as above, and this one bites for real: production holds 2 rows here
+  // (the admin's saved UI preferences from Phase 0). The generated SELECT would have written the
+  // text 'buyers_id' into every row's buyers_id foreign key. Old columns: id, order, parent_id,
+  // path, users_id.
+  await db.run(sql`INSERT INTO \`__new_payload_preferences_rels\`("id", "order", "parent_id", "path", "buyers_id", "users_id") SELECT "id", "order", "parent_id", "path", NULL, "users_id" FROM \`payload_preferences_rels\`;`)
   await db.run(sql`DROP TABLE \`payload_preferences_rels\`;`)
   await db.run(sql`ALTER TABLE \`__new_payload_preferences_rels\` RENAME TO \`payload_preferences_rels\`;`)
   await db.run(sql`CREATE INDEX \`payload_preferences_rels_order_idx\` ON \`payload_preferences_rels\` (\`order\`);`)
