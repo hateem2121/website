@@ -14,6 +14,21 @@ const isProduction = process.env.NODE_ENV === 'production'
  */
 export const Admins: CollectionConfig = {
   slug: 'admins',
+  /**
+   * The database table stays `users` while the collection is `admins`.
+   *
+   * This is deliberate and load-bearing. The spec renames the template's Users collection to
+   * `admins`, but a real admin account already exists in the production `users` table. Changing
+   * the table name would mean renaming `users`, `users_sessions`, five indexes, and the `users_id`
+   * foreign-key columns inside payload_locked_documents_rels and payload_preferences_rels — on a
+   * live database, to gain nothing a user can see. Payload cannot detect a rename (it diffs
+   * snapshots), so its generated migration would drop and recreate, destroying the account.
+   *
+   * Keeping dbName pins the physical table, so the rename is purely a CMS-level concept and the
+   * existing row is never touched. Do not remove this without a migration that renames all of the
+   * above together.
+   */
+  dbName: 'users',
   labels: { singular: 'Staff account', plural: 'Staff accounts' },
   auth: {
     // Payload ships `secure: false`, which would send the login cookie over plain HTTP.
