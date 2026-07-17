@@ -97,6 +97,19 @@ Try up to **three genuinely different approaches.** Then stop and escalate with 
 
 Before adopting any tool, pattern, or version, all four must pass: **stable** (no beta/RC/alpha) · **portable** (documented exit path, no lock-in) · **genuinely free long-term** (not a trial) · **actively maintained**. Boring-and-durable beats new-and-shiny. New major versions of anything pinned in spec §2 are always an ask (spec §0.4).
 
+## gstack (recommended)
+
+This project uses [gstack](https://github.com/garrytan/gstack) for AI-assisted workflows.
+Install it for the best experience:
+
+```bash
+git clone --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
+cd ~/.claude/skills/gstack && ./setup --team
+```
+
+Skills like /qa, /ship, /review, /investigate, and /browse become available after install.
+Use /browse for all web browsing. Use ~/.claude/skills/gstack/... for gstack file paths.
+
 ---
 
 *v1.0 · approved by Hateem on [date] · amend only via the approval process in section 2 above.*
