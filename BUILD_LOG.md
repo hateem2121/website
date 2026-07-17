@@ -24,7 +24,9 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 **No repo code changed** (nothing needed changing). This log entry is the only edit.
 
-**Open (non-blocking):** unchanged from Session 6 — revisit Node 26 + `.node-version` + `@types/node` together after 2026-10-28 · re-ask TypeScript 7 when `typescript-eslint` lifts its `<6.1.0` cap · eslint 10 waits on the three plugins accepting `^10`. Carried: the Session-6 deploy confirmation (the Workers Builds log is a Hateem-only action) is still pending.
+**Open (non-blocking):** unchanged from Session 6 — revisit Node 26 + `.node-version` + `@types/node` together after 2026-10-28 · re-ask TypeScript 7 when `typescript-eslint` lifts its `<6.1.0` cap · eslint 10 waits on the three plugins accepting `^10`.
+
+**Bonus — the Node-24 CI build is now CONFIRMED green (resolves a Session-6 residual).** Pushing this branch triggered Cloudflare Workers Builds, which built commit `15911b4` on **Node 24.18.0** (from `.node-version`) and **deployed successfully** to a branch-preview Worker (`claude-stack-version-audit-i9iuxj-run-apparel.hateemjamshaid.workers.dev`) — reported via the PR check run and the Cloudflare bot's PR comment. Because this branch is `main` plus one markdown-only change, it is direct evidence that the `main` codebase builds on Node 24 in Cloudflare's cloud — the exact thing Session 6 said "local testing cannot prove." The Session-6 worry ("CI has never built on Node 24") is answered: it builds. (`main`'s own production build record is still best eyeballed in the dashboard, but the build-on-Node-24 risk itself is now closed.)
 
 **Next step:** unchanged — Phase 3 (public pages).
 
