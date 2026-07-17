@@ -4,7 +4,13 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
-## 2026-07-17 — Session 5 · 🟢 The local build/test mystery SOLVED — it was the tool's own shell, not the Mac
+## 2026-07-17 — Session 5 (cont.) · ✅ Option A applied — full local pipeline green with no workarounds
+
+Hateem chose **A** (both fixes; recorded in DECISIONS.md). Applied: (1) build-phase stub bindings in `payload.config.ts` (with a descriptive throw if anything ever does touch D1/R2 during a build — a regression would fail loudly, not silently); (2) `NODE_ENV=production` pinned on the `build` script via cross-env — a no-op on CI where the variable is absent, an antidote to the Claude Code app's leak locally. One follow-on fix while verifying: `pnpm run lint` blew Node's memory limit because `.open-next/` (which never existed locally until today's first successful builds) wasn't in eslint's ignore list — added `.open-next/` + `.wrangler/` (internal lint config; CI never runs lint).
+
+**Verified, all in the normal polluted shell with zero manual workarounds:** `tsc --noEmit` clean · `pnpm run build` exit 0 at full 9-worker parallelism (static gen 427ms, no SQLITE_BUSY, no useContext, no dev-mode warnings) · `pnpm exec opennextjs-cloudflare build` (the exact CI command) exit 0, Worker saved · `test:int` 1/1 green · lint 0 errors. CLAUDE.md §9 "builds cleanly before commit" is satisfiable locally for the first time in this project's life.
+
+**Next step:** watch the Workers Builds deploy triggered by this push, then browser-verify the live site (categories + admin login) — then Phase 3 can open with a working local preview.
 
 Ran the investigation from `docs/INVESTIGATION-local-build.md`. Every conclusion below was confirmed by a controlled test (logs kept in the session scratchpad); **verified** vs **inferred** is labeled.
 

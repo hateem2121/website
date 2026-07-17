@@ -24,7 +24,15 @@ const eslintConfig = [
     },
   },
   {
-    ignores: ['.next/', 'src/payload-types.ts', 'src/payload-generated-schema.ts'],
+    ignores: [
+      '.next/',
+      // Generated build/dev output that only exists once local builds run (they work as of
+      // 2026-07-17); the bundled .open-next worker alone is big enough to OOM eslint.
+      '.open-next/',
+      '.wrangler/',
+      'src/payload-types.ts',
+      'src/payload-generated-schema.ts',
+    ],
   },
 ]
 

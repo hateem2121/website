@@ -51,8 +51,31 @@ const cloudflareLogger = {
   silent: () => {},
 } as any // Use PayloadLogger type when it's exported
 
-const cloudflare =
-  isCLI || !isProduction
+// `next build` imports every route module (and this config with it) in parallel worker
+// processes just to collect route settings; resolving real bindings here would boot one
+// Miniflare/workerd per worker against the single local D1 sqlite file, and the colliding
+// WAL-recovery locks kill the build (SQLITE_BUSY). Nothing reads D1/R2 during a build —
+// verified 2026-07-17 with a throw-on-any-access probe across all workers — so the build
+// phase gets inert stubs. NEXT_PHASE is only set during `next build`: runtime, `next dev`,
+// and the Payload CLI (migrations) all take the real-binding branches below.
+const isNextBuild = process.env.NEXT_PHASE === 'phase-production-build'
+const buildPhaseStub = (name: string): any =>
+  new Proxy(
+    {},
+    {
+      get(_target, prop) {
+        if (typeof prop === 'symbol' || prop === 'then') return undefined
+        throw new Error(
+          `The ${name} binding was accessed during \`next build\`. Builds run without real ` +
+            `Cloudflare bindings; whatever triggered this must move out of the build path.`,
+        )
+      },
+    },
+  )
+
+const cloudflare = isNextBuild
+  ? ({ env: { D1: buildPhaseStub('D1'), R2: buildPhaseStub('R2') } } as unknown as CloudflareContext)
+  : isCLI || !isProduction
     ? await getCloudflareContextFromWrangler()
     : await getCloudflareContext({ async: true })
 
