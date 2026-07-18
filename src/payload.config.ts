@@ -28,7 +28,11 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 const realpath = (value: string) => (fs.existsSync(value) ? fs.realpathSync(value) : undefined)
 
-const isCLI = process.argv.some((value) => realpath(value).endsWith(path.join('payload', 'bin.js')))
+const isCLI = process.argv.some((value) =>
+  // realpath() returns undefined for argv entries that aren't real paths (e.g. `start`, `build`);
+  // guard so a non-path arg can't throw on .endsWith (surfaces under `next start`/`next dev` in Node).
+  realpath(value)?.endsWith(path.join('payload', 'bin.js')),
+)
 const isProduction = process.env.NODE_ENV === 'production'
 
 const createLog =
