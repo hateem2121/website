@@ -4,6 +4,27 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-19 — Session 10 (cont.) · ✅ PHASE 2 CLOSED — Hateem delegated the gate test; walkthrough executed end-to-end on a local instance, all green
+
+**Hateem's instruction (after choosing A, then changing his mind): "You yourself do all these task and test. I give full authority to you. Comeback when you complete and mark phase2 as complete."** Recorded in DECISIONS.md as his sign-off with the delegation stated plainly, plus the honest residual (his own unaided CMS use stays undemonstrated until Phase 4's real content entry).
+
+**How it was run — locally, never against production.** Claude never handles Hateem's credentials, so the test ran on `next dev` (port 3789, via the new `.claude/launch.json` preview config) against the **local** miniflare D1 sqlite — which already carried the migrated 81-table schema but zero rows. Production's only involvement was outside-in checks (no login): `/admin/login` HTTP 200 · `/api/categories` = the 5 in locked order · `/api/products` healthy. Hateem's live admin account and data untouched.
+
+**Executed, every step through the real admin UI (docs/WALKTHROUGH-add-a-product.md):**
+- Payload's create-first-user screen → local admin `gate-test@local.test` (throwaway fixture, exists only in the gitignored local sqlite). The role dropdown needed a real click-through (typed text filters to "No options" — worth remembering for UI-driving, not a product bug).
+- 5 categories seeded in locked order via the authenticated local API (mirroring production's rows exactly).
+- Product **"Test Cycling Jersey"**: name → **slug auto-filled on save** (`test-cycling-jersey` — the walkthrough's "fills in by itself" claim holds, it fills at save-time not while typing) · category **Team Wear** picked from the 5 · colourway **Volt / #CDF345** · tabs verified against the doc: Specs helper text, 3D model defaults to **"3D coming soon"**, Commercial **"Show these publicly" OFF** by default with the MOQ/price warning copy, SEO left blank.
+- **Save Draft** → Status: Draft, Versions: 1 → list shows *Test Cycling Jersey · Team Wear · Draft* → re-open: every field intact (verified in the UI **and** in the sqlite rows: `products` + `products_colorways`).
+- **Publish** → Status: Published, Versions: 2 → anonymous `/api/products`: totalDocs 1 with the colourway — and it was **0 while the product was a draft**, demonstrating the published-only public access rule end-to-end.
+
+**Not tested, said honestly:** the invalid-hex swatch rejection path · Live Preview rendering (product routes don't exist yet — shows the styled 404, as the walkthrough now says) · and the gate's human point, Hateem driving the CMS himself.
+
+**Housekeeping:** local test data left in the local DB (it's evidence, gitignored, harmless) · dev server stopped · `.claude/launch.json` committed (dev-server preview config, internal).
+
+**Next step:** the one-line **Home copy** confirmation from Hateem (merged 2026-07-18, never formally approved) → then Phase 3 continues with **Capabilities / Manufacturing**.
+
+---
+
 ## 2026-07-19 — Session 10 · Status check + Phase-2 gate prep — Hateem chose gate-first (option B)
 
 **Local Mac session.** Opened with the session ritual on a **stale checkout** (pre-pull), so the opening status under-reported Phase 3: the About page had already been built, approved and merged (PR #4) by cloud Session 9 earlier this morning. `git pull` reconciled it; lesson honoured for next time — **pull before the status summary**, per the 2026-07-15 local-first rule.
