@@ -4,7 +4,7 @@ import React from 'react'
 import { archivo, instrumentSerif } from './fonts'
 import './globals.css'
 
-import { getGlobalSafe } from '@/lib/payload'
+import { getGlobalSafe, getPublishedCaseStudies } from '@/lib/payload'
 import { SITE_URL } from '@/lib/site'
 import type { Footer, Navigation, SiteSetting } from '@/payload-types'
 import { AnnouncementBar } from '@/components/frontend/AnnouncementBar'
@@ -46,19 +46,26 @@ export const metadata: Metadata = {
 }
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [nav, footer, settings] = await Promise.all([
+  const [nav, footer, settings, caseStudyProbe] = await Promise.all([
     getGlobalSafe<Navigation>('navigation', 1),
     getGlobalSafe<Footer>('footer', 1),
     getGlobalSafe<SiteSetting>('site-settings', 1),
+    getPublishedCaseStudies(1),
   ])
 
+  // Spec §5: Case Studies is hidden from nav automatically while zero are published. The rule is
+  // applied to the fallback menu; once the CMS `navigation` global is seeded, its editor decides.
   const items: NavItem[] = nav?.items?.length
     ? nav.items.map((i) => ({
         label: i.label,
         href: i.href,
         children: i.children?.map((c) => ({ label: c.label, href: c.href })),
       }))
-    : FALLBACK_NAV
+    : FALLBACK_NAV.flatMap((item) =>
+        item.href === '/insights' && caseStudyProbe.length
+          ? [{ label: 'Case Studies', href: '/case-studies' }, item]
+          : [item],
+      )
 
   return (
     <html

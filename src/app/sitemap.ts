@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { SEED_POSTS } from '@/data/seed-posts'
 import { getCategories, getPublishedPosts, getPublishedProducts } from '@/lib/payload'
 import { absoluteUrl } from '@/lib/site'
 
@@ -49,6 +50,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   for (const post of posts) {
     if (post.slug) {
       entries.push({ url: absoluteUrl(`/insights/${post.slug}`), lastModified: new Date(post.updatedAt) })
+    }
+  }
+
+  // Drafted seed articles (B3-A) are live, indexable fallbacks until their CMS twins exist — a
+  // published CMS post with the same slug takes over its URL (and its sitemap row) automatically.
+  const cmsSlugs = new Set(posts.map((p) => p.slug))
+  for (const seed of SEED_POSTS) {
+    if (!cmsSlugs.has(seed.slug)) {
+      entries.push({
+        url: absoluteUrl(`/insights/${seed.slug}`),
+        lastModified: new Date(seed.publishedDate),
+      })
     }
   }
 

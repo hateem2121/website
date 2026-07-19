@@ -23,7 +23,10 @@ export const Products: CollectionConfig = {
     group: 'Catalog',
     description: 'The articles shown in the catalog, each with its 3D viewer and colourways.',
     livePreview: {
-      url: ({ data }) => `/products/${data?.slug ?? ''}`,
+      // The article page canonicalises the category segment itself (redirects to the real
+      // category), so the preview URL doesn't need to resolve the relationship here. A product
+      // must be PUBLISHED to render — drafts show the styled 404 until then.
+      url: ({ data }) => `/catalog/preview/${data?.slug ?? ''}`,
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 812 },
         { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
