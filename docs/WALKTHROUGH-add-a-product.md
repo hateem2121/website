@@ -102,8 +102,9 @@ Not bugs — don't report these:
 - **Fabric library is empty** — waiting on your §16 approval.
 - **Sizes and branding dropdowns** have draft options in them, also from §16 and not yet approved.
 - **Categories have no intro text or images** — that copy gets written and approved in Phase 3.
-- **Live Preview shows an error** — the public pages don't exist until Phase 3. The wiring is done;
-  there's just nothing to preview yet.
+- **Live Preview shows a styled "page not found" screen** — the public site's shell exists now
+  (Phase 3), but individual product pages aren't built yet. The wiring is done; there's just no
+  product page to preview yet.
 - **No emails are sent** — Resend gets connected in Phase 5.
 
 ---

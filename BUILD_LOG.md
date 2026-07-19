@@ -4,6 +4,26 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-19 — Session 10 · Status check + Phase-2 gate prep — Hateem chose gate-first (option B)
+
+**Local Mac session.** Opened with the session ritual on a **stale checkout** (pre-pull), so the opening status under-reported Phase 3: the About page had already been built, approved and merged (PR #4) by cloud Session 9 earlier this morning. `git pull` reconciled it; lesson honoured for next time — **pull before the status summary**, per the 2026-07-15 local-first rule.
+
+**Hateem's decision this session: option B — close the Phase 2 gate before the Home copy review.**
+
+**Gate prep, verified:** spec §17 row 2 gate = "Hateem creates a test product unaided (walkthrough doc provided)" — exactly one item · `docs/WALKTHROUGH-add-a-product.md` re-checked against the current CMS: accurate · live `/` and `/admin/login` HTTP 200 · production `/about` confirmed serving the real Heritage page (curl: 23×"1889", hero labels present), so the PR-#4 merge deployed green.
+
+**One doc fix (own-doc accuracy, CLAUDE.md §6 internal):** the walkthrough's "Live Preview shows an error" note was stale — since Phase 3 shipped the public shell, an unbuilt product route shows the styled "page not found" screen instead. Line updated to match what Hateem will actually see.
+
+**Also noted for the record:** the three constitution files live at the **repo root**, not `docs/spec/` as CLAUDE.md §2 states — the known "CLAUDE.md §2 path amendment" open item from Phase 0, still awaiting a proposed-edit + approval pass. No new problem.
+
+**Awaiting Hateem (both are his actions):** (1) run the walkthrough (~5 min) → report → **Phase 2 sign-off** recorded in DECISIONS.md; (2) then confirm the **Home copy approval** for the record — PR #3 merged 2026-07-18 but no DECISIONS entry exists for the Home copy (Session 9's honest caveat stands).
+
+**Open (non-blocking):** unchanged from Session 9 — caching/ISR decision · GSAP + R3F ask for the About timeline/globe upgrade · nav bottom-pill idea · image strategy (Phase 4) · cert logo permissions · real WhatsApp/MOQ numbers · Neue Stance licence · CLAUDE.md §2 path amendment.
+
+**Next step:** record the two sign-offs above → continue Phase 3 page-by-page (Session 9 recommends **Capabilities / Manufacturing** next).
+
+---
+
 ## 2026-07-19 — Session 9 · Phase 3 cont. — About / Heritage page built, verified, pushed for review
 
 **This session runs in a remote Linux container on branch `claude/current-status-check-f2my22`** (container Node 22.22.2; CI still builds on Node 24 via `.node-version`). Base = `origin/main` tip `c03914d`.
