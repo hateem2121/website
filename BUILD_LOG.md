@@ -4,6 +4,33 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-19 — Session 9 · Phase 3 cont. — About / Heritage page built, verified, pushed for review
+
+**This session runs in a remote Linux container on branch `claude/current-status-check-f2my22`** (container Node 22.22.2; CI still builds on Node 24 via `.node-version`). Base = `origin/main` tip `c03914d`.
+
+**Log-vs-reality reconciliation (CLAUDE.md §3):** Session 8's entry (below) ends "pushed for review, awaiting Hateem." Git reality is one step further — **PR #3 (`claude/phase-3-public-pages-4l9b6o` → `main`) was MERGED on 2026-07-18** (merge commit `c03914d`). So the Phase-3 foundation + Home page are now on `main`; the log simply hadn't recorded the merge. **Caveat kept honest:** merging the code ≠ a recorded Home *copy* sign-off — there is still no DECISIONS.md entry approving the Home copy, and Phase 3's gate is page-by-page copy approval. Flagged to Hateem; not asserting approval here.
+
+**Built this session — the About / Heritage page (`(frontend)/about/page.tsx`),** replacing the interim `RoutePlaceholder`. Bespoke, on-brand, CMS-overridable (reads a `pages/about` doc if present — its hero heading/subheading override the drafted hero — else the strong fallback below, same model as Home). `force-dynamic` like Home (reads real D1 at request time; ISR still the flagged next optimization). Sections:
+- **Hero** — `[ HERITAGE · SIALKOT, PK · SINCE 1889 ]`, kinetic headline with serif accent ("never *looks back*"), archive-photo placeholder slot, CTAs → /capabilities + /rfq.
+- **The lineage (N°01)** — the centrepiece: a 7-milestone vertical timeline (ink rail + volt markers, each entry Motion-revealed on scroll, reduced-motion-safe). 1889 first craft → 1904 Ghafuree Industries → 1942–1958 family expands → 1972–1974 engineering the ball → 1992 Durus → 2020 RUN APPAREL → Today (fifth generation). All facts from the Company Master Prompt.
+- **Heritage, engineered forward (N°02)** — the one full-bleed ink band this page carries (DESIGN.md §3): THEN (hand craft) vs NOW (CLO3D/Optitex, biomechanical engineering, computational construction).
+- **What we carry forward (N°03)** — four values: Craft · Family · Partnership (100% B2B, no channel conflict) · Responsibility.
+- **The certified ecosystem (N°04)** — the compliance framing spelled out: RUN operates *within* a certified ecosystem (Durus + suppliers), **never "RUN is certified"**, no cert logos.
+- **Reach + leadership (N°05)** — four export regions (Europe, N. America, S. America, Middle East) as a blueprint-framed grid, plus the fifth-generation leadership note (M. Hateem Jamshaid Iqbal).
+- **Closing CTA** — → /rfq + /capabilities.
+
+**Standing rules honoured (spec §5 + BUILD_LOG conventions):** founder is **Allah Ditta Ghafuree**, anchored **1889**, **never named "Sandal"** and **no 1889–1980 end-date framing**; later timeline names (M. Iqbal Sandal, Sandal Trading Corporation) kept per spec §5 ("final nuance settled in copy review") · JSON-LD Organization `foundingDate` stays **2020**, 1889 lives in prose only (verified 2020 in the rendered `@type:Organization`, no 1889 as an entity date) · certifications = ecosystem framing, never "RUN is certified" · language is RFQ/quote, never buy/checkout · WhatsApp still dormant.
+
+**Deliberately deferred, NOT silently added (CLAUDE.md §6 — a new dependency is always an ask):** the spec's eventual About treatment is a **GSAP scroll-pinned timeline** + a **3D globe** for the reach map (spec §5/§7). GSAP and react-three-fiber/three aren't installed yet, so this build uses the installed stack (Motion reveals + on-brand regions panel). Narrative + layout are complete and swap-in ready; adding those two libraries is a separate ask for Hateem.
+
+**Verified (CLAUDE.md §9):** `tsc --noEmit` clean · `pnpm lint` **0 errors** (19 pre-existing warnings) · `pnpm run build` exit 0 — `/about` now `ƒ` dynamic (was `○` static as the placeholder) · `pnpm exec opennextjs-cloudflare build` exit 0, `worker.js` saved · `next start` smoke: **/about HTTP 200 (61 KB)**, all 7 milestones + BreadcrumbList + Organization JSON-LD render, the founder/certification/no-checkout rule checks all clean. **Not verifiable locally (no seeded D1 in this container):** nav/footer/site-settings and any CMS `about` override — they fall back gracefully (getters catch the "no such table" error → null/[]) and populate on the deployed preview.
+
+**Open (non-blocking):** carried from Session 8 — nav bottom-pill idea, image optimization strategy (Phase 4), static-vs-ISR caching decision, cert logo permissions, real WhatsApp/MOQ numbers, Neue Stance licence · new: GSAP + R3F for the About timeline/globe upgrade (an ask) · seed a CMS `pages/about` doc from the approved copy after sign-off.
+
+**Next step:** Hateem reviews **About** on the deployed preview → approves or requests tweaks (esp. the timeline names, the copy-review nuance spec §5 anticipated) → then the next page (recommend **Capabilities / Manufacturing**). Also still awaiting: confirm Home copy sign-off, and the caching decision.
+
+---
+
 ## 2026-07-17 — Session 8 · 🟢 PHASE 3 OPENED — public-site foundation + Home page built, verified, pushed for review
 
 **This session runs in a remote Linux container on branch `claude/phase-3-public-pages-4l9b6o`** (container Node 22.22.2; CI still builds on Node 24 via `.node-version`, the authoritative build). Base = `origin/main` tip `eaa8012`. Phase 3 = spec §17 row 3: all §5 pages with drafted copy, nav/footer, SEO plumbing, blog seeds; gate = **page-by-page copy approvals.**
