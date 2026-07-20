@@ -124,3 +124,77 @@ export async function getPublishedProducts(limit = 60): Promise<Product[]> {
     return []
   }
 }
+
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
+  if (isBuildPhase) return null
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'categories',
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: false,
+    })
+    return (res.docs[0] as Category) ?? null
+  } catch (err) {
+    console.error(`[content] category "${slug}" unavailable:`, err)
+    return null
+  }
+}
+
+export async function getProductsByCategory(categoryId: number, limit = 60): Promise<Product[]> {
+  if (isBuildPhase) return []
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'products',
+      where: { category: { equals: categoryId } },
+      sort: '-updatedAt',
+      limit,
+      depth: 1,
+      overrideAccess: false,
+    })
+    return res.docs as Product[]
+  } catch (err) {
+    console.error(`[content] products for category ${categoryId} unavailable:`, err)
+    return []
+  }
+}
+
+/** depth 2 so the category relation AND colourway poster images arrive populated. */
+export async function getProductBySlug(slug: string): Promise<Product | null> {
+  if (isBuildPhase) return null
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'products',
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth: 2,
+      overrideAccess: false,
+    })
+    return (res.docs[0] as Product) ?? null
+  } catch (err) {
+    console.error(`[content] product "${slug}" unavailable:`, err)
+    return null
+  }
+}
+
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  if (isBuildPhase) return null
+  try {
+    const payload = await getPayloadClient()
+    const res = await payload.find({
+      collection: 'posts',
+      where: { slug: { equals: slug } },
+      limit: 1,
+      depth: 1,
+      overrideAccess: false,
+    })
+    return (res.docs[0] as Post) ?? null
+  } catch (err) {
+    console.error(`[content] post "${slug}" unavailable:`, err)
+    return null
+  }
+}

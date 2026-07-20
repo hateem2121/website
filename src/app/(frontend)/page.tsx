@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import { CATEGORY_BLURB } from '@/data/category-copy'
 import { getCategories, getPageBySlug, getPublishedCaseStudies } from '@/lib/payload'
 import { organizationJsonLd, websiteJsonLd } from '@/lib/seo'
 import type { Category, CaseStudy, Page } from '@/payload-types'
@@ -20,14 +21,6 @@ export const metadata: Metadata = {
   alternates: { canonical: '/' },
 }
 
-/** One-line descriptors, shown until each category's CMS intro is written (Phase 3 copy review). */
-const CATEGORY_BLURB: Record<string, string> = {
-  'team-wear': 'Cycling, tennis, football, soccer and surf kits — plus the Wetsuit Edition line.',
-  'active-wear': 'Sports bras, athletic tops and bottoms, and full body suits.',
-  'casual-wear': 'T-shirts, polos, sweatshirts, hoodies and tracksuits.',
-  'outer-wear': 'Windbreakers, sherpa and puffer jackets, ski wear and leather.',
-  'sports-accessories': 'Performance gloves, weight belts, wristbands, caps and branded gear.',
-}
 
 export default async function HomePage() {
   const [home, categories, caseStudies] = await Promise.all([

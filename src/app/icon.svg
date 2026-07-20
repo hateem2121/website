@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- RUN APPAREL favicon (DRAFT for Phase-3 review) — PAPER & INK tokens (DESIGN.md).
+       Follows the browser's colour scheme: paper tile / ink R in light, ink tile / volt R in dark.
+       Swaps for a mark derived from the vector logo whenever Hateem supplies it (spec §6 A1). -->
+  <style>
+    .tile { fill: #f1efea; }
+    .mark { fill: #1d1f1a; }
+    .tick { fill: #cdf345; stroke: #1d1f1a; stroke-width: 1; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #1c1f18; }
+      .mark { fill: #cdf345; }
+      .tick { fill: #cdf345; stroke: none; }
+    }
+  </style>
+  <rect class="tile" x="0" y="0" width="64" height="64" rx="12" />
+  <text
+    class="mark"
+    x="31"
+    y="47"
+    text-anchor="middle"
+    font-family="Archivo, 'Helvetica Neue', Arial, sans-serif"
+    font-size="42"
+    font-weight="800"
+    letter-spacing="-1"
+  >R</text>
+  <circle class="tick" cx="50" cy="46" r="5" />
+</svg>
