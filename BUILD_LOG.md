@@ -4,6 +4,28 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-20 — Session 11 (cont.) · Phase-3 completeness audit — two §5 system-page gaps found and closed (custom 500, favicon); PR #5 green and awaiting review
+
+**Hateem asked: "check your work, make sure phase 3 is done."** Ran a line-by-line audit of spec §17 row 3 ("All §5 pages with drafted copy; nav/footer; SEO plumbing; blog seeds drafted") against the repo instead of re-asserting yesterday's summary. Result: the page table was complete, but §5's **system-pages line** had two real gaps — it requires "custom 404/**500**, **favicon set + default OG image** (delivered with Phase-1 tokens)", and only the 404 existed. The favicon/OG had silently slipped through Phases 1–3.
+
+**Closed this session:**
+- **Custom 500** — `(frontend)/error.tsx`, on-brand ("[ ERROR · 500 ] A dropped stitch."), with Try-again plus the spec's catalog/contact routes. Renders inside the site shell. Residual noted in-file: an error thrown by the layout itself would still hit Next's builtin handler, but the layout's data reads all swallow failures by design, so no known trigger.
+- **Favicon** — `src/app/icon.svg` (Next's convention auto-wires the `<link rel="icon">`, verified in rendered head + served 200 as image/svg+xml). DRAFT in the locked tokens: paper tile/ink R in light scheme, ink tile/volt R + volt tick in dark. Flagged for Hateem's review with the other pages; swaps for a real logo-derived mark whenever the vector logo (spec §6 A1) is supplied.
+
+**Explicitly NOT closed, and why (honesty over completeness-theatre):**
+- **Default OG image** — needs a 1200×630 raster brand asset; hand-fabricating one from code would be brand art without approval, and the `next/og` image-generation route is untested on the OpenNext/Workers runtime (a risk to take deliberately, not incidentally). §12 already plans product posters as OG images once Phase-4 media lands. → open item.
+- **"Filterable article grid"** (§5 catalog row) — read as: the five category landers ARE the filter at current catalog size (spec: fewer than 20 articles at launch, zero today). In-grid filter controls become meaningful with real articles in Phase 4; noted so it isn't forgotten.
+
+**Phase-3 status, stated precisely: the BUILD scope of §17 row 3 is now complete** — all §5 public pages live as drafted, on-brand, CMS-overridable pages (contact + RFQ as the decided styled placeholders; portal = Phase 6; legal = Phase 7 per §17), nav/footer done, SEO plumbing done (metadata/canonical/hreflang, Organization/WebSite/BreadcrumbList/Product/Article/FAQ JSON-LD, dynamic sitemap incl. seeds, robots), 5 blog seeds drafted. **The GATE is not passed and cannot be passed by Claude: it is Hateem's page-by-page copy approval** (Home + Capabilities + Sustainability + Catalog & landers + Case Studies + Insights + 5 articles + favicon), recorded in DECISIONS.md, after which Phase 3 closes.
+
+**Verified after the additions (CLAUDE.md §9):** `tsc` clean · lint 0 errors (19 pre-existing warnings) · `pnpm run build` exit 0 · OpenNext worker build complete · `next start` smoke: favicon link present in head and `/icon.svg` 200, spot re-check of `/`, `/capabilities`, `/catalog/team-wear`, `/insights` all 200. **PR #5 CI: Workers Builds green on `f238675`, deployed to the branch preview** (Cloudflare bot confirmed); preview URL itself is unreachable from this container (network policy blocks workers.dev — proxy 403), so with-real-data rendering is confirmed visually by Hateem's review, which is the gate anyway. Hourly PR check-ins armed via scheduled triggers.
+
+**Open (non-blocking):** default OG image (needs logo/photography input or a tested `next/og` route — Phase 4) · in-grid catalog filters when real articles exist (Phase 4) · plus everything carried in the entry below.
+
+**Next step:** unchanged — Hateem's page-by-page review on the branch preview → approvals recorded in DECISIONS.md → Phase 3 closes against §17 row 3.
+
+---
+
 ## 2026-07-19 — Session 11 · Phase 3 build COMPLETE — all remaining §5 pages + 5 blog seeds built, verified, pushed for page-by-page review
 
 **This session runs in a remote Linux container on branch `claude/phase-3-planning-rg2u6c`** (base = `origin/main` tip `0508414`, the Phase-2 closure). **Hateem's instruction: "plan to proceed with phase 3 to fully complete it."** Read as his own supersession of the Session-8 one-page-at-a-time *build* cadence — everything remaining was built in one pass. The **approval** cadence is unchanged: the Phase 3 gate is still his page-by-page copy sign-off (spec §17 row 3), now with the whole set ready to review at once.
