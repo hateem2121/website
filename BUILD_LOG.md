@@ -4,6 +4,16 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-21 — Session 11 · Portable `design.md` created (plain-language export of the locked design system)
+
+**What was done.** Hateem asked for "a design.md for my company that can be used any and everywhere." We already have the locked, code-level system at `docs/design/DESIGN.md` (Phase-1 gate, 2026-07-16) — but it's written for the build (CSS vars/Tailwind), not for a print shop or a non-coder. Created a new **root-level `design.md`**: a portable, plain-language export of the *same* locked values (colours by hex, Archivo/Instrument Serif/system-mono type, spacing/radii, motion character, voice & tone, company facts). Confirmed the hex tokens in `src/app/(frontend)/globals.css` match `docs/design/DESIGN.md` exactly before copying them. Voice/company facts pulled from `RUN_APPAREL_Master_Prompt.md`.
+
+**No new decisions, nothing invented.** Every value is copied from existing locked/approved sources. `design.md` explicitly names `docs/design/DESIGN.md` as the authority ("if they disagree, that one wins") so we don't create a competing source of truth. Included the standing guardrails in plain words: Archivo-everywhere until the Neue Stance web licence is confirmed; RFQ-not-retail voice; never claim RUN itself is certified; volt-deep for volt-coloured text on light.
+
+**Open (non-blocking):** none. If Hateem later wants `design.md` in a *different* spot (e.g. a shared drive) or a one-page PDF/print version, easy follow-up. **Next step:** back to the Phase-3 build queue when Hateem is ready.
+
+---
+
 ## 2026-07-20 — Session 11 (cont.) · Phase-3 completeness audit — two §5 system-page gaps found and closed (custom 500, favicon); PR #5 green and awaiting review
 
 **Hateem asked: "check your work, make sure phase 3 is done."** Ran a line-by-line audit of spec §17 row 3 ("All §5 pages with drafted copy; nav/footer; SEO plumbing; blog seeds drafted") against the repo instead of re-asserting yesterday's summary. Result: the page table was complete, but §5's **system-pages line** had two real gaps — it requires "custom 404/**500**, **favicon set + default OG image** (delivered with Phase-1 tokens)", and only the 404 existed. The favicon/OG had silently slipped through Phases 1–3.
@@ -47,7 +57,6 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 **Open (non-blocking), carried:** Home copy confirmation for DECISIONS.md (merged 2026-07-18, still unrecorded) · caching/ISR decision · GSAP + R3F ask (About timeline/globe upgrade; also the Phase-4 3D viewer) · nav bottom-pill idea · image strategy (Phase 4) · cert logo permissions · real WhatsApp/MOQ numbers · Neue Stance licence · CLAUDE.md §2 path amendment. **New:** after each page approval, seed its copy into the CMS (`pages/*` docs, category intros, posts) so editors own it.
 
 **Next step:** Hateem reviews the five new pages + five seed articles on the deployed preview, page by page (answering in shorthand per CLAUDE.md §5 works: e.g. "capabilities A, sustainability B with X…") → record each approval in DECISIONS.md → when all pages + Home are approved, Phase 3 closes against spec §17 row 3.
-
 ---
 
 ## 2026-07-19 — Session 10 (cont.) · ✅ PHASE 2 CLOSED — Hateem delegated the gate test; walkthrough executed end-to-end on a local instance, all green
