@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RUN APPAREL — Brand &amp; Design Guide</title>
+<style>
+  :root{
+    --volt:#CDF345; --volt-deep:#5F7414;
+    --paper:#F1EFEA; --surface:#FAF9F6; --wash:#E4E1D8;
+    --ink:#1D1F1A; --muted:#63665B;
+    --base:#1C1F18; --d-surface:#23271F; --d-wash:#2C3126; --d-raised:#363C2F;
+    --d-text:#ECEBE4; --d-muted:#A2A695;
+    --grid:rgba(29,31,26,.06); --hair:rgba(29,31,26,.16);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"Helvetica Neue",Arial,system-ui,sans-serif;
+    --serif:Georgia,"Times New Roman",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  @page{ size:A4; margin:13mm 12mm; }
+  html{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{
+    font-family:var(--sans); color:var(--ink); background:var(--paper);
+    font-size:10.5px; line-height:1.5; letter-spacing:.005em;
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:26px 26px;
+  }
+  .page{padding:2mm 0}
+  .lab{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.14em;color:var(--muted)}
+  .brk{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.12em;
+       background:var(--volt);color:var(--ink);padding:2px 6px;border-radius:4px;display:inline-block}
+  h1{font-family:var(--sans);font-weight:800;font-size:40px;line-height:.92;letter-spacing:-.03em;text-transform:uppercase}
+  h2{font-family:var(--sans);font-weight:800;font-size:17px;letter-spacing:-.01em;text-transform:uppercase;margin-bottom:2px}
+  h3{font-family:var(--mono);font-size:8.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--volt-deep);margin:9px 0 4px}
+  .serif{font-family:var(--serif);font-style:italic;color:var(--volt-deep);text-transform:none;letter-spacing:0}
+  .sec{border-top:1.4px solid var(--ink);padding-top:7px;margin-top:16px;page-break-inside:avoid}
+  .sechd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .cols3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:9px 11px;page-break-inside:avoid}
+  .dark{background:var(--base);color:var(--d-text);border-color:rgba(236,235,228,.16)}
+  .dark .lab,.dark .mut{color:var(--d-muted)}
+  .dark h3{color:var(--volt)}
+  /* swatches */
+  .sw{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px dotted var(--hair)}
+  .sw:last-child{border-bottom:0}
+  .chip{width:30px;height:30px;border-radius:6px;flex:0 0 auto;border:1px solid var(--hair)}
+  .dark .chip{border-color:rgba(236,235,228,.2)}
+  .swname{font-weight:700;font-size:10px}
+  .hex{font-family:var(--mono);font-size:8.5px;letter-spacing:.03em}
+  .use{font-size:8.5px;color:var(--muted)}
+  .dark .use{color:var(--d-muted)}
+  table{width:100%;border-collapse:collapse;font-size:9px}
+  td,th{text-align:left;padding:3px 6px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-family:var(--mono);font-size:7.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:400}
+  .pill{display:inline-block;background:var(--ink);color:var(--volt);font-family:var(--mono);font-size:9px;
+        padding:6px 12px;border-radius:8px;letter-spacing:.08em;text-transform:uppercase}
+  .pillghost{display:inline-block;border:1px solid var(--ink);color:var(--ink);font-family:var(--mono);font-size:9px;
+        padding:6px 12px;border-radius:8px;letter-spacing:.08em;text-transform:uppercase;background:transparent}
+  .typebig{font-weight:800;font-size:26px;letter-spacing:-.03em;line-height:.95;text-transform:uppercase}
+  .typebody{font-size:11px;line-height:1.5;max-width:44ch}
+  ul{margin:2px 0 0 0;padding-left:14px}
+  li{margin:2.5px 0}
+  .note{font-size:8.5px;color:var(--muted);font-style:italic}
+  .warn{border-left:3px solid var(--volt-deep);padding:5px 9px;background:var(--surface);font-size:9px;border-radius:0 6px 6px 0}
+  .ck{list-style:none;padding:0;margin:0}
+  .ck li{display:flex;gap:7px;padding:4px 0;border-bottom:1px dotted var(--hair);font-size:9.5px}
+  .ck li:last-child{border-bottom:0}
+  .no{color:var(--volt-deep);font-weight:800;font-family:var(--mono);flex:0 0 auto}
+  .foot{margin-top:16px;border-top:1.4px solid var(--ink);padding-top:6px;font-family:var(--mono);
+        font-size:7.5px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+        display:flex;justify-content:space-between}
+  .cover{border:1.6px solid var(--ink);border-radius:16px;padding:20px 22px;background:var(--surface);position:relative;overflow:hidden}
+  .cover .voltbar{position:absolute;top:0;right:0;width:120px;height:100%;
+        background:var(--volt);opacity:.14}
+  .kv{display:flex;gap:6px;font-size:9.5px;margin:2.5px 0}
+  .kv b{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.1em;color:var(--volt-deep);min-width:78px;flex:0 0 auto;padding-top:1px}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="voltbar"></div>
+    <div class="lab">N°000 — Brand &amp; Design Guide</div>
+    <h1 style="margin:6px 0 4px">RUN&nbsp;APPAREL</h1>
+    <div style="font-size:13px;font-weight:600">The <span class="serif">paper &amp; ink</span> design system</div>
+    <div style="margin-top:10px;font-family:var(--mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">
+      The Extra Mile &nbsp;|&nbsp; For a Better Tomorrow &nbsp;|&nbsp; Never Look Back
+    </div>
+    <div style="margin-top:12px;font-size:9px;max-width:62ch;color:var(--ink)">
+      One identity in two lighting conditions — <b>light = "The Workshop"</b> (warm paper, ink type,
+      volt stamps) and <b>dark = "The Night Shift"</b> (deep olive, off-white type, volt glowing) —
+      with a technical-drawing feel running through both. This is a portable copy for use anywhere.
+      The authority is <span class="hex">docs/design/DESIGN.md</span>; if they differ, that file wins.
+    </div>
+  </div>
+
+  <!-- COLOURS -->
+  <div class="sec">
+    <div class="sechd"><h2>Colours</h2><span class="lab">N°001</span></div>
+    <p class="use" style="margin-bottom:6px">Copy the hex codes exactly — never re-pick by eye. All text/background pairs are contrast-verified (readable for low-vision users).</p>
+
+    <h3 style="color:var(--volt-deep)">The signal colour — same in both modes</h3>
+    <div class="cols">
+      <div class="card">
+        <div class="sw"><span class="chip" style="background:var(--volt)"></span>
+          <div><div class="swname">Volt <span class="hex">#CDF345</span></div>
+          <div class="use">THE accent. Buttons, pills, highlights, stamps. Never as small text on paper — unreadable there.</div></div></div>
+      </div>
+      <div class="card">
+        <div class="sw"><span class="chip" style="background:var(--volt-deep)"></span>
+          <div><div class="swname" style="color:var(--volt-deep)">Volt Deep <span class="hex">#5F7414</span></div>
+          <div class="use">Use whenever volt-coloured TEXT or thin lines sit on a light background. Readable where plain volt is not.</div></div></div>
+      </div>
+    </div>
+
+    <div class="cols" style="margin-top:9px">
+      <!-- LIGHT -->
+      <div class="card">
+        <h3 style="margin-top:0">Light — "The Workshop" (default)</h3>
+        <div class="sw"><span class="chip" style="background:#F1EFEA"></span><div><div class="swname">Paper <span class="hex">#F1EFEA</span></div><div class="use">The page</div></div></div>
+        <div class="sw"><span class="chip" style="background:#FAF9F6"></span><div><div class="swname">Surface <span class="hex">#FAF9F6</span></div><div class="use">Cards, panels</div></div></div>
+        <div class="sw"><span class="chip" style="background:#E4E1D8"></span><div><div class="swname">Wash <span class="hex">#E4E1D8</span></div><div class="use">Image placeholders, soft fills</div></div></div>
+        <div class="sw"><span class="chip" style="background:#1D1F1A"></span><div><div class="swname">Ink / text <span class="hex">#1D1F1A</span></div><div class="use">All reading text</div></div></div>
+        <div class="sw"><span class="chip" style="background:#63665B"></span><div><div class="swname">Muted <span class="hex">#63665B</span></div><div class="use">Secondary text</div></div></div>
+      </div>
+      <!-- DARK -->
+      <div class="card dark">
+        <h3 style="margin-top:0">Dark — "The Night Shift"</h3>
+        <div class="sw"><span class="chip" style="background:#1C1F18"></span><div><div class="swname">Base <span class="hex">#1C1F18</span></div><div class="use">The page (never pure black)</div></div></div>
+        <div class="sw"><span class="chip" style="background:#23271F"></span><div><div class="swname">Surface <span class="hex">#23271F</span></div><div class="use">Cards, panels</div></div></div>
+        <div class="sw"><span class="chip" style="background:#2C3126"></span><div><div class="swname">Wash <span class="hex">#2C3126</span></div><div class="use">Nested cards, hovers</div></div></div>
+        <div class="sw"><span class="chip" style="background:#ECEBE4"></span><div><div class="swname">Text <span class="hex">#ECEBE4</span></div><div class="use">Off-white (never pure white)</div></div></div>
+        <div class="sw"><span class="chip" style="background:#A2A695"></span><div><div class="swname">Muted <span class="hex">#A2A695</span></div><div class="use">Secondary text</div></div></div>
+      </div>
+    </div>
+
+    <h3>How the accent flips between modes</h3>
+    <table>
+      <tr><th>Element</th><th>Light mode</th><th>Dark mode</th></tr>
+      <tr><td>Tag / label [ LABEL ]</td><td>Volt block, ink text on top</td><td>See-through, volt text</td></tr>
+      <tr><td>Main button</td><td>Ink fill, volt text</td><td>Volt fill, ink text</td></tr>
+      <tr><td>Big headline</td><td>Ink</td><td>Volt</td></tr>
+      <tr><td>Serif accent word</td><td>Volt Deep</td><td>Volt</td></tr>
+    </table>
+    <p class="note" style="margin-top:5px">Both modes are designed on purpose — never make one by simply inverting the other.</p>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="sec">
+    <div class="sechd"><h2>Typography</h2><span class="lab">N°002</span></div>
+    <p class="use" style="margin-bottom:6px">At most two downloaded font families (keeps the site fast). Samples below are shown in a stand-in font; the real families are named in each row.</p>
+    <div class="cols">
+      <div class="card">
+        <div class="typebig">The Extra <span class="serif" style="font-size:.9em">mile</span></div>
+        <div class="lab" style="margin-top:5px">Display &amp; body — <b>Archivo</b></div>
+        <div class="use">Headlines: weight 800–900, UPPERCASE, tight spacing. Body: weight 400–500, ~17px, sentence case, lines ≤ ~60 characters.</div>
+        <div class="lab" style="margin-top:7px">Serif accent — <b>Instrument Serif</b> italic</div>
+        <div class="use">Only 1–2 accent words inside a headline (like <span class="serif">mile</span> above). Never body text.</div>
+      </div>
+      <div class="card">
+        <div style="font-family:var(--mono);font-size:11px;letter-spacing:.1em">[ FABRIC ] &nbsp; [ MOQ ] &nbsp; N°001</div>
+        <div class="lab" style="margin-top:5px">Labels &amp; specs — <b>system monospace</b> (no download)</div>
+        <div class="use">Bracketed labels, N°00X numbers, spec lists, buttons. Small, UPPERCASE, wide letter-spacing.</div>
+        <div style="margin-top:9px;display:flex;gap:8px;align-items:center">
+          <span class="pill">Request a quote</span><span class="pillghost">View specs</span>
+        </div>
+        <div class="use" style="margin-top:4px">Buttons use the monospace label style.</div>
+      </div>
+    </div>
+    <div class="warn" style="margin-top:8px"><b>Font licence — open item.</b> A font called <b>Neue Stance</b> may one day replace Archivo for headlines only — but <b>only after</b> Hateem confirms he owns a commercial web licence for it. Until then the answer is <b>Archivo everywhere</b>. (A web licence can cost money, so it's Hateem's decision.)</div>
+  </div>
+
+  <!-- SHAPE / GRID / MOTION -->
+  <div class="sec">
+    <div class="sechd"><h2>Shape, grid &amp; motion</h2><span class="lab">N°003</span></div>
+    <div class="cols3">
+      <div class="card"><h3 style="margin-top:0">Corners</h3><ul>
+        <li>Cards / panels ≈ 18px</li><li>Buttons / pills ≈ 8px</li><li>Nav pills — fully round</li></ul></div>
+      <div class="card"><h3 style="margin-top:0">Signature texture</h3><ul>
+        <li>Faint blueprint grid (like the background of this page)</li>
+        <li>Garment wireframe drawings for empty / loading / placeholder states</li>
+        <li>One dramatic full-width band per page, max</li></ul></div>
+      <div class="card"><h3 style="margin-top:0">Movement</h3><ul>
+        <li>Precise, unhurried, alive</li>
+        <li>Quick reactions + soft settles</li>
+        <li>Always honour a device's "reduce motion" setting</li></ul></div>
+    </div>
+  </div>
+
+  <!-- VOICE -->
+  <div class="sec">
+    <div class="sechd"><h2>Voice &amp; tone</h2><span class="lab">N°004</span></div>
+    <table>
+      <tr><th>Context</th><th>How it sounds</th></tr>
+      <tr><td>Social &amp; marketing</td><td>Bold, confident, punchy. Short declarative lines. Heritage-meets-innovation.</td></tr>
+      <tr><td>Sales &amp; partner outreach</td><td>Confident but grounded. Warm, consultative — partnership first, not transactional.</td></tr>
+      <tr><td>Proposals &amp; formal docs</td><td>Crisp and professional. Let facts and figures persuade.</td></tr>
+      <tr><td>Product &amp; catalogue copy</td><td>Technical and precise. Spec-driven, with real sensory detail.</td></tr>
+    </table>
+    <div class="warn" style="margin-top:8px">
+      <b>Three hard rules.</b> &nbsp;(1) <b>B2B only</b> — never "buy / order / checkout"; the action is always <b>"Request a Quote" (RFQ)</b>. &nbsp;(2) <b>Never claim RUN itself is certified</b> — certifications sit with parent company Durus Industries and RUN's suppliers; RUN is <i>backed by</i> a certified supply chain. &nbsp;(3) No empty sustainability buzzwords — always a fact behind the claim.
+    </div>
+  </div>
+
+  <!-- COMPANY FACTS -->
+  <div class="sec">
+    <div class="sechd"><h2>Company facts</h2><span class="lab">N°005</span></div>
+    <div class="cols">
+      <div class="card">
+        <div class="kv"><b>What</b><span>B2B-only apparel manufacturing division of Durus Industries (Pvt) Ltd.</span></div>
+        <div class="kv"><b>Heritage</b><span>Roots to 1889; RUN APPAREL established as a division in 2020.</span></div>
+        <div class="kv"><b>HQ</b><span>13 Km Daska Road, Sialkot, 51040, Pakistan.</span></div>
+        <div class="kv"><b>Position</b><span>Sustainable · High-Performance · Ethically Manufactured Sports Apparel.</span></div>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Five categories <span class="note">(all equally core)</span></h3>
+        <ul>
+          <li><b>Team Wear</b> — cycling, tennis, football, soccer, surf + wetsuit/beachwear line</li>
+          <li><b>Active Wear</b> — sports bras, athletic tops &amp; bottoms, full body suits</li>
+          <li><b>Casual Wear</b> — T-shirts, polos, sweatshirts, hoodies, tracksuits</li>
+          <li><b>Outer Wear</b> — windbreakers, sherpa &amp; puffer jackets, ski wear, leather jackets</li>
+          <li><b>Sports Accessories</b> — gloves, weight belts, wristbands, caps, branded gear</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="sec">
+    <div class="sechd"><h2>The "don't break these" list</h2><span class="lab">N°006</span></div>
+    <ul class="ck">
+      <li><span class="no">01</span><span>Use the exact hex codes above — don't re-pick by eye.</span></li>
+      <li><span class="no">02</span><span>Volt is a <b>signal</b>, never the whole design. It accents a paper-and-ink system.</span></li>
+      <li><span class="no">03</span><span>Never volt text on paper (unreadable) — use <b>Volt Deep</b> for volt-coloured text on light.</span></li>
+      <li><span class="no">04</span><span>Two font families max; <b>Archivo everywhere</b> until the Neue Stance licence is confirmed.</span></li>
+      <li><span class="no">05</span><span>Light and dark are both real designs — never invert one to make the other.</span></li>
+      <li><span class="no">06</span><span>B2B voice only: <b>"Request a Quote," never "buy / order."</b></span></li>
+      <li><span class="no">07</span><span>Never say RUN itself is certified.</span></li>
+      <li><span class="no">08</span><span>Respect "reduce motion."</span></li>
+      <li><span class="no">09</span><span>In doubt? <span class="hex">docs/design/DESIGN.md</span> is the authority; locked values change only on Hateem's call.</span></li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    <span>RUN APPAREL — Paper &amp; Ink</span>
+    <span>Portable export · authority: docs/design/DESIGN.md</span>
+  </div>
+
+</div>
+</body>
+</html>
