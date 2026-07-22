@@ -149,7 +149,7 @@ export const SEED_POSTS: SeedPost[] = [
         heading: 'The question that sorts real claims from decoration',
         paragraphs: [
           'Certificates are held by specific legal entities — a mill, a factory, a parent company — not by supply chains in general. So the load-bearing question for any sustainability claim is: who exactly holds this certificate, and can I see it?',
-          'We answer it about ourselves the way we’d want it answered by others. RUN APPAREL does not itself hold these certifications: they sit within our compliance ecosystem — held by our parent company, Durus Industries (whose SMETA audit is current to July 2025), and by the certified fabric and trim suppliers we source from exclusively. Every certificate is verifiable at its source, and if your programme needs a certification we don’t yet carry in our own name, we’ll pursue it on request.',
+          'We answer it about ourselves the way we’d want it answered by others. RUN APPAREL does not itself hold these certifications: they sit within our compliance ecosystem — held by our parent company, Durus Industries (whose most recent SMETA ethical-trade audit was in July 2025), and by the certified fabric and trim suppliers we source from exclusively. Every certificate is verifiable at its source, and if your programme needs a certification we don’t yet carry in our own name, we’ll pursue it on request.',
           'That framing isn’t modesty; it’s accuracy — and accuracy is precisely what a certification is for. When a supplier claims a mark, make them name the holder. The good ones will have the paperwork open before you finish asking.',
         ],
       },
