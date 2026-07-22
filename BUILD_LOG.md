@@ -4,6 +4,26 @@ Running memory, newest entry first (format per CLAUDE.md §4: date · what was d
 
 ---
 
+## 2026-07-22 — Session 12 · Status reconciliation: Phase 3's BUILD is done and merged, but its GATE is unsigned — Phase 3 is not closed
+
+**Hateem's prompt opened with "phase 0 till 3 are done with" and asked (a) that I document things so future sessions don't hallucinate, and (b) what the next step is.** Ran the session ritual against the repo rather than accepting the premise, and there is one genuine prompt-vs-log disagreement to state plainly (CLAUDE.md §3).
+
+**The discrepancy.** `DECISIONS.md` records sign-offs for **Phase 0** (2026-07-15), **Phase 1** (2026-07-16) and **Phase 2** (2026-07-19). There is **no Phase 3 sign-off**, and there cannot be one yet: spec §17 row 3's gate is *page-by-page copy approvals*, and the only page-level approval on record is **About** (2026-07-19). Home, Capabilities, Sustainability, Catalog + the five landers, Case Studies, Insights, the five seed articles and the favicon are all built, merged and live on the preview — **but unapproved**. So: **Phases 0–2 are closed; Phase 3's build scope is complete, its gate is open.** PR #5 merged as `84fd67c` on 2026-07-20 — a merge is a code event, not a phase closure, and the previous entry's "the GATE is not passed and cannot be passed by Claude" still stands verbatim.
+
+**Second, smaller gap closed for the record:** commit `65d868a` ("Add printable design guide PDF and its HTML source", 2026-07-21) shipped after the Session-11 entry was written and was never logged. It adds `RUN-APPAREL-Design-Guide.pdf` plus its HTML source — the print version of the same locked tokens, i.e. the "one-page PDF/print version" the Session-11 entry had listed as an easy follow-up. No new design decisions; authority remains `docs/design/DESIGN.md`.
+
+**Repo state verified:** on `main`, working tree clean, local `main` == `origin/main` at `65d868a`. Nothing in flight, no uncommitted work, no open branch.
+
+**Anti-hallucination documentation (what Hateem actually asked for).** The two repo files remain the authoritative record (CLAUDE.md §4) and nothing was duplicated into machine-local notes. Three durable notes were added to Claude Code's own memory, each covering something the repo does *not* record and each pointing back here: (1) **phase status comes only from these two files** — a merged PR is not a closed phase, and the pasted summary drifts because Hateem hand-carries messages between two rooms; (2) **the constitution files are at the repo root**, not `docs/spec/` as CLAUDE.md §2 states — the long-standing unfixed amendment, which is the most likely cause of a future session guessing at spec content; (3) **the standing verification limits** — `workers.dev` unreachable from cloud containers, the Workers Builds log being dashboard-only, and empty local D1 — so no future session reports "verified" for something it structurally cannot check.
+
+**Recommended next step, and the reason it is not a build task.** Phase 3 cannot close by writing more code, and Phase 4 cannot honestly open before it does (spec §17 rows run in order; §11 forbids closing a phase without explicit sign-off). The one action that moves the project is **Hateem's page-by-page copy review on the deployed preview** → each approval recorded in `DECISIONS.md` → Phase 3 closes. Flagged at the same time, early rather than at the gate: **Phase 4 (3D & catalog) is input-blocked** — it needs Hateem's real garment models/CLO3D exports, photography and logo vectors (spec §20, §19 items 5–6), none of which have arrived. Worth him starting to gather them during the copy review so Phase 4 isn't stalled on assets the day it opens.
+
+**Open (non-blocking):** unchanged and carried in full from the entries below — default OG image · in-grid catalog filters (Phase 4) · Home copy confirmation still unrecorded in DECISIONS.md · caching/ISR decision · GSAP + R3F ask · nav bottom-pill idea · image strategy · cert logo permissions · real WhatsApp/MOQ numbers · Neue Stance licence · CLAUDE.md §2 path amendment.
+
+**Next step:** Hateem reviews the pages and answers in shorthand → approvals recorded in `DECISIONS.md` → Phase 3 closes against spec §17 row 3 → Phase 4 opens, asset-dependent.
+
+---
+
 ## 2026-07-21 — Session 11 · Portable `design.md` created (plain-language export of the locked design system)
 
 **What was done.** Hateem asked for "a design.md for my company that can be used any and everywhere." We already have the locked, code-level system at `docs/design/DESIGN.md` (Phase-1 gate, 2026-07-16) — but it's written for the build (CSS vars/Tailwind), not for a print shop or a non-coder. Created a new **root-level `design.md`**: a portable, plain-language export of the *same* locked values (colours by hex, Archivo/Instrument Serif/system-mono type, spacing/radii, motion character, voice & tone, company facts). Confirmed the hex tokens in `src/app/(frontend)/globals.css` match `docs/design/DESIGN.md` exactly before copying them. Voice/company facts pulled from `RUN_APPAREL_Master_Prompt.md`.
