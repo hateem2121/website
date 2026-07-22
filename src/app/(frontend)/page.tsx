@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 import { CATEGORY_BLURB } from '@/data/category-copy'
 import { getCategories, getPageBySlug, getPublishedCaseStudies } from '@/lib/payload'
-import { organizationJsonLd, websiteJsonLd } from '@/lib/seo'
+import { DEFAULT_OG_IMAGE, organizationJsonLd, websiteJsonLd } from '@/lib/seo'
 import type { Category, CaseStudy, Page } from '@/payload-types'
 import { JsonLd } from '@/components/frontend/JsonLd'
 import { Placeholder } from '@/components/frontend/Placeholder'
@@ -14,11 +14,23 @@ import { Reveal } from '@/components/frontend/Reveal'
 // is the flagged optimization to layer on next — see BUILD_LOG.
 export const dynamic = 'force-dynamic'
 
+const HOME_TITLE = 'RUN APPAREL — Custom B2B Sportswear & Team Wear Manufacturer'
+const HOME_DESCRIPTION =
+  'A 100% B2B custom apparel manufacturer in Sialkot, Pakistan. Team wear, active wear, casual wear, outerwear and sports accessories — made to order for brands, teams and organisations worldwide. Craftsmanship rooted in 1889.'
+
 export const metadata: Metadata = {
-  title: { absolute: 'RUN APPAREL — Custom B2B Sportswear & Team Wear Manufacturer' },
-  description:
-    'A 100% B2B custom apparel manufacturer in Sialkot, Pakistan. Team wear, active wear, casual wear, outerwear and sports accessories — made to order for brands, teams and organisations worldwide. Craftsmanship rooted in 1889.',
+  title: { absolute: HOME_TITLE },
+  description: HOME_DESCRIPTION,
   alternates: { canonical: '/' },
+  openGraph: {
+    title: HOME_TITLE,
+    description: HOME_DESCRIPTION,
+    url: '/',
+    type: 'website',
+    siteName: 'RUN APPAREL',
+    images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],
+  },
+  twitter: { card: 'summary_large_image', title: HOME_TITLE, description: HOME_DESCRIPTION, images: [DEFAULT_OG_IMAGE] },
 }
 
 

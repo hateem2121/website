@@ -2,6 +2,16 @@ import type { Metadata } from 'next'
 import { SITE_URL, absoluteUrl } from './site'
 
 /**
+ * Site-wide default social-share image (spec §5 system pages: "default OG image"). On-brand
+ * placeholder in the locked Paper & Ink tokens, served from /public at a stable URL; swap for real
+ * brand art in Phase 4 (open item #6). Every page carries it via buildMetadata unless it passes its
+ * own `ogImage`. Referenced explicitly rather than via Next's `opengraph-image` file convention,
+ * because that convention is suppressed on any page that also exports an `openGraph` object.
+ */
+export const DEFAULT_OG_IMAGE = absoluteUrl('/og-default.png')
+const OG_IMAGE_DIMENSIONS = { width: 1200, height: 630 }
+
+/**
  * Per-page metadata (spec §12): canonical + OG/Twitter, hreflang-ready (en + x-default), and an
  * easy noindex switch for gated/utility routes. `title` is the page-specific part — the layout's
  * title.template ("%s · RUN APPAREL") supplies the brand suffix for the document title.
@@ -20,7 +30,7 @@ export function buildMetadata({
   noindex?: boolean
 }): Metadata {
   const canonical = absoluteUrl(path)
-  const images = ogImage ? [{ url: ogImage }] : undefined
+  const image = ogImage ?? DEFAULT_OG_IMAGE
   return {
     title,
     description,
@@ -31,9 +41,9 @@ export function buildMetadata({
       url: canonical,
       type: 'website',
       siteName: 'RUN APPAREL',
-      images,
+      images: [{ url: image, ...OG_IMAGE_DIMENSIONS }],
     },
-    twitter: { card: 'summary_large_image', title, description, images: ogImage ? [ogImage] : undefined },
+    twitter: { card: 'summary_large_image', title, description, images: [image] },
     robots: noindex ? { index: false, follow: false } : undefined,
   }
 }
