@@ -17,9 +17,12 @@
   --font-serif: var(--font-instrument-serif), ui-serif, Georgia, 'Times New Roman', serif;
   --font-mono: ui-monospace, 'SF Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
 
-  /* Brand constant — the signal (identical in both modes) */
-  --color-volt: #cdf345;
-  --color-volt-deep: #5f7414;
+  /* Brand constant — the signal (identical in both modes).
+   * Points at the :root custom properties below rather than repeating the hex, so the
+   * Tailwind utilities (bg-volt, text-volt-deep) and the raw var(--volt) references used
+   * throughout the components can never drift apart. */
+  --color-volt: var(--volt);
+  --color-volt-deep: var(--volt-deep);
 
   /* Semantic, mode-swapped (defined on :root below) */
   --color-bg: var(--bg);
@@ -36,6 +39,20 @@
   --radius-pill: 8px;
 
   --ease-run: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---- Brand constants — identical in every mode (DESIGN.md §2) ----
+ * These MUST be real custom properties on :root, not just `@theme` entries. Tailwind v4's
+ * `@theme inline` inlines its values into the generated utilities and does NOT emit them as
+ * custom properties, so components reading `var(--volt)` directly got an undefined variable.
+ * The effect was invisible-by-design rather than obviously broken: `color: var(--volt)` fell
+ * back to the inherited ink, which on `.btn-primary` (ink background) rendered black text on
+ * a black button — every primary CTA on the site, including the header "Request a quote",
+ * unreadable. Found 2026-07-22 by screenshotting the 404 page.
+ */
+:root {
+  --volt: #cdf345;
+  --volt-deep: #5f7414;
 }
 
 /* ---- Light — "The Workshop" (default) ---- */
